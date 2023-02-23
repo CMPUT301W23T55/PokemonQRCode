@@ -28,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /*
+    https://www.cambotutorial.com/article/10-minutes-build-bar-code-and-qr-code-scanner-in-android-app
+    Retrieved February 22, 2023
+    Licensed under MIT License
+    https://choosealicense.com/licenses/mit/
+     */
+
     private void scanCode() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Volume up to turn on flash");
