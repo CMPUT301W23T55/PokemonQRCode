@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->
     {
+        //we can use getContents to get the reading of the code to calculate the score
         if(result.getContents() !=null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
