@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "801081526014",
+    "project_id": "pokemonqrcode-c3606",
+    "storage_bucket": "pokemonqrcode-c3606.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801081526014:android:b6bf4555af88b66355c7af",
+        "android_client_info": {
+          "package_name": "com.example.pokemonqrcode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "801081526014-rlt2s5h5su37b6tkrmln76uohblbg1hm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2MEzGclptF-SXhk6pHlbjt2ECo_vGHo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "801081526014-rlt2s5h5su37b6tkrmln76uohblbg1hm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
