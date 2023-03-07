@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -26,10 +27,26 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 public class CodeFoundFragment extends DialogFragment  {
+    ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == 100) {
+                        Log.d("test", "hello camera");
+
+                    }
+                }
+            });
+
+
+
+
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
     }
 
     @NonNull
@@ -40,10 +57,14 @@ public class CodeFoundFragment extends DialogFragment  {
         ImageView image = view.findViewById(R.id.found_user_image);
         Button cameraButton = view.findViewById(R.id.found_open_camera);
 
+
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openSomeActivityForResult(view);
+                
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                activityResultLaunch.launch(intent);
+
             }
         });
 
@@ -57,26 +78,5 @@ public class CodeFoundFragment extends DialogFragment  {
                 .create();
     }
 
-    public void openSomeActivityForResult(View view) {
-        ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            // There are no request codes
-                            Intent data = result.getData();
-                            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                            ImageView image = view.findViewById(R.id.found_user_image);
-                            image.setImageBitmap(bitmap);
 
-                        }
-                    }
-                });
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/jpg");
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        //Launch activity to get result
-        someActivityResultLauncher.launch(intent);
-    }
 }
