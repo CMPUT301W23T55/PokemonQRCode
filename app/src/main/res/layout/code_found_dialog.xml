@@ -15,19 +15,16 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/found_picture_text"
+    <ImageView
+        android:id="@+id/found_user_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save picture of location?"
-        android:textAlignment="center" />
+         />
 
-    <ImageButton
-        android:id="@+id/found_image_button"
+    <Button
+        android:id="@+id/found_open_camera"
         android:layout_width="match_parent"
-        android:contentDescription="Save picture of location?"
-        android:layout_height="150dp"
-        android:scaleType="fitCenter"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        android:layout_height="wrap_content"
+        android:text="Save picture of location?" />
 
 </LinearLayout>
