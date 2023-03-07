@@ -20,16 +20,11 @@ public class FireStoreClass {
     private final String userName;
     private FirebaseFirestore db;
 
+    //needs username as that is the key to getting data from database
     public FireStoreClass(String userName){
         this.userName = userName;
     }
 
-    /**
-     * To set up the collection to that particular user, only is created once
-     */
-    void firstTimeLogIn(){
-
-    }
 
     /**
      * Adds a scanned QR code to the users collection
@@ -70,7 +65,7 @@ public class FireStoreClass {
     }
 
     /**
-     * Returns the total score off all teh QR codes
+     * Returns the total score off all the QR codes
      */
     public void totalScore(){
         db.collection("Users/"+userName+"/QRCodes")

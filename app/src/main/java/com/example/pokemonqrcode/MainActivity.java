@@ -26,14 +26,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Pair<Integer, Integer> location = new Pair<>(1,1);
-        FireStoreClass f = new FireStoreClass("Kyle");
-        f.addAQRCode("Magnemite", 200, location, 234567);
-        f.addAQRCode("Bulbasaur", 340, location, 987654);
-        f.addAQRCode("charizard", 470, location, 101010);
-        f.totalScore();
-        Toast.makeText(getApplicationContext(), Long.toString(totalSum), Toast.LENGTH_SHORT).show();
-
         cameraButton = findViewById(R.id.open_camera_button);
         cameraButton.setOnClickListener(v->
         {
