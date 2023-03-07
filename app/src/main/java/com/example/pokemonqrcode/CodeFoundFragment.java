@@ -61,7 +61,7 @@ public class CodeFoundFragment extends DialogFragment  {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 activityResultLaunch.launch(intent);
 
