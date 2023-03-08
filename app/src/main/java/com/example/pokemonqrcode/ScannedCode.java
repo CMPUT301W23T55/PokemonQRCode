@@ -85,14 +85,14 @@ public class ScannedCode {
     /**
      * creates a name for the code according to the hash
      */
-    public void createName() {
+    public String createName() {
 
     }
 
     /**
      * creates a visual representation of the code
      */
-    public void createImage() {
+    public String createImage() {
 
     }
 
