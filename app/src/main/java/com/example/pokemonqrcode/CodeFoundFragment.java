@@ -27,6 +27,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 public class CodeFoundFragment extends DialogFragment  {
+
+    //View view = LayoutInflater.from(getContext()).inflate(R.layout.code_found_dialog, null);
+    //ImageView image = view.findViewById(R.id.found_user_image);
+    /*
     ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -34,14 +38,15 @@ public class CodeFoundFragment extends DialogFragment  {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == 100) {
                         Log.d("test", "hello camera");
+                        Intent data = result.getData();
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        image.setImageBitmap(bitmap);
 
                     }
                 }
             });
 
-
-
-
+     */
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -56,7 +61,20 @@ public class CodeFoundFragment extends DialogFragment  {
         TextView titleText = view.findViewById(R.id.found_title);
         ImageView image = view.findViewById(R.id.found_user_image);
         Button cameraButton = view.findViewById(R.id.found_open_camera);
+        ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == 100) {
+                            Log.d("test", "hello camera");
+                            Intent data = result.getData();
+                            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                            image.setImageBitmap(bitmap);
 
+                        }
+                    }
+                });
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
