@@ -78,8 +78,8 @@ public class ScannedCode {
      * calculates the score according to the hash (use eClass rules)
      */
 
-    public void calculateScore() {
-
+    public int calculateScore() {
+        return 1;
     }
 
     /**

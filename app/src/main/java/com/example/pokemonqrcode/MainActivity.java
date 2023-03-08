@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         //we can use getContents to get the reading of the code to calculate the score
         if(result.getContents() !=null) {
             new CodeFoundFragment().show(getSupportFragmentManager(), "Code Found");
-
+            
 
             /*
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
