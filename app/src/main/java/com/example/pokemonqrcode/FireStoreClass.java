@@ -12,11 +12,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class FireStoreClass {
 
-    public static int totalSum;
     private final String userName;
     private FirebaseFirestore db;
 
@@ -27,23 +30,30 @@ public class FireStoreClass {
 
 
     /**
-     * Adds a scanned QR code to the users collection
-     * @param name name of scanned QR code
-     * @param score score of the scanned QR code
-     * @param location location where QR code was scanned
-     * @param hashcode Scanned hashcode
+     *
+     * @param playerCode needs a player code to add it to the database
      */
-    public void addAQRCode(String name, int score, Pair<Integer, Integer> location,
-                    int hashcode){
+    public void addAQRCode(PlayerCode playerCode){
 
         db = FirebaseFirestore.getInstance();
 
         HashMap<String, Object> data = new HashMap<>();
 
+        String name = playerCode.getPlayerCodeName();
+        int score = playerCode.getPlayerCodeScore();
+        Date date = playerCode.getPlayerCodeDate();
+        int hashcode = playerCode.getPlayerCodeHashCode();
+        String picture = playerCode.getPlayerCodePicture();
+        Pair<Integer, Integer> location = playerCode.getPlayerCodeLocation();
+        ArrayList<String> comments = playerCode.getPlayerCodeComments();
+
         data.put("Name",name);
         data.put("Score",score);
-        data.put("Location",location);
+        data.put("Date", date);
         data.put("HashCode",hashcode);
+        data.put("Picture",picture);
+        data.put("Location",location);
+        data.put("Comments",comments);
 
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef
@@ -76,7 +86,6 @@ public class FireStoreClass {
                         if (task.isSuccessful()){
                             for (QueryDocumentSnapshot document : task.getResult()){
                                 Log.d("Working", document.getId() + " => " + document.getLong("Score"));
-                                //totalSum += document.getLong("Score").intValue();
                             }
                         } else {
                             Log.d("Working", "Query Unsuccessful");
