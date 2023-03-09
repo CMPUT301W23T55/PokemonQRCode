@@ -3,25 +3,24 @@ package com.example.pokemonqrcode;
 import android.util.Log;
 import android.util.Pair;
 import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * Create an instance of the Firestore database
+ */
+//for all query operations, https://firebase.google.com/docs/firestore/
+//was used as a reference
 public class FireStoreClass {
 
     private final String userName;
     private FirebaseFirestore db;
+
+    private ArrayList<PlayerCode> codes;
 
     //needs username as that is the key to getting data from database
     public FireStoreClass(String userName){
@@ -31,21 +30,21 @@ public class FireStoreClass {
 
     /**
      *
-     * @param playerCode needs a player code to add it to the database
+     * @param pC needs a player code to add it to the database
      */
-    public void addAQRCode(PlayerCode playerCode){
+    public void addAQRCode(@NonNull PlayerCode pC){
 
         db = FirebaseFirestore.getInstance();
 
         HashMap<String, Object> data = new HashMap<>();
 
-        String name = playerCode.getPlayerCodeName();
-        int score = playerCode.getPlayerCodeScore();
-        Date date = playerCode.getPlayerCodeDate();
-        int hashcode = playerCode.getPlayerCodeHashCode();
-        String picture = playerCode.getPlayerCodePicture();
-        Pair<Integer, Integer> location = playerCode.getPlayerCodeLocation();
-        ArrayList<String> comments = playerCode.getPlayerCodeComments();
+        String name = pC.getPlayerCodeName();
+        int score = pC.getPlayerCodeScore();
+        Date date = pC.getPlayerCodeDate();
+        int hashcode = pC.getPlayerCodeHashCode();
+        String picture = pC.getPlayerCodePicture();
+        Pair<Integer, Integer> location = pC.getPlayerCodeLocation();
+        ArrayList<String> comments = pC.getPlayerCodeComments();
 
         data.put("Name",name);
         data.put("Score",score);
@@ -57,41 +56,50 @@ public class FireStoreClass {
 
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef
-                .document(name)
+                .document(String.valueOf(hashcode))
                 .set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Working", "Data added successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "data not added" + e.toString());
-                    }
-                });
-
+                .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully"))
+                .addOnFailureListener(e -> Log.d("Working", "data not added" + e));
     }
 
     /**
-     * Returns the total score off all the QR codes
+     * Retrieves all the PlayerCodes from the database and stores them into the codes list
      */
-    public void totalScore(){
-        db.collection("Users/"+userName+"/QRCodes")
+    public void RetrievePlayerCodeList(){
+
+        db = FirebaseFirestore.getInstance();
+        CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
+        innerCollectionRef
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            for (QueryDocumentSnapshot document : task.getResult()){
-                                Log.d("Working", document.getId() + " => " + document.getLong("Score"));
-                            }
-                        } else {
-                            Log.d("Working", "Query Unsuccessful");
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        for (QueryDocumentSnapshot document : task.getResult()){
+                            PlayerCode pc = document.get("CodeData", PlayerCode.class);
+                            Log.d("Working", document.getId() + " => " + document.get("CodeData"));
                         }
+                    } else {
+                        Log.d("Working", "Query Unsuccessful");
                     }
                 });
+    }
+
+    public void deleteCode(PlayerCode pC){
+
+        db = FirebaseFirestore.getInstance();
+        CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
+        innerCollectionRef
+                .document(String.valueOf(pC.getPlayerCodeHashCode()))
+                .delete()
+                .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
+                .addOnFailureListener(e -> Log.w("Working", "Error deleting document", e));
+    }
+
+    /**
+     *
+     * @return an array of PlayerCodes from the firestore database
+     */
+    public ArrayList<PlayerCode> getPlayerCodes(){
+        return this.codes;
     }
 
 

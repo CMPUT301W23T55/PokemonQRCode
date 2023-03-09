@@ -21,18 +21,21 @@ public class PlayerCode {
     geolocation
     comment
      */
-    final private String name;
-    final private int score;
-    final private Date date;
-    final private int hashcode;
+    private String name;
+    private int score;
+    private Date date;
+    private int hashcode;
 
     //may be subject to change
-    final private String picture;
-    final private Pair<Integer, Integer> geolocation;
+    private String picture;
+    private Pair<Integer, Integer> geolocation;
 
     private ArrayList<String> comments;
 
 
+    public PlayerCode(){
+
+    }
     public PlayerCode(String name, int score, Date date, int hashcode,
                       String picture, Pair<Integer, Integer> geolocation, ArrayList<String> comments){
         this.name = name;
@@ -77,8 +80,6 @@ public class PlayerCode {
     }
 
     public void deleteComment(String comment){
-        if (this.comments.contains(comment)){
-            this.comments.remove(comment);
-        }
+        this.comments.remove(comment);
     }
 }
