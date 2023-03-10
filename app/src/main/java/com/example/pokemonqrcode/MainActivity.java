@@ -59,11 +59,20 @@ public class MainActivity extends AppCompatActivity {
             builder.setTitle("Result");
             try {
                 ScannedCode code = new ScannedCode(result);
-                //builder.setMessage(result.getContents());
-                builder.setMessage(code.getHashAsString());
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
+                                    code.getScore(), code.getPicture());
+                builder.setMessage(pCode.getName());
+                /*
+                builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();*/
+                builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Add the player code to the database in here
                         dialog.dismiss();
                     }
                 }).show();

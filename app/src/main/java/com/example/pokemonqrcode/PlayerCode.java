@@ -1,8 +1,5 @@
 package com.example.pokemonqrcode;
 
-import android.util.Pair;
-
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -21,64 +18,44 @@ public class PlayerCode {
     geolocation
     comment
      */
-    final private String name;
-    final private int score;
-    final private Date date;
-    final private int hashcode;
-
-    //may be subject to change
-    final private String picture;
-    final private Pair<Integer, Integer> geolocation;
-
+    private String codeHash;
+    private int score;
+    private String name;
+    private Date date;
+    private String picture;
     private ArrayList<String> comments;
 
-
-    public PlayerCode(String name, int score, Date date, int hashcode,
-                      String picture, Pair<Integer, Integer> geolocation, ArrayList<String> comments){
+    public PlayerCode(String hash, String name, int score, String image) {
+        this.codeHash = hash;
         this.name = name;
         this.score = score;
-        this.date = date;
-        this.hashcode = hashcode;
-        this.picture = picture;
-        this.geolocation = geolocation;
-        this.comments = comments;
+        this.picture = image;
+        this.date = new Date();
     }
 
-    public String getPlayerCodeName(){
-        return this.name;
+    public PlayerCode(String hash, String name) {
+        this.codeHash = hash;
+        this.name = name;
     }
 
-    public int getPlayerCodeScore(){
-        return this.score;
+    public PlayerCode(String hash) {
+        this.codeHash = hash;
     }
 
-    public Date getPlayerCodeDate(){
-        return this.date;
+    public PlayerCode() {
+
     }
 
-    public int getPlayerCodeHashCode(){
-        return this.hashcode;
-    }
+    public int getScore() {return this.score;}
+    public String getName() {return this.name;}
+    public String getPicture() {return this.picture;}
 
-    public String getPlayerCodePicture(){
-        return this.picture;
+    public void setScore(int score) {
+        this.score = score;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setPicture(String picture) {this.picture = picture;}
 
-    public Pair<Integer, Integer> getPlayerCodeLocation(){
-        return this.geolocation;
-    }
-
-    public ArrayList<String> getPlayerCodeComments(){
-        return this.comments;
-    }
-
-    public void addComment(String comment){
-        this.comments.add(comment);
-    }
-
-    public void deleteComment(String comment){
-        if (this.comments.contains(comment)){
-            this.comments.remove(comment);
-        }
-    }
 }
