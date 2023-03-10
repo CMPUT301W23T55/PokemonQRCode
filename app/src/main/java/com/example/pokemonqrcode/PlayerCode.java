@@ -1,8 +1,5 @@
 package com.example.pokemonqrcode;
 
-import android.util.Pair;
-
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -21,53 +18,51 @@ public class PlayerCode {
     geolocation
     comment
      */
-    private String name;
+    private String codeHash;
     private int score;
+    private String name;
     private Date date;
-    private String hashcode;
-
-    //may be subject to change
     private String picture;
-    private Pair<Integer, Integer> geolocation;
-
     private ArrayList<String> comments;
 
-
-    public PlayerCode(){
-
-    }
-    public PlayerCode(String name, int score, Date date, String hashcode,
-                      String picture, ArrayList<String> comments){
+    public PlayerCode(String hash, String name, int score, String image) {
+        this.codeHash = hash;
         this.name = name;
         this.score = score;
-        this.date = date;
-        this.hashcode = hashcode;
-        this.picture = picture;
-        this.comments = comments;
+        this.picture = image;
+        this.date = new Date();
     }
 
-    public String getPlayerCodeName(){
-        return this.name;
+    public PlayerCode(String hash, String name) {
+        this.codeHash = hash;
+        this.name = name;
     }
 
-    public int getPlayerCodeScore(){
-        return this.score;
-    }
-
-    public Date getPlayerCodeDate(){
-        return this.date;
-    }
-
-    public String getPlayerCodeHashCode(){
-        return this.hashcode;
-    }
-
-    public String getPlayerCodePicture(){
-        return this.picture;
+    public PlayerCode(String hash) {
+        this.codeHash = hash;
     }
 
 
-    public ArrayList<String> getPlayerCodeComments(){
+    public String getHashCode(){
+        return this.codeHash;
+    }
+
+    public int getScore() {return this.score;}
+    public String getName() {return this.name;}
+    public String getPicture() {return this.picture;}
+
+    public Date getDate() {return this.date;}
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setPicture(String picture) {this.picture = picture;}
+
+
+    public ArrayList<String> getComments(){
         return this.comments;
     }
 

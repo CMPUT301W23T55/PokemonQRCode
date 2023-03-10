@@ -37,12 +37,12 @@ public class FireStoreClass {
 
         HashMap<String, Object> data = new HashMap<>();
 
-        String name = pC.getPlayerCodeName();
-        int score = pC.getPlayerCodeScore();
-        Date date = pC.getPlayerCodeDate();
-        String hashcode = pC.getPlayerCodeHashCode();
-        String picture = pC.getPlayerCodePicture();
-        ArrayList<String> comments = pC.getPlayerCodeComments();
+        String name = pC.getName();
+        int score = pC.getScore();
+        Date date = pC.getDate();
+        String hashcode = pC.getHashCode();
+        String picture = pC.getPicture();
+        ArrayList<String> comments = pC.getComments();
 
         data.put("Name",name);
         data.put("Score",score);
@@ -79,9 +79,8 @@ public class FireStoreClass {
                             String hashCode = document.get("HashCode", String.class);
                             String picture = document.get("Picture", String.class);
                             ArrayList<String> comments = (ArrayList<String>) document.get("Comments");
-                            PlayerCode pc = new PlayerCode(name, 0, date, hashCode, picture, s);
-
-                            codes.add(pc);
+                            //PlayerCode pc = new PlayerCode(name, 0, date, hashCode, picture);
+                            //codes.add(pc);
 
                             Log.d("Working", document.getId() + " => " + document.get("Score"));
                         }
@@ -96,7 +95,7 @@ public class FireStoreClass {
         db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef
-                .document(String.valueOf(pC.getPlayerCodeHashCode()))
+                .document(String.valueOf(pC.getHashCode()))
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error deleting document", e));

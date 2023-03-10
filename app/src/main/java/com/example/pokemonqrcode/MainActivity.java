@@ -28,19 +28,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Date date = new Date();
-        ArrayList<String> comments = new ArrayList<>();
-        comments.add("hi");
-        comments.add("bye");
-
         FireStoreClass f = new FireStoreClass("Kyle");
 
-        PlayerCode pc = new PlayerCode("Charizard", 255, date, "123456",
-                "Picture of Charizard", comments);
-        PlayerCode pc1 = new PlayerCode("Blastoise", 355, date, "12783456",
-                "Picture of Blastoise", comments);
-        PlayerCode pc2 = new PlayerCode("Venausaur", 755, date, "1574686",
-                "Picture of Venausaur", comments);
+        PlayerCode pc = new PlayerCode("Charizard", "123456", 122,
+                "Picture of Charizard");
+        PlayerCode pc1 = new PlayerCode("Blastoise", "12783456", 790,
+                "Picture of Blastoise");
+        PlayerCode pc2 = new PlayerCode("Venausaur", "1574686", 766,
+                "Picture of Venausaur");
         f.addAQRCode(pc);
         f.addAQRCode(pc1);
         f.addAQRCode(pc2);
@@ -81,11 +76,20 @@ public class MainActivity extends AppCompatActivity {
             builder.setTitle("Result");
             try {
                 ScannedCode code = new ScannedCode(result);
-                //builder.setMessage(result.getContents());
-                builder.setMessage(code.getHashAsString());
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
+                                    code.getScore(), code.getPicture());
+                builder.setMessage(pCode.getName());
+                /*
+                builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();*/
+                builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Add the player code to the database in here
                         dialog.dismiss();
                     }
                 }).show();
