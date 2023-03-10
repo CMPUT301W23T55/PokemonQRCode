@@ -1,6 +1,5 @@
 package com.example.pokemonqrcode;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,18 +13,19 @@ public class PlayerCode {
     name
     score
     date
+    hashcode
     picture
     geolocation
     comment
      */
-    private byte[] codeHash;
+    private String codeHash;
     private int score;
     private String name;
     private Date date;
     private String picture;
     private ArrayList<String> comments;
 
-    public PlayerCode(byte[] hash, String name, int score, String image) {
+    public PlayerCode(String hash, String name, int score, String image) {
         this.codeHash = hash;
         this.name = name;
         this.score = score;
@@ -33,12 +33,12 @@ public class PlayerCode {
         this.date = new Date();
     }
 
-    public PlayerCode(byte[] hash, String name) {
+    public PlayerCode(String hash, String name) {
         this.codeHash = hash;
         this.name = name;
     }
 
-    public PlayerCode(byte[] hash) {
+    public PlayerCode(String hash) {
         this.codeHash = hash;
     }
 
@@ -57,4 +57,5 @@ public class PlayerCode {
         this.name = name;
     }
     public void setPicture(String picture) {this.picture = picture;}
+
 }

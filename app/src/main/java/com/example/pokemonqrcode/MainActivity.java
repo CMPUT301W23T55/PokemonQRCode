@@ -1,17 +1,22 @@
 package com.example.pokemonqrcode;
 
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Pair;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             builder.setTitle("Result");
             try {
                 ScannedCode code = new ScannedCode(result);
-                PlayerCode pCode = new PlayerCode(code.getHashedCode(), code.getName(),
+                PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
                 builder.setMessage(pCode.getName());
                 /*
