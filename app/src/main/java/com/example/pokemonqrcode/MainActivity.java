@@ -28,6 +28,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Date date = new Date();
+        ArrayList<String> comments = new ArrayList<>();
+        comments.add("hi");
+        comments.add("bye");
+
+        FireStoreClass f = new FireStoreClass("Kyle");
+
+        PlayerCode pc = new PlayerCode("Charizard", 255, date, "123456",
+                "Picture of Charizard", comments);
+        PlayerCode pc1 = new PlayerCode("Blastoise", 355, date, "12783456",
+                "Picture of Blastoise", comments);
+        PlayerCode pc2 = new PlayerCode("Venausaur", 755, date, "1574686",
+                "Picture of Venausaur", comments);
+        f.addAQRCode(pc);
+        f.addAQRCode(pc1);
+        f.addAQRCode(pc2);
+        f.RetrievePlayerCodeList();
+        ArrayList<PlayerCode> codes = f.getPlayerCodes();
+        PlayerCode a = codes.get(0);
+        //Toast.makeText(this, a.getPlayerCodeName(), Toast.LENGTH_SHORT).show();
+
         cameraButton = findViewById(R.id.open_camera_button);
         cameraButton.setOnClickListener(v->
         {

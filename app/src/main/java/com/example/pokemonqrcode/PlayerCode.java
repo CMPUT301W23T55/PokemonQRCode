@@ -24,7 +24,7 @@ public class PlayerCode {
     private String name;
     private int score;
     private Date date;
-    private int hashcode;
+    private String hashcode;
 
     //may be subject to change
     private String picture;
@@ -36,14 +36,13 @@ public class PlayerCode {
     public PlayerCode(){
 
     }
-    public PlayerCode(String name, int score, Date date, int hashcode,
-                      String picture, Pair<Integer, Integer> geolocation, ArrayList<String> comments){
+    public PlayerCode(String name, int score, Date date, String hashcode,
+                      String picture, ArrayList<String> comments){
         this.name = name;
         this.score = score;
         this.date = date;
         this.hashcode = hashcode;
         this.picture = picture;
-        this.geolocation = geolocation;
         this.comments = comments;
     }
 
@@ -59,7 +58,7 @@ public class PlayerCode {
         return this.date;
     }
 
-    public int getPlayerCodeHashCode(){
+    public String getPlayerCodeHashCode(){
         return this.hashcode;
     }
 
@@ -67,9 +66,6 @@ public class PlayerCode {
         return this.picture;
     }
 
-    public Pair<Integer, Integer> getPlayerCodeLocation(){
-        return this.geolocation;
-    }
 
     public ArrayList<String> getPlayerCodeComments(){
         return this.comments;

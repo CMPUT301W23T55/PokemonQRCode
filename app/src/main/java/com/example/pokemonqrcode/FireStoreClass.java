@@ -1,7 +1,6 @@
 package com.example.pokemonqrcode;
 
 import android.util.Log;
-import android.util.Pair;
 import androidx.annotation.NonNull;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,7 +19,7 @@ public class FireStoreClass {
     private final String userName;
     private FirebaseFirestore db;
 
-    private ArrayList<PlayerCode> codes;
+    private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
 
     //needs username as that is the key to getting data from database
     public FireStoreClass(String userName){
@@ -41,9 +40,8 @@ public class FireStoreClass {
         String name = pC.getPlayerCodeName();
         int score = pC.getPlayerCodeScore();
         Date date = pC.getPlayerCodeDate();
-        int hashcode = pC.getPlayerCodeHashCode();
+        String hashcode = pC.getPlayerCodeHashCode();
         String picture = pC.getPlayerCodePicture();
-        Pair<Integer, Integer> location = pC.getPlayerCodeLocation();
         ArrayList<String> comments = pC.getPlayerCodeComments();
 
         data.put("Name",name);
@@ -51,7 +49,6 @@ public class FireStoreClass {
         data.put("Date", date);
         data.put("HashCode",hashcode);
         data.put("Picture",picture);
-        data.put("Location",location);
         data.put("Comments",comments);
 
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
@@ -68,14 +65,25 @@ public class FireStoreClass {
     public void RetrievePlayerCodeList(){
 
         db = FirebaseFirestore.getInstance();
-        CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
+        CollectionReference innerCollectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         innerCollectionRef
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
                         for (QueryDocumentSnapshot document : task.getResult()){
-                            PlayerCode pc = document.get("CodeData", PlayerCode.class);
-                            Log.d("Working", document.getId() + " => " + document.get("CodeData"));
+
+                            ArrayList<String> s = new ArrayList<String>();
+                            String name = document.get("Name", String.class);
+                            int score = (int) document.get("Score");
+                            Date date = document.get("Date", Date.class);
+                            String hashCode = document.get("HashCode", String.class);
+                            String picture = document.get("Picture", String.class);
+                            ArrayList<String> comments = (ArrayList<String>) document.get("Comments");
+                            PlayerCode pc = new PlayerCode(name, 0, date, hashCode, picture, s);
+
+                            codes.add(pc);
+
+                            Log.d("Working", document.getId() + " => " + document.get("Score"));
                         }
                     } else {
                         Log.d("Working", "Query Unsuccessful");
