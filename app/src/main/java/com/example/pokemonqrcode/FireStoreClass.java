@@ -2,9 +2,14 @@ package com.example.pokemonqrcode;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,12 +21,17 @@ import java.util.HashMap;
 //was used as a reference
 public class FireStoreClass {
 
-    private final String userName;
+    private String userName;
     private FirebaseFirestore db;
 
     private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
 
     //needs username as that is the key to getting data from database
+
+    /**
+     * Used when they log back into an existing account, or when device auto-identifies user
+     * @param userName unique identifier
+     */
     public FireStoreClass(String userName){
         this.userName = userName;
     }
@@ -62,7 +72,7 @@ public class FireStoreClass {
     /**
      * Retrieves all the PlayerCodes from the database and stores them into the codes list
      */
-    public void RetrievePlayerCodeList(){
+    private void RetrievePlayerCodeList(){
 
         db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users/"+this.userName+"/QRCodes");
@@ -74,15 +84,21 @@ public class FireStoreClass {
 
                             ArrayList<String> s = new ArrayList<String>();
                             String name = document.get("Name", String.class);
-                            int score = (int) document.get("Score");
+                            int score = document.get("Score", int.class);
                             Date date = document.get("Date", Date.class);
                             String hashCode = document.get("HashCode", String.class);
                             String picture = document.get("Picture", String.class);
-                            ArrayList<String> comments = (ArrayList<String>) document.get("Comments");
-                            //PlayerCode pc = new PlayerCode(name, 0, date, hashCode, picture);
-                            //codes.add(pc);
+                            if(document.get("Comments") == null){
+                                PlayerCode pc = new PlayerCode(hashCode, name, score, picture);
+                                this.codes.add(pc);
+                            } else {
+                                ArrayList<String> comments = (ArrayList<String>) document.get("Comments");
+                                PlayerCode pc = new PlayerCode(hashCode, name, score, picture, date, comments);
+                                this.codes.add(pc);
+                            }
 
-                            Log.d("Working", document.getId() + " => " + document.get("Score"));
+                            Log.d("Working", document.getId() + " => " + document.get("Score")
+                            + " => " + this.codes.size());
                         }
                     } else {
                         Log.d("Working", "Query Unsuccessful");
@@ -90,6 +106,10 @@ public class FireStoreClass {
                 });
     }
 
+    /**
+     * Given a PlayerCode, this method will delete that associated record from the database
+     * @param pC PlayerCode that should be deleted from the database
+     */
     public void deleteCode(PlayerCode pC){
 
         db = FirebaseFirestore.getInstance();
@@ -106,8 +126,8 @@ public class FireStoreClass {
      * @return an array of PlayerCodes from the firestore database
      */
     public ArrayList<PlayerCode> getPlayerCodes(){
+        this.RetrievePlayerCodeList();
         return this.codes;
     }
-
 
 }

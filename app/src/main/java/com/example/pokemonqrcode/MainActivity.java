@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Pair;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,21 +29,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FireStoreClass f = new FireStoreClass("Kyle");
-
-        PlayerCode pc = new PlayerCode("Charizard", "123456", 122,
-                "Picture of Charizard");
-        PlayerCode pc1 = new PlayerCode("Blastoise", "12783456", 790,
-                "Picture of Blastoise");
-        PlayerCode pc2 = new PlayerCode("Venausaur", "1574686", 766,
-                "Picture of Venausaur");
-        f.addAQRCode(pc);
-        f.addAQRCode(pc1);
-        f.addAQRCode(pc2);
-        f.RetrievePlayerCodeList();
-        ArrayList<PlayerCode> codes = f.getPlayerCodes();
-        PlayerCode a = codes.get(0);
-        //Toast.makeText(this, a.getPlayerCodeName(), Toast.LENGTH_SHORT).show();
 
         cameraButton = findViewById(R.id.open_camera_button);
         cameraButton.setOnClickListener(v->

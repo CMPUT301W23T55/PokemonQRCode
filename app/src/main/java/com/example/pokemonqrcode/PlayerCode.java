@@ -33,6 +33,23 @@ public class PlayerCode {
         this.date = new Date();
     }
 
+    public PlayerCode(String hash, String name, int score, String image, Date date) {
+        this.codeHash = hash;
+        this.name = name;
+        this.score = score;
+        this.picture = image;
+        this.date = date;
+    }
+
+    public PlayerCode(String hash, String name, int score, String image,
+                      Date date, ArrayList<String>comments) {
+        this.codeHash = hash;
+        this.name = name;
+        this.score = score;
+        this.picture = image;
+        this.date = date;
+        this.comments = comments;
+    }
     public PlayerCode(String hash, String name) {
         this.codeHash = hash;
         this.name = name;
