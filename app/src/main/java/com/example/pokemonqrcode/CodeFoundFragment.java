@@ -15,9 +15,12 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
@@ -29,7 +32,17 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
-public class CodeFoundFragment extends DialogFragment  {
+public class CodeFoundFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 
     //View view = LayoutInflater.from(getContext()).inflate(R.layout.code_found_dialog, null);
     //ImageView image = view.findViewById(R.id.found_user_image);
@@ -69,7 +82,11 @@ public class CodeFoundFragment extends DialogFragment  {
         TextView titleText = view.findViewById(R.id.found_title);
         ImageView image = view.findViewById(R.id.found_user_image);
         Button cameraButton = view.findViewById(R.id.found_open_camera);
-
+        Spinner locationSpinner = view.findViewById(R.id.edit_text_location_text);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationSpinner.setAdapter(adapter);
+        locationSpinner.setOnItemSelectedListener(this);
 
 
         ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
