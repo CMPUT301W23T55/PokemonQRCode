@@ -15,35 +15,85 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.916"
+        app:layout_constraintHorizontal_bias="0.850"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.868" />
+        app:layout_constraintVertical_bias="0.838"
+        app:maxImageSize="32dp" />
 
 
     <Button
-        android:id="@+id/location_btn"
-        android:layout_width="63dp"
-        android:layout_height="63dp"
+        android:id="@+id/profile_btn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:clickable="true"
-        android:src="@android:drawable/ic_menu_camera"
+        android:focusable="true"
+        android:insetLeft="-9dp"
+        android:insetRight="0dp"
+        android:insetBottom="-5dp"
+        app:icon="@drawable/profile_icon"
+        app:iconTint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1" />
+        app:layout_constraintVertical_bias="1.0" />
 
+    <Button
+        android:id="@+id/location_btn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:insetLeft="-9dp"
+        android:insetRight="0dp"
+        app:icon="@drawable/location"
+        app:iconTint="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
+    <Button
+        android:id="@+id/find_users"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:insetLeft="-9dp"
+        android:insetBottom="-9dp"
+        app:icon="@drawable/other_users"
+        app:iconTint="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.185"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
-
-
-
-
-
-
-
-
+    <Button
+        android:id="@+id/leaderboards"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:insetLeft="-9dp"
+        android:insetRight="0dp"
+        app:icon="@drawable/leaderboards"
+        app:iconTint="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.400"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

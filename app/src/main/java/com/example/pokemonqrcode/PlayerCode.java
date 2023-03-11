@@ -44,6 +44,11 @@ public class PlayerCode {
     comment
      */
 
+    private String codeHash;
+    private Date date;
+    private String picture;
+    private ArrayList<String> comments;
+
 
     public PlayerCode(String hash, String name, int score, String image) {
         this.codeHash = hash;
