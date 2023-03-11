@@ -17,6 +17,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -35,37 +37,61 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements CodeFoundFragment.CodeFoundDialogListener {
 
     FloatingActionButton cameraButton;
     Bitmap currentImage;
-    String currentLocationSetting;
-    Location currentLocation;
-    FusedLocationProviderClient fusedLocationProviderClient
+    String currentLocationSetting; //yes or no
+    List<Address> currentLocation;
+    FusedLocationProviderClient fusedLocationProviderClient;
+
 
     @Override
     public void onDataPass(Bitmap bitmap, String setting) {
         currentImage = bitmap;
         currentLocationSetting = setting;
     }
-    private void getCurrentLocation() {
+    private List<Address> getCurrentLocation() {
+
         if(currentLocationSetting == "Yes") {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)){
+                fusedLocationProviderClient.getLastLocation()
+                        .addOnSuccessListener(new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (location != null){
+                                    Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                                    try {
+                                        currentLocation = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+
+            }
 
 
+        }else{
+            currentLocation =
         }
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

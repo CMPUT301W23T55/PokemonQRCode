@@ -125,11 +125,8 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
                 .setView(view)
                 //.setTitle("Code found!")
                 .setPositiveButton("Capture", (dialog, which) -> {
-                    if(locationSpinner.getSelectedItem().toString() == "Yes") {
-
-
                         listener.onDataPass(((BitmapDrawable)image.getDrawable()).getBitmap(), locationSpinner.getSelectedItem().toString());
-                    }
+
 
 
 
