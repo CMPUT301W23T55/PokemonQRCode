@@ -1,10 +1,12 @@
 package com.example.pokemonqrcode;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,18 +63,22 @@ public class CodeFoundFragment extends DialogFragment  {
         TextView titleText = view.findViewById(R.id.found_title);
         ImageView image = view.findViewById(R.id.found_user_image);
         Button cameraButton = view.findViewById(R.id.found_open_camera);
+
+
+
         ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == 100) {
-                            Log.d("test", "hello camera");
-                            Intent data = result.getData();
-                            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                            image.setImageBitmap(bitmap);
 
-                        }
+                        Log.d("test", "hello camera");
+                        Intent data = result.getData();
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        image.setImageBitmap(bitmap);
+
+
+                        
                     }
                 });
 
