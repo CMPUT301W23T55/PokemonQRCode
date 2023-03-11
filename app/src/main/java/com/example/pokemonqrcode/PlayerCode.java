@@ -2,12 +2,14 @@ package com.example.pokemonqrcode;
 
 
 import android.graphics.Bitmap;
+import android.location.Address;
 import android.location.Location;
 
 
 import java.util.ArrayList;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class is what shows up on the player profile
@@ -21,11 +23,11 @@ public class PlayerCode {
     private Date date;
     private String picture;
     private Bitmap photo;
-    private Location location;
+    private List<Address> location;
     private ArrayList<String> comments;
 
 
-    public PlayerCode(ScannedCode code, Bitmap photo, Location location) {
+    public PlayerCode(ScannedCode code, Bitmap photo, List<Address> location) {
         this.name = code.getName();
         this.score = code.getScore();
         this.picture = code.getPicture();
@@ -43,11 +45,6 @@ public class PlayerCode {
     geolocation
     comment
      */
-
-    private String codeHash;
-    private Date date;
-    private String picture;
-    private ArrayList<String> comments;
 
 
     public PlayerCode(String hash, String name, int score, String image) {

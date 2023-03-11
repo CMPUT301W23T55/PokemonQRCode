@@ -17,6 +17,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -33,23 +35,67 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements CodeFoundFragment.CodeFoundDialogListener {
 
     FloatingActionButton cameraButton;
+    Bitmap currentImage;
+    String currentLocationSetting; //yes or no
+    List<Address> currentLocation = new ArrayList<Address>();
+    FusedLocationProviderClient fusedLocationProviderClient;
 
-    public PlayerCode generateCode(ScannedCode code, Bitmap image, Location location) {
-        return new PlayerCode(code, image, location);
+
+    @Override
+    public void onDataPass(Bitmap bitmap, String setting) {
+        currentImage = bitmap;
+        currentLocationSetting = setting;
     }
+    private void getCurrentLocation() {
 
+        if(currentLocationSetting == "Yes") {
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                fusedLocationProviderClient.getLastLocation()
+                        .addOnSuccessListener(new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (location != null){
+                                    Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                                    try {
+                                        currentLocation = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+
+            }
+
+        }
+        /*
+        else{
+            currentLocation.set((Address)0, 0, 0);
+        }
+
+         */
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +151,15 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                         code.getScore(), code.getPicture());
-                builder.setMessage(pCode.getName());
+                //builder.setMessage(pCode.getName());
+                String test = "a";
+                getCurrentLocation();
+                for(Address address : currentLocation) {
+                    test.join(address.toString());
 
+                }
+                Log.d("please+++++++++++++++++++++++++++++++++", test);
+                builder.setMessage(test);
                 builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -129,4 +182,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
         }
     });
+
+
+
 }
