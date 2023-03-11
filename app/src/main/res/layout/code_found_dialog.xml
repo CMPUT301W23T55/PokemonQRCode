@@ -19,8 +19,8 @@
         android:id="@+id/found_user_image"
         android:layout_width="match_parent"
         android:adjustViewBounds="true"
-        android:scaleType=""
-        android:layout_height="wrap_content" />
+        android:scaleType="centerCrop"
+        android:layout_height="350dp" />
 
     <Button
         android:id="@+id/found_open_camera"

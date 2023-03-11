@@ -17,6 +17,14 @@ public class PlayerCode {
     private Bitmap photo;
     private Location location;
 
+    public PlayerCode(String name, int score, String image, Bitmap photo, Location location) {
+        this.name = name;
+        this.score = score;
+        this.image = image;
+        this.photo = photo;
+        this.location = location;
+    }
+
     /*
 
     name

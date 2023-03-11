@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -49,6 +50,11 @@ public class CodeFoundFragment extends DialogFragment  {
             });
 
      */
+    interface CodeFoundDialogListener {
+        PlayerCode generateCode(ScannedCode code, Bitmap bitmap, Location location);
+    }
+    private CodeFoundDialogListener listener;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -78,7 +84,7 @@ public class CodeFoundFragment extends DialogFragment  {
                         image.setImageBitmap(bitmap);
 
 
-                        
+
                     }
                 });
 

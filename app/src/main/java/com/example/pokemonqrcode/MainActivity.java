@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -30,9 +31,14 @@ import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.security.NoSuchAlgorithmException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CodeFoundFragment.CodeFoundDialogListener {
 
     FloatingActionButton cameraButton;
+
+    public PlayerCode generateCode(ScannedCode code, Bitmap image, Location location) {
+        return new PlayerCode(code.createName(), code.calculateScore(), code.createImage(), image, location);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
