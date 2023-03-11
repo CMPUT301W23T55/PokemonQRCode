@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             new CodeFoundFragment().show(getSupportFragmentManager(), "Code Found");
 
 
-
+            /*
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
             try {
@@ -122,6 +122,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
+
+             */
 
 
 
