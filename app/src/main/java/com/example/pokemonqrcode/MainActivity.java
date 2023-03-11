@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     FloatingActionButton cameraButton;
 
     public PlayerCode generateCode(ScannedCode code, Bitmap image, Location location) {
-        return new PlayerCode(code.createName(), code.calculateScore(), code.createImage(), image, location);
+        return new PlayerCode(code, image, location);
     }
 
 
