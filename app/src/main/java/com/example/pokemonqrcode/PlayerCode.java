@@ -21,10 +21,10 @@ public class PlayerCode {
     private Bitmap photo;
     private Location location;
 
-    public PlayerCode(String name, int score, String image, Bitmap photo, Location location) {
-        this.name = name;
-        this.score = score;
-        this.image = image;
+    public PlayerCode(ScannedCode code, Bitmap photo, Location location) {
+        this.name = code.getName();
+        this.score = code.getScore();
+        this.image = code.getPicture();
         this.photo = photo;
         this.location = location;
     }
