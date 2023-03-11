@@ -12,6 +12,7 @@
         android:layout_height="57dp"
         android:clickable="true"
         android:src="@android:drawable/ic_menu_camera"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.850"

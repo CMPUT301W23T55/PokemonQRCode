@@ -81,6 +81,11 @@ public class ScannedCode {
     /**
      * calculates the score according to the hash (use eClass rules)
      */
+
+
+    public int calculateScore() {
+        return 1;
+
     public void calculateScore() {
         // Currently calculate score does not use the eClass rules
         // just sums all of the byte values
@@ -100,12 +105,17 @@ public class ScannedCode {
      */
     public void setScore(int score) {
         this.score = score;
+
     }
 
     /**
      * gets the score of the code
      * @return integer
      */
+
+    public String createName() {
+        return "test";
+
     public int getScore() {return this.score;}
 
     /**
@@ -138,6 +148,7 @@ public class ScannedCode {
                 .append(suffix)
                 .toString();
         this.setName(finalName);
+
     }
 
     /**
@@ -145,6 +156,12 @@ public class ScannedCode {
      * @return
      * A string that is an "image" of the scanned QR Code
      */
+
+      
+    public String createImage() {
+        return ":)";
+
+      
     public void createImage() {
         String headOptions[] = {" .     _,\n" +
                 "                   |`\\__/ /\n" +
@@ -199,6 +216,7 @@ public class ScannedCode {
      */
     public void setPicture(String picture) {
         this.picture = picture;
+
     }
 
     /**
