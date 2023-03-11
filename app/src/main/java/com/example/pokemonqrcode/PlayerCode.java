@@ -15,16 +15,20 @@ import java.util.Date;
  */
 
 public class PlayerCode {
-    private String name;
+    private String codeHash;
     private int score;
-    private String image;
+    private String name;
+    private Date date;
+    private String picture;
     private Bitmap photo;
     private Location location;
+    private ArrayList<String> comments;
+
 
     public PlayerCode(ScannedCode code, Bitmap photo, Location location) {
         this.name = code.getName();
         this.score = code.getScore();
-        this.image = code.getPicture();
+        this.picture = code.getPicture();
         this.photo = photo;
         this.location = location;
     }
@@ -39,12 +43,7 @@ public class PlayerCode {
     geolocation
     comment
      */
-    private String codeHash;
-    private int score;
-    private String name;
-    private Date date;
-    private String picture;
-    private ArrayList<String> comments;
+
 
     public PlayerCode(String hash, String name, int score, String image) {
         this.codeHash = hash;
@@ -84,6 +83,8 @@ public class PlayerCode {
     public String getHashCode(){
         return this.codeHash;
     }
+
+
 
     public int getScore() {return this.score;}
     public String getName() {return this.name;}
