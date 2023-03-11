@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 public class CodeFoundFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
 
@@ -64,7 +68,7 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
 
      */
     interface CodeFoundDialogListener {
-        PlayerCode generateCode(ScannedCode code, Bitmap bitmap, Location location);
+        void onDataPass(Bitmap bitmap, String setting);
     }
     private CodeFoundDialogListener listener;
 
@@ -72,6 +76,7 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        listener = (CodeFoundDialogListener) context;
 
     }
 
@@ -120,10 +125,19 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
                 .setView(view)
                 //.setTitle("Code found!")
                 .setPositiveButton("Capture", (dialog, which) -> {
+                    if(locationSpinner.getSelectedItem().toString() == "Yes") {
+
+
+                        listener.onDataPass(((BitmapDrawable)image.getDrawable()).getBitmap(), locationSpinner.getSelectedItem().toString());
+                    }
+
 
 
                 })
                 .create();
+    }
+    public void passData(Bitmap bitmap, String setting) {
+        listener.onDataPass(bitmap, setting);
     }
 
 

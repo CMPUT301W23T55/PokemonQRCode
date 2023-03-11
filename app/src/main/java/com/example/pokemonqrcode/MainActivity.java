@@ -33,6 +33,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
@@ -45,10 +47,24 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity implements CodeFoundFragment.CodeFoundDialogListener {
 
     FloatingActionButton cameraButton;
+    Bitmap currentImage;
+    String currentLocationSetting;
+    Location currentLocation;
+    FusedLocationProviderClient fusedLocationProviderClient
 
-    public PlayerCode generateCode(ScannedCode code, Bitmap image, Location location) {
-        return new PlayerCode(code, image, location);
+    @Override
+    public void onDataPass(Bitmap bitmap, String setting) {
+        currentImage = bitmap;
+        currentLocationSetting = setting;
     }
+    private void getCurrentLocation() {
+        if(currentLocationSetting == "Yes") {
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+
+        }
+    }
+
 
 
     @Override
@@ -129,4 +145,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
         }
     });
+
+
+
 }
