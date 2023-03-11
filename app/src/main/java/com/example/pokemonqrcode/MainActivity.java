@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             new CodeFoundFragment().show(getSupportFragmentManager(), "Code Found");
 
 
-            /*
+
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
             try {
@@ -104,14 +104,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
                 builder.setMessage(pCode.getName());
-                /*
+
                 builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                }).show();*/
-            /*
+                }).show();
+
                 builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -123,7 +123,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 e.printStackTrace();
             }
 
-             */
+
+
+
         }
     });
 }

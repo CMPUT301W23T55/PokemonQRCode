@@ -121,6 +121,7 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
                 //.setTitle("Code found!")
                 .setPositiveButton("Capture", (dialog, which) -> {
 
+
                 })
                 .create();
     }

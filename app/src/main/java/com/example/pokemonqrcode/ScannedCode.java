@@ -152,13 +152,13 @@ public class ScannedCode {
      */
 
     public void createImage() {
-        String headOptions[] = {" .     _,\n" +
-                "                   |`\\__/ /\n" +
-                "                   \\  . .(\n" +
-                "                    | __T|\n" +
+        String headOptions[] = {" .     _,\n",
+                "                   |`\\__/ /\n",
+                "                   \\  . .(\n",
+                "                    | __T|\n",
                 "                   /   |"};
-        String bodyOptions[] = { "/(______);\n" +
-                "  (         (\n" +
+        String bodyOptions[] = { "/(______);\n",
+                "  (         (\n",
                 "   |:------( )"};
         String legOptions[] = {""};
         int max = 3;
