@@ -33,6 +33,23 @@ public class PlayerCode {
         this.date = new Date();
     }
 
+    public PlayerCode(String hash, String name, int score, String image, Date date) {
+        this.codeHash = hash;
+        this.name = name;
+        this.score = score;
+        this.picture = image;
+        this.date = date;
+    }
+
+    public PlayerCode(String hash, String name, int score, String image,
+                      Date date, ArrayList<String>comments) {
+        this.codeHash = hash;
+        this.name = name;
+        this.score = score;
+        this.picture = image;
+        this.date = date;
+        this.comments = comments;
+    }
     public PlayerCode(String hash, String name) {
         this.codeHash = hash;
         this.name = name;
@@ -42,13 +59,16 @@ public class PlayerCode {
         this.codeHash = hash;
     }
 
-    public PlayerCode() {
 
+    public String getHashCode(){
+        return this.codeHash;
     }
 
     public int getScore() {return this.score;}
     public String getName() {return this.name;}
     public String getPicture() {return this.picture;}
+
+    public Date getDate() {return this.date;}
 
     public void setScore(int score) {
         this.score = score;
@@ -58,4 +78,16 @@ public class PlayerCode {
     }
     public void setPicture(String picture) {this.picture = picture;}
 
+
+    public ArrayList<String> getComments(){
+        return this.comments;
+    }
+
+    public void addComment(String comment){
+        this.comments.add(comment);
+    }
+
+    public void deleteComment(String comment){
+        this.comments.remove(comment);
+    }
 }
