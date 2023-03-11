@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                         dialog.dismiss();
                     }
                 }).show();
+
                 builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -124,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
+
 
         }
     });
