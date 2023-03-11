@@ -1,7 +1,9 @@
 package com.example.pokemonqrcode;
 
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,11 +28,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import android.util.Pair;
+import android.widget.Button;
+import android.widget.Toast;
+
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements CodeFoundFragment.CodeFoundDialogListener {
 
@@ -44,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         cameraButton = findViewById(R.id.open_camera_button);
         cameraButton.setOnClickListener(v->
@@ -89,11 +101,20 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             builder.setTitle("Result");
             try {
                 ScannedCode code = new ScannedCode(result);
-                //builder.setMessage(result.getContents());
-                builder.setMessage(code.getHashAsString());
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
+                                    code.getScore(), code.getPicture());
+                builder.setMessage(pCode.getName());
+                /*
+                builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();*/
+                builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Add the player code to the database in here
                         dialog.dismiss();
                     }
                 }).show();
