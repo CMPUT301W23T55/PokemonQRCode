@@ -84,7 +84,7 @@ public class PlayerCode {
     }
 
     public void addComment(String comment){
-        this.comments.add(comment);
+        comments.add(comment);
     }
 
     public void deleteComment(String comment){

@@ -2,11 +2,15 @@ package com.example.pokemonqrcode;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -21,10 +25,11 @@ import java.util.HashMap;
 //was used as a reference
 public class FireStoreClass {
 
-    private String userName;
+    final private String userName;
     private FirebaseFirestore db;
 
     private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
+    private int totalScore;
 
     //needs username as that is the key to getting data from database
 
@@ -70,43 +75,6 @@ public class FireStoreClass {
     }
 
     /**
-     * Retrieves all the PlayerCodes from the database and stores them into the codes list
-     */
-    private void RetrievePlayerCodeList(){
-
-        db = FirebaseFirestore.getInstance();
-        CollectionReference innerCollectionRef = db.collection("Users/"+this.userName+"/QRCodes");
-        innerCollectionRef
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
-                        for (QueryDocumentSnapshot document : task.getResult()){
-
-                            ArrayList<String> s = new ArrayList<String>();
-                            String name = document.get("Name", String.class);
-                            int score = document.get("Score", int.class);
-                            Date date = document.get("Date", Date.class);
-                            String hashCode = document.get("HashCode", String.class);
-                            String picture = document.get("Picture", String.class);
-                            if(document.get("Comments") == null){
-                                PlayerCode pc = new PlayerCode(hashCode, name, score, picture);
-                                this.codes.add(pc);
-                            } else {
-                                ArrayList<String> comments = (ArrayList<String>) document.get("Comments");
-                                PlayerCode pc = new PlayerCode(hashCode, name, score, picture, date, comments);
-                                this.codes.add(pc);
-                            }
-
-                            Log.d("Working", document.getId() + " => " + document.get("Score")
-                            + " => " + this.codes.size());
-                        }
-                    } else {
-                        Log.d("Working", "Query Unsuccessful");
-                    }
-                });
-    }
-
-    /**
      * Given a PlayerCode, this method will delete that associated record from the database
      * @param pC PlayerCode that should be deleted from the database
      */
@@ -126,8 +94,48 @@ public class FireStoreClass {
      * @return an array of PlayerCodes from the firestore database
      */
     public ArrayList<PlayerCode> getPlayerCodes(){
-        this.RetrievePlayerCodeList();
         return this.codes;
+    }
+
+    public int getPlayerScore(){
+        return this.totalScore;
+    }
+    /**
+     * sets a snapshot listener, so that whenever a record is added or deleted, it will
+     * automatically update the total scores and the list of scanned player codes
+     */
+
+    public void autoUpdate(){
+        db = FirebaseFirestore.getInstance();
+        CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
+        collectionRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                codes.clear();
+                totalScore = 0;
+                for (QueryDocumentSnapshot document : value){
+
+                    ArrayList<String> s = new ArrayList<String>();
+                    String name = document.get("Name", String.class);
+                    int score = document.get("Score", int.class);
+                    Date date = document.get("Date", Date.class);
+                    String hashCode = document.get("HashCode", String.class);
+                    String picture = document.get("Picture", String.class);
+                    if(document.get("Comments") == null){
+                        PlayerCode pc = new PlayerCode(hashCode, name, score, picture);
+                        codes.add(pc);
+                    } else {
+                        ArrayList<String> comments = (ArrayList<String>) document.get("Comments");
+                        PlayerCode pc = new PlayerCode(hashCode, name, score, picture, date, comments);
+                        codes.add(pc);
+                    }
+                    totalScore += score;
+
+                    Log.d("Working", document.getId() + " => " + document.get("Score")
+                            + " => " + codes.size());
+                }
+            }
+        });
     }
 
 }
