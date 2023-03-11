@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         if(result.getContents() !=null) {
 
             //i dont think we need this class, do it with normal alert dialog
-            
+
             new CodeFoundFragment().show(getSupportFragmentManager(), "Code Found");
 
 

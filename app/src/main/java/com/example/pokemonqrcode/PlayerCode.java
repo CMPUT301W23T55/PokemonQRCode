@@ -7,6 +7,7 @@ package com.example.pokemonqrcode;
 
 public class PlayerCode {
     /*
+
     name
     score
     date
