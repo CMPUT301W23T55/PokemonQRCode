@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     FloatingActionButton cameraButton;
     Bitmap currentImage;
     String currentLocationSetting; //yes or no
-    List<Address> currentLocation;
+    List<Address> currentLocation = new ArrayList<Address>();
     FusedLocationProviderClient fusedLocationProviderClient;
 
 
@@ -64,11 +64,11 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         currentImage = bitmap;
         currentLocationSetting = setting;
     }
-    private List<Address> getCurrentLocation() {
+    private void getCurrentLocation() {
 
         if(currentLocationSetting == "Yes") {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)){
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                 fusedLocationProviderClient.getLastLocation()
                         .addOnSuccessListener(new OnSuccessListener<Location>() {
                             @Override
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                                     Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
                                     try {
                                         currentLocation = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
 
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -87,10 +88,13 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
             }
 
-
-        }else{
-            currentLocation =
         }
+        /*
+        else{
+            currentLocation.set((Address)0, 0, 0);
+        }
+
+         */
     }
 
     @Override
@@ -147,8 +151,15 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                         code.getScore(), code.getPicture());
-                builder.setMessage(pCode.getName());
+                //builder.setMessage(pCode.getName());
+                String test = "a";
+                getCurrentLocation();
+                for(Address address : currentLocation) {
+                    test.join(address.toString());
 
+                }
+                Log.d("please+++++++++++++++++++++++++++++++++", test);
+                builder.setMessage(test);
                 builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
