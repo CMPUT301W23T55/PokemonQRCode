@@ -40,8 +40,6 @@ public class PlayerCode {
     comment
      */
     private String codeHash;
-    private int score;
-    private String name;
     private Date date;
     private String picture;
     private ArrayList<String> comments;
