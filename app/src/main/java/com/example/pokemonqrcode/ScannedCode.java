@@ -152,6 +152,7 @@ public class ScannedCode {
      */
 
     public void createImage() {
+
         String headOptions[] = {" .     _,\n" ,
                 "                   |`\\__/ /\n" ,
                 "                   \\  . .(\n" ,
@@ -159,8 +160,11 @@ public class ScannedCode {
                 "                   /   |"};
         String bodyOptions[] = { "/(______);\n" ,
                 "  (         (\n" ,
+                
                 "   |:------( )"};
-        String legOptions[] = {""};
+        String legOptions[] = {"/    \\",
+        "                       <      >",
+        "                       {      }"};
         int max = 3;
         String head = headOptions[hashedCode[4] % max];
         String body = bodyOptions[hashedCode[5] % max];

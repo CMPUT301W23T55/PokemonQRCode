@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,9 +16,12 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
@@ -29,7 +33,20 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
-public class CodeFoundFragment extends DialogFragment  {
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
+public class CodeFoundFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 
     //View view = LayoutInflater.from(getContext()).inflate(R.layout.code_found_dialog, null);
     //ImageView image = view.findViewById(R.id.found_user_image);
@@ -51,7 +68,7 @@ public class CodeFoundFragment extends DialogFragment  {
 
      */
     interface CodeFoundDialogListener {
-        PlayerCode generateCode(ScannedCode code, Bitmap bitmap, Location location);
+        void onDataPass(Bitmap bitmap, String setting);
     }
     private CodeFoundDialogListener listener;
 
@@ -59,6 +76,7 @@ public class CodeFoundFragment extends DialogFragment  {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        listener = (CodeFoundDialogListener) context;
 
     }
 
@@ -69,7 +87,11 @@ public class CodeFoundFragment extends DialogFragment  {
         TextView titleText = view.findViewById(R.id.found_title);
         ImageView image = view.findViewById(R.id.found_user_image);
         Button cameraButton = view.findViewById(R.id.found_open_camera);
-
+        Spinner locationSpinner = view.findViewById(R.id.edit_text_location_text);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationSpinner.setAdapter(adapter);
+        locationSpinner.setOnItemSelectedListener(this);
 
 
         ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
@@ -103,9 +125,16 @@ public class CodeFoundFragment extends DialogFragment  {
                 .setView(view)
                 //.setTitle("Code found!")
                 .setPositiveButton("Capture", (dialog, which) -> {
+                        listener.onDataPass(((BitmapDrawable)image.getDrawable()).getBitmap(), locationSpinner.getSelectedItem().toString());
+
+
+
 
                 })
                 .create();
+    }
+    public void passData(Bitmap bitmap, String setting) {
+        listener.onDataPass(bitmap, setting);
     }
 
 
