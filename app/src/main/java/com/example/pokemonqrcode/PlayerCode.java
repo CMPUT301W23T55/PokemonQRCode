@@ -6,6 +6,8 @@ import android.location.Address;
 import android.location.Location;
 
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
 import java.util.Date;
@@ -17,20 +19,20 @@ import java.util.List;
  */
 
 public class PlayerCode {
-    private String codeHash;
-    private int score;
-    private String name;
-    private Date date;
-    private String picture;
+    private String HashCode;
+    private int Score;
+    private String Name;
+    private Date Date;
+    private String Picture;
     private Bitmap photo;
     private List<Address> location;
-    private ArrayList<String> comments;
+    private ArrayList<String> Comments;
 
 
     public PlayerCode(ScannedCode code, Bitmap photo, List<Address> location) {
-        this.name = code.getName();
-        this.score = code.getScore();
-        this.picture = code.getPicture();
+        this.Name = code.getName();
+        this.Score = code.getScore();
+        this.Picture = code.getPicture();
         this.photo = photo;
         this.location = location;
     }
@@ -47,69 +49,82 @@ public class PlayerCode {
      */
 
     public PlayerCode(String hash, String name, int score, String image) {
-        this.codeHash = hash;
-        this.name = name;
-        this.score = score;
-        this.picture = image;
-        this.date = new Date();
+        this.HashCode = hash;
+        this.Name = name;
+        this.Score = score;
+        this.Picture = image;
+        this.Date = new Date();
     }
 
     public PlayerCode(String hash, String name, int score, String image, Date date) {
-        this.codeHash = hash;
-        this.name = name;
-        this.score = score;
-        this.picture = image;
-        this.date = date;
+        this.HashCode = hash;
+        this.Name = name;
+        this.Score = score;
+        this.Picture = image;
+        this.Date = date;
     }
 
     public PlayerCode(String hash, String name, int score, String image,
                       Date date, ArrayList<String>comments) {
-        this.codeHash = hash;
-        this.name = name;
-        this.score = score;
-        this.picture = image;
-        this.date = date;
-        this.comments = comments;
+        this.HashCode = hash;
+        this.Name = name;
+        this.Score = score;
+        this.Picture = image;
+        this.Date = date;
+        this.Comments = comments;
     }
+
+    public PlayerCode() {
+//
+    }
+
     public PlayerCode(String hash, String name) {
-        this.codeHash = hash;
-        this.name = name;
+        this.HashCode = hash;
+        this.Name = name;
     }
 
     public PlayerCode(String hash) {
-        this.codeHash = hash;
+        this.HashCode = hash;
     }
 
 
     public String getHashCode(){
-        return this.codeHash;
+        return this.HashCode;
     }
 
 
 
-    public int getScore() {return this.score;}
-    public String getName() {return this.name;}
-    public String getPicture() {return this.picture;}
-    public Date getDate() {return this.date;}
+    public int getScore() {return this.Score;}
+    public String getName() {return this.Name;}
+    public String getPicture() {return this.Picture;}
+
+    public Date getDate() {return this.Date;}
+
     public void setScore(int score) {
-        this.score = score;
+        this.Score = score;
     }
     public void setName(String name) {
-        this.name = name;
+        this.Name = name;
     }
-    public void setPicture(String picture) {this.picture = picture;}
+    public void setPicture(String picture) {this.Picture = picture;}
     public void setDate(Date date) {this.date = date;}
 
 
     public ArrayList<String> getComments(){
-        return this.comments;
+        return this.Comments;
     }
 
     public void addComment(String comment){
-        comments.add(comment);
+        Comments.add(comment);
     }
 
     public void deleteComment(String comment){
-        this.comments.remove(comment);
+        this.Comments.remove(comment);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return this.getName()+"\n"+this.Score+"\n"+this.Date;
     }
 }
