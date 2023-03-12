@@ -101,6 +101,10 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
+        //startActivity(newIntent);
+        //startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
         cameraButton = findViewById(R.id.open_camera_button);
         cameraButton.setOnClickListener(v->
         {

@@ -70,14 +70,29 @@ public class RegisterFragment extends DialogFragment {
 
         submit.setOnClickListener(v -> {
             attemptRegistration();
-        }
-        );
+        });
+
+        cancel.setOnClickListener(v -> {
+            this.dismiss();
+        });
     }
 
     public void attemptRegistration() {
-        if(editEmail.getText().toString().equals("") ||
-        editPassword.getText().toString().equals("") ||
-        editUserName.getText().toString().equals("")) {
+        FireStoreAuthentication authentication = new FireStoreAuthentication();
+        String newEmail = editEmail.getText().toString();
+        String newPass = editPassword.getText().toString();
+        String newUser = editUserName.getText().toString();
+        if(newEmail.equals("") || newUser.equals("") || newPass.equals("")) {
+            Toast.makeText(getActivity(), "Ensure all fields have text", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if(!authentication.validUsername(newUser)) {
+            authentication.createUser(newUser, newPass, newEmail);
+            this.dismiss();
+            return;
+        }
+        else {
+            Toast.makeText(getActivity(), "Username already exists", Toast.LENGTH_SHORT).show();
             return;
         }
     }

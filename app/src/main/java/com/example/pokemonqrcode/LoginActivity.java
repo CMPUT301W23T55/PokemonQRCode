@@ -21,10 +21,10 @@ import androidx.fragment.app.FragmentManager;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    Button submit;
-    Button register;
-    EditText user_name;
-    EditText password;
+    Button submit_btn;
+    Button register_btn;
+    EditText user_name_etxt;
+    EditText password_etxt;
     TextView title;
 
     /**
@@ -37,17 +37,17 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        submit = findViewById(R.id.submit_button);
-        register = findViewById(R.id.register_button);
-        user_name = findViewById(R.id.edit_user_name_text);
-        password = findViewById(R.id.edit_password_text);
+        submit_btn = findViewById(R.id.submit_button);
+        register_btn = findViewById(R.id.register_button);
+        user_name_etxt = findViewById(R.id.edit_user_name_text);
+        password_etxt = findViewById(R.id.edit_password_text);
         title = findViewById(R.id.app_title);
 
-        submit.setOnClickListener(v -> {
+        submit_btn.setOnClickListener(v -> {
             loginAttempt();
         });
 
-        register.setOnClickListener(v -> {
+        register_btn.setOnClickListener(v -> {
             registerUser();
         });
 
@@ -57,12 +57,17 @@ public class LoginActivity extends AppCompatActivity {
      * Attempts to log the user in
      */
     private void loginAttempt() {
-        if(user_name.getText().toString().equals("") || password.getText().toString().equals("")) {
+        FireStoreAuthentication authentication = new FireStoreAuthentication();
+        String username = user_name_etxt.getText().toString();
+        String pass_wrd = password_etxt.getText().toString();
+        if(username.equals("") || pass_wrd.equals("")) {
             return;
         }
-        // If user exists in the databse then log them in
-        // If they dont exist in the database then do a username/password does not exist
-        Toast.makeText(getApplicationContext(), "Username/Password doesn't exist", Toast.LENGTH_SHORT).show();
+        if(!authentication.checkPassword(username, pass_wrd)) {
+            Toast.makeText(getApplicationContext(), "Username/Password doesn't exist", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
     }
 
     /**
