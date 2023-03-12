@@ -16,8 +16,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -41,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
 //    ArrayAdapter<PlayerCode> codeAdapter;
 //    CustomList customList;
 //    TextView codeName;
+    TextView totalCode;
 
     private ArrayAdapter<PlayerCode> adapter;
     @Override
@@ -49,6 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         // find views
+        totalCode = findViewById(R.id.total_codes);
         returnHomeBtn = findViewById(R.id.home_btn);
         ListView codeListView = findViewById(R.id.code_list);
 //        adapter = new ArrayAdapter<PlayerCode>(
@@ -77,6 +81,21 @@ public class ProfileActivity extends AppCompatActivity {
                                 adapter.addAll(playerCodes);
                             }
                         });
+
+        /*
+        gets the total number of qr codes
+         */
+        docReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    totalCode.setText("Total codes: "+Integer.toString(task.getResult().size()));
+//                    Log.d("TAG",  + "");
+                } else {
+                    Log.d("ProfileActivity", "Error getting documents: ", task.getException());
+                }
+            }
+        });
 
 
         returnHomeBtn.setOnClickListener(new View.OnClickListener() {
