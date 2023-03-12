@@ -1,5 +1,6 @@
 package com.example.pokemonqrcode;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 // Adapted from https://guides.codepath.com/android/using-dialogfragment#things-to-note
 // Accessed Mar 11 2023
 // cc-wiki
@@ -72,6 +74,7 @@ public class RegisterFragment extends DialogFragment {
 
         submit.setOnClickListener(v -> {
             attemptRegistration();
+            this.dismiss();
         });
 
         cancel.setOnClickListener(v -> {
@@ -84,18 +87,23 @@ public class RegisterFragment extends DialogFragment {
         String newEmail = editEmail.getText().toString();
         String newPass = editPassword.getText().toString();
         String newUser = editUserName.getText().toString();
+        FragmentActivity activity = getActivity();
+
         if(newEmail.equals("") || newUser.equals("") || newPass.equals("")) {
-            Toast.makeText(getActivity(), "Ensure all fields have text", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        else if(!authentication.validUsername(newUser)) {
-            authentication.createUser(newUser, newPass, newEmail);
-            this.dismiss();
-            return;
-        }
-        else {
-            Toast.makeText(getActivity(), "Username already exists", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(activity, "Ensure all fields have text", Toast.LENGTH_SHORT).show();
+        } else {
+
+            authentication.validUsername(newUser, new FireStoreResults() {
+                @Override
+                public void onResultGet(boolean result) {
+                    if (!result) {
+                        Toast.makeText(activity, "Username already exists", Toast.LENGTH_SHORT).show();
+                    } else {
+                        authentication.createUser(newUser, newPass, newEmail);
+                        Toast.makeText(activity, "Successfully created account", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 }

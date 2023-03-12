@@ -40,7 +40,7 @@ public class FireStoreClass {
      * Used when they log back into an existing account, or when device auto-identifies user
      * @param userName unique identifier
      */
-    public FireStoreClass(String userName){
+    public FireStoreClass(@NonNull String userName){
         this.userName = userName;
     }
 
@@ -68,12 +68,14 @@ public class FireStoreClass {
         data.put("Picture",picture);
         data.put("Comments",comments);
 
+        this.codes.add(pC);
+
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef
                 .document(String.valueOf(hashcode))
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully"))
-                .addOnFailureListener(e -> Log.d("Working", "data not added" + e));
+                .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
     }
 
     /**
@@ -86,7 +88,7 @@ public class FireStoreClass {
                 .document(pC.getHashCode())
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
-                .addOnFailureListener(e -> Log.w("Working", "Error deleting document", e));
+                .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
     }
 
     /**
@@ -130,25 +132,24 @@ public class FireStoreClass {
                     }
                     totalScore += score;
 
-                    Log.d("Working", document.getId() + " => " + document.get("Score")
-                            + " => " + codes.size());
+                    Log.d("Working", document.getId() + " is in the database");
                 }
             }
         });
     }
 
-    public void deleteComment(String comment, String hashcode) {
-        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
+    public void deleteComment(String comment, PlayerCode pc) {
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
         docRef.update("Comments", FieldValue.arrayRemove(comment))
-                .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
-                .addOnFailureListener(e -> Log.w("Working", "Error deleting comment", e));
+                .addOnCompleteListener(unused -> Log.d("Working", "Comment successfully deleted"))
+                .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
 
     }
 
-    public void addComment(String comment, String hashcode){
-        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
+    public void addComment(String comment, PlayerCode pc){
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
         docRef.update("Comments", FieldValue.arrayUnion(comment))
                 .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
-                .addOnFailureListener(e -> Log.w("Working", "Error deleting comment", e));
+                .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
     }
 }
