@@ -46,7 +46,6 @@ public class PlayerCode {
     comment
      */
 
-
     public PlayerCode(String hash, String name, int score, String image) {
         this.codeHash = hash;
         this.name = name;

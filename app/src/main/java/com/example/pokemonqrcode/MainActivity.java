@@ -44,9 +44,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -101,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         cameraButton = findViewById(R.id.open_camera_button);
         cameraButton.setOnClickListener(v->
