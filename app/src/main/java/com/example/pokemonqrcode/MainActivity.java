@@ -21,6 +21,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import android.util.Pair;
+import android.widget.TextView;
+import android.widget.Button;
+import android.widget.Toast;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -91,6 +98,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
+        //startActivity(newIntent);
+        //startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
         profileButton = findViewById(R.id.profile_btn);
         cameraButton = findViewById(R.id.open_camera_button);
@@ -154,7 +164,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 code = new ScannedCode(result);
 
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
-                        code.getScore(), code.getPicture());
+                                    code.getScore(), code.getPicture());
+                builder.setMessage(pCode.getPicture());
                 //builder.setMessage(pCode.getName());
                 String test = "a";
                 getCurrentLocation();

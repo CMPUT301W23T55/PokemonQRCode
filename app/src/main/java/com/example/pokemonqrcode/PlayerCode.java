@@ -48,7 +48,6 @@ public class PlayerCode {
     comment
      */
 
-
     public PlayerCode(String hash, String name, int score, String image) {
         this.HashCode = hash;
         this.Name = name;
@@ -108,6 +107,7 @@ public class PlayerCode {
         this.Name = name;
     }
     public void setPicture(String picture) {this.Picture = picture;}
+    public void setDate(Date date) {this.date = date;}
 
 
     public ArrayList<String> getComments(){

@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">PokemonQRCode</string>
+    <string name="app_title">PokemonQRCode</string>
+    <string name="login">Submit</string>
+    <string name="register">Click here to register</string>
+    <string name="user_name_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="email_hint">E-Mail</string>
+    <string name="register_header_text">Register</string>
+    <string name="cancel">Cancel</string>
     <string-array name="options">
         <item>Yes</item>
         <item>No</item>
