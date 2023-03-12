@@ -22,6 +22,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -182,7 +183,4 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
         }
     });
-
-
-
 }
