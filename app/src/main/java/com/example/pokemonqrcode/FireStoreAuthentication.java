@@ -57,9 +57,6 @@ public class FireStoreAuthentication {
                     }
                 });
     }
-    public boolean getValidPassword(){
-        return this.isUsernameValid;
-    }
 
     /**
      * Allows user to set his password for his account
@@ -89,19 +86,25 @@ public class FireStoreAuthentication {
     public void checkPassword(String username, String password, FireStoreResults fireStoreResults){
         db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users");
-        innerCollectionRef.document(username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.get("Password", String.class).equals(password)){
-                            Log.d("Working", "valid password");
-                            correctPass = true;
-                        } else {
-                            Log.d("Working", "invalid password");
-                            correctPass = false;
-                            }
-                        fireStoreResults.onResultGet(isUsernameValid);
-                        }
-                });
+        innerCollectionRef.document(username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    if (document.get("Password", String.class).equals(password)) {
+                        Log.d("Working", "valid password");
+                        correctPass = true;
+                    } else {
+                        Log.d("Working", "invalid password");
+                        correctPass = false;
+                    }
+                } else {
+                    Log.d("Working", "Username not found");
+                    correctPass = false;
+                }
+                fireStoreResults.onResultGet(correctPass);
+            }
+        });
     }
 }
 

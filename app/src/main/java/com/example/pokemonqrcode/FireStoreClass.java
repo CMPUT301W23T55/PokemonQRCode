@@ -40,7 +40,7 @@ public class FireStoreClass {
      * Used when they log back into an existing account, or when device auto-identifies user
      * @param userName unique identifier
      */
-    public FireStoreClass(String userName){
+    public FireStoreClass(@NonNull String userName){
         this.userName = userName;
     }
 
