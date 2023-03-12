@@ -17,7 +17,7 @@ public class FireStoreAuthentication {
     private boolean isUsernameValid;
     private boolean correctPass;
 
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     /**
@@ -32,7 +32,6 @@ public class FireStoreAuthentication {
      * @return true if username does not already exist in database, else otherwise
      */
     public boolean validUsername(String username){
-        db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users").document(username);
                 docRef
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -61,11 +60,11 @@ public class FireStoreAuthentication {
      * @param username this is the users username
      * @param password this is the users password
      */
-    public void setPassword(String username, String password){
-        db = FirebaseFirestore.getInstance();
+    public void createUser(String username, String password, String email){
         HashMap<String, Object> data = new HashMap<>();
 
         data.put("Password",password);
+        data.put("Email", email);
 
         CollectionReference innerCollectionRef = db.collection("Users");
         innerCollectionRef
@@ -82,7 +81,6 @@ public class FireStoreAuthentication {
      * @return true if the usser gave the correct password for his username, returns false otherwise
      */
     public boolean checkPassword(String username, String password){
-        db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users");
         innerCollectionRef.document(username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override

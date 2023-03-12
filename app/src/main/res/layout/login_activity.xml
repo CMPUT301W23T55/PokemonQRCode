@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".LoginActivity"
+    android:gravity="center"
+    android:background="@color/cardview_dark_background">
+
+    <TextView
+        android:id="@+id/app_title"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="25sp"
+        android:textColor="@color/white">
+    </TextView>
+
+    <EditText
+        android:id="@+id/edit_user_name_text"
+        android:layout_width="375dp"
+        android:layout_height="50dp"
+        android:hint="@string/user_name_hint"
+        android:textColor="@color/white">
+    </EditText>
+
+    <EditText
+        android:id="@+id/edit_password_text"
+        android:layout_width="375dp"
+        android:layout_height="50dp"
+        android:hint="@string/password_hint"
+        android:textColor="@color/white">
+    </EditText>
+
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="375dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/teal_200"
+        android:text="@string/login"
+        android:textColor="@color/black"
+        android:paddingBottom="10dp"
+        android:textSize="15sp">
+    </Button>
+
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="375dp"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/teal_200"
+        android:textSize="15sp">
+    </Button>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </FrameLayout>
+
+</LinearLayout>

@@ -5,10 +5,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -26,7 +29,7 @@ import java.util.HashMap;
 public class FireStoreClass {
 
     final private String userName;
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();;
 
     private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
     private int totalScore;
@@ -55,10 +58,8 @@ public class FireStoreClass {
      * @param pC needs a player code to add it to the database
      */
     public void addAQRCode(@NonNull PlayerCode pC){
-
-        db = FirebaseFirestore.getInstance();
-
         HashMap<String, Object> data = new HashMap<>();
+
 
         String name = pC.getName();
         int score = pC.getScore();
@@ -66,6 +67,7 @@ public class FireStoreClass {
         String hashcode = pC.getHashCode();
         String picture = pC.getPicture();
         ArrayList<String> comments = pC.getComments();
+
 
         data.put("Name",name);
         data.put("Score",score);
@@ -87,11 +89,9 @@ public class FireStoreClass {
      * @param pC PlayerCode that should be deleted from the database
      */
     public void deleteCode(PlayerCode pC){
-
-        db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef
-                .document(String.valueOf(pC.getHashCode()))
+                .document(pC.getHashCode())
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error deleting document", e));
@@ -114,7 +114,6 @@ public class FireStoreClass {
      */
 
     public void autoUpdate(){
-        db = FirebaseFirestore.getInstance();
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -146,4 +145,18 @@ public class FireStoreClass {
         });
     }
 
+    public void deleteComment(String comment, String hashcode) {
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
+        docRef.update("Comments", FieldValue.arrayRemove(comment))
+                .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
+                .addOnFailureListener(e -> Log.w("Working", "Error deleting comment", e));
+
+    }
+
+    public void addComment(String comment, String hashcode){
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
+        docRef.update("Comments", FieldValue.arrayUnion(comment))
+                .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
+                .addOnFailureListener(e -> Log.w("Working", "Error deleting comment", e));
+    }
 }

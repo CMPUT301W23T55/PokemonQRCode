@@ -2,9 +2,6 @@ package com.example.pokemonqrcode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import android.widget.Button;
-import android.widget.Toast;
-
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -22,3 +19,9 @@ public class FireStoreClassTest {
         assertEquals(codes.size(),1);
     }
 }
+//how to get comments
+/*
+            ArrayList<PlayerCode> pcs = f.getPlayerCodes();
+            ArrayList<String> j = pcs.get(0).getComments();
+            String i = j.get(0);
+ */
