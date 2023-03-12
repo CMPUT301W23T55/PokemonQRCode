@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import android.util.Pair;
+import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -148,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 code = new ScannedCode(result);
 
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
-                        code.getScore(), code.getPicture());
+                                    code.getScore(), code.getPicture());
+                builder.setMessage(pCode.getPicture());
                 //builder.setMessage(pCode.getName());
                 String test = "a";
                 getCurrentLocation();

@@ -52,12 +52,14 @@ public class FireStoreClass {
     public void addAQRCode(@NonNull PlayerCode pC){
         HashMap<String, Object> data = new HashMap<>();
 
+
         String name = pC.getName();
         int score = pC.getScore();
         Date date = pC.getDate();
         String hashcode = pC.getHashCode();
         String picture = pC.getPicture();
         ArrayList<String> comments = pC.getComments();
+
 
         data.put("Name",name);
         data.put("Score",score);

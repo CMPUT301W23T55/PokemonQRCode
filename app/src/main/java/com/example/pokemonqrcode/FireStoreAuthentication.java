@@ -60,10 +60,11 @@ public class FireStoreAuthentication {
      * @param username this is the users username
      * @param password this is the users password
      */
-    public void setPassword(String username, String password){
+    public void setPassword(String username, String password, String email){
         HashMap<String, Object> data = new HashMap<>();
 
         data.put("Password",password);
+        data.put("email", email);
 
         CollectionReference innerCollectionRef = db.collection("Users");
         innerCollectionRef
