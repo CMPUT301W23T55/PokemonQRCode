@@ -1,21 +1,33 @@
 package com.example.pokemonqrcode;
 
 
+
+import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+
+import android.os.SystemClock;
+import android.provider.MediaStore;
 
 import android.util.Log;
 import android.view.View;
@@ -34,6 +46,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -54,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     List<Address> currentLocation = new ArrayList<Address>();
     FusedLocationProviderClient fusedLocationProviderClient;
 
+    FireStoreClass f;
+
+
 
     @Override
     public void onDataPass(Bitmap bitmap, String setting) {
@@ -62,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     }
     private void getCurrentLocation() {
 
-        if(currentLocationSetting == "Yes") {
+        if(currentLocationSetting.equals("yes")) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                 fusedLocationProviderClient.getLastLocation()
@@ -93,14 +109,35 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
          */
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Globals.username == null){
+
+        } else {
+            this.f = new FireStoreClass(Globals.username);
+
+        }
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
-        //startActivity(newIntent);
-        //startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        SharedPreferences preferences = getSharedPreferences("valid", MODE_PRIVATE);
+        String remember = preferences.getString("remember", "");
+
+        if (remember.equals("true")){
+            SharedPreferences preferences1 = getSharedPreferences("name", MODE_PRIVATE);
+            Globals.username = preferences1.getString("username", "");
+        } else {
+            Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(newIntent);
+        }
 
         profileButton = findViewById(R.id.profile_btn);
         cameraButton = findViewById(R.id.open_camera_button);
@@ -197,7 +234,4 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
         }
     });
-
-
-
 }
