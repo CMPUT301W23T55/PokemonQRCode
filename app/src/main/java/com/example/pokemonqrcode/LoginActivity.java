@@ -3,6 +3,7 @@ package com.example.pokemonqrcode;
 import static android.app.PendingIntent.getActivity;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -60,14 +61,14 @@ public class LoginActivity extends AppCompatActivity {
         FireStoreAuthentication authentication = new FireStoreAuthentication();
         String username = user_name_etxt.getText().toString();
         String pass_wrd = password_etxt.getText().toString();
+        authentication.checkPassword(username, pass_wrd);
         if(username.equals("") || pass_wrd.equals("")) {
             return;
         }
-        if(!authentication.checkPassword(username, pass_wrd)) {
+        if(!authentication.isPasswordValid()) {
             Toast.makeText(getApplicationContext(), "Username/Password doesn't exist", Toast.LENGTH_SHORT).show();
             return;
         }
-
     }
 
     /**
