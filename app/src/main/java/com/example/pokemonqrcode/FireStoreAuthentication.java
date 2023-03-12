@@ -67,7 +67,6 @@ public class FireStoreAuthentication {
      * @param password this is the users password
      */
     public void createUser(String username, String password, String email){
-        db = FirebaseFirestore.getInstance();
         HashMap<String, Object> data = new HashMap<>();
 
         data.put("Password",password);
