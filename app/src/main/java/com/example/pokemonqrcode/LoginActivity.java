@@ -61,8 +61,9 @@ public class LoginActivity extends AppCompatActivity {
         FireStoreAuthentication authentication = new FireStoreAuthentication();
         String username = user_name_etxt.getText().toString();
         String pass_wrd = password_etxt.getText().toString();
-        authentication.checkPassword(username, pass_wrd);
+        //authentication.checkPassword(username, pass_wrd);
         if(username.equals("") || pass_wrd.equals("")) {
+            Toast.makeText(getApplicationContext(), "Ensure fields are filled in", Toast.LENGTH_SHORT).show();
             return;
         }
         if(!authentication.isPasswordValid()) {
@@ -75,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
      * Opens dialog fragment and allows user to register
      * Adapted from https://guides.codepath.com/android/using-dialogfragment#things-to-note
      * Retrieved Mar 11, 2023
+     * cc-wiki
      */
     private void registerUser() {
         FragmentManager fragmentManager = getSupportFragmentManager();
