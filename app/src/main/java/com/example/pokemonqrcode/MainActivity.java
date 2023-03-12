@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Pair;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 ScannedCode code = new ScannedCode(result);
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
-                builder.setMessage(pCode.getName());
+                builder.setMessage(pCode.getPicture());
                 /*
                 builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override

@@ -39,21 +39,23 @@ public class FireStoreClass {
 
         HashMap<String, Object> data = new HashMap<>();
 
-        String name = playerCode.getPlayerCodeName();
-        int score = playerCode.getPlayerCodeScore();
-        Date date = playerCode.getPlayerCodeDate();
-        int hashcode = playerCode.getPlayerCodeHashCode();
+        String name = playerCode.getName();
+        int score = playerCode.getScore();
+        Date date = playerCode.getDate();
+        /*
+        String hashcode = playerCode.getPlayerCodeHashCode();
         String picture = playerCode.getPlayerCodePicture();
         Pair<Integer, Integer> location = playerCode.getPlayerCodeLocation();
-        ArrayList<String> comments = playerCode.getPlayerCodeComments();
+        ArrayList<String> comments = playerCode.getPlayerCodeComments();*/
 
+        /*
         data.put("Name",name);
         data.put("Score",score);
         data.put("Date", date);
         data.put("HashCode",hashcode);
         data.put("Picture",picture);
         data.put("Location",location);
-        data.put("Comments",comments);
+        data.put("Comments",comments);*/
 
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef

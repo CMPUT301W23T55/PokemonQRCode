@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="350dp"
+    android:layout_height="350dp"
+    android:gravity="center"
+    android:backgroundTint="@color/cardview_dark_background">
+
+    <TextView
+        android:id="@+id/register_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/register_header_text"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textColor="@color/white">
+    </TextView>
+
+    <EditText
+        android:id="@+id/new_username_edit_text"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:hint="@string/user_name_hint">
+    </EditText>
+
+    <EditText
+        android:id="@+id/new_password_edit_text"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:hint="@string/password_hint">
+    </EditText>
+
+    <EditText
+        android:id="@+id/new_email_edit_text"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:hint="@string/email_hint">
+    </EditText>
+
+    <Button
+        android:id="@+id/submit_register"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:backgroundTint="@color/teal_200">
+    </Button>
+
+    <Button
+        android:id="@+id/cancel_register"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:backgroundTint="@color/teal_200">
+    </Button>
+
+</LinearLayout>

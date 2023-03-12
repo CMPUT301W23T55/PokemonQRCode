@@ -146,16 +146,25 @@ public class ScannedCode {
      * A string that is an "image" of the scanned QR Code
      */
     public void createImage() {
-        String headOptions[] = {" .     _,\n" +
-                "                   |`\\__/ /\n" +
-                "                   \\  . .(\n" +
-                "                    | __T|\n" +
-                "                   /   |"};
-        String bodyOptions[] = { "/(______);\n" +
-                "  (         (\n" +
-                "   |:------( )"};
-        String legOptions[] = {""};
-        int max = 3;
+        String headOptions[] = {"(\\_/)\n" +
+                                "( 'x' )",
+                                "/\\__/\\\n" +
+                                "(=^.^=)",
+                                "^__^\n" +
+                                "( 'o' )",
+                                "/\\___/\\ \n" +
+                                "((ovo))"};
+
+        String bodyOptions[] = {"\n( vvv )",
+                                "\n| \\ \\|",
+                                "\n( uu )",
+                                "\n():::()"};
+
+        String legOptions[] = {"\nc(\")(\")",
+                                "\n (\")(\")_/",
+                                "\n\\_(')(')",
+                                "\nc(\")_(\")"};
+        int max = 4;
         String head = headOptions[hashedCode[4] % max];
         String body = bodyOptions[hashedCode[5] % max];
         String legs = legOptions[hashedCode[6] % max];

@@ -49,6 +49,7 @@ public class PlayerCode {
     public int getScore() {return this.score;}
     public String getName() {return this.name;}
     public String getPicture() {return this.picture;}
+    public Date getDate() {return this.date;}
 
     public void setScore(int score) {
         this.score = score;
@@ -57,5 +58,6 @@ public class PlayerCode {
         this.name = name;
     }
     public void setPicture(String picture) {this.picture = picture;}
+    public void setDate(Date date) {this.date = date;}
 
 }
