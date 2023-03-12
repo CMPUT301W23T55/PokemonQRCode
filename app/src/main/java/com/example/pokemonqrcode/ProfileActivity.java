@@ -38,12 +38,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     //initialize views
     Button returnHomeBtn;
+    FireStoreClass user_name;
 
 //    private List<PlayerCode> codeDataList = new ArrayList<>();
 //    ArrayAdapter<PlayerCode> codeAdapter;
 //    CustomList customList;
 //    TextView codeName;
     TextView totalCode;
+    TextView userName;
 
     private ArrayAdapter<PlayerCode> adapter;
     @Override
@@ -52,17 +54,19 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         // find views
+        userName  = findViewById(R.id.UserName);
         totalCode = findViewById(R.id.total_codes);
         returnHomeBtn = findViewById(R.id.home_btn);
         ListView codeListView = findViewById(R.id.code_list);
-//        adapter = new ArrayAdapter<PlayerCode>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                new ArrayList<PlayerCode>()
-//        );
+
         adapter = new PlayerCodeAdapter(this, new ArrayList<PlayerCode>());
         codeListView.setAdapter(adapter);
 
+        /*
+        set the user name -- To be implemented --
+         */
+
+//        userName.setText(user_name.getUserName());
 
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();

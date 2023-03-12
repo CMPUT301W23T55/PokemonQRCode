@@ -42,6 +42,14 @@ public class FireStoreClass {
     }
 
 
+    /*
+    return user name
+     */
+
+    public String getUserName() {
+        return userName;
+    }
+
     /**
      *
      * @param pC needs a player code to add it to the database
