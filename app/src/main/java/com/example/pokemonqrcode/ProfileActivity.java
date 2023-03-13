@@ -46,6 +46,29 @@ public class ProfileActivity extends AppCompatActivity {
     TextView totalScoreView, totalCodeView;
     private ArrayAdapter<PlayerCode> adapter;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FireStoreClass f = new FireStoreClass(Globals.username);
+        f.getCodesList(new FireStoreLIstResults() {
+            @Override
+            public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
+                adapter.clear();
+                playerCodes = playerCodeList;
+                adapter.addAll(playerCodes);
+            }
+        });
+        f.refreshCodes(new FireStoreIntegerResults() {
+            @Override
+            public void onResultGetInt(int result, int count) {
+                totalScoreView.setText(Integer.toString(result));
+                totalCodeView.setText(Integer.toString(count));
+
+            }
+        });
+
+    }
+
     /**
      *
      * @param savedInstanceState
@@ -63,15 +86,6 @@ public class ProfileActivity extends AppCompatActivity {
         totalScoreView = findViewById(R.id.total_score_value);
         totalCodeView = findViewById(R.id.total_codes_value);
 
-        f.refreshCodes(new FireStoreIntegerResults() {
-            @Override
-            public void onResultGetInt(int result, int count) {
-                totalScoreView.setText(Integer.toString(result));
-                totalCodeView.setText(Integer.toString(count));
-
-            }
-        });
-
         /*
         Initialize list view, adapter and set adapter
          */
@@ -79,26 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
         adapter = new PlayerCodeAdapter(this, new ArrayList<PlayerCode>());
         codeListView.setAdapter(adapter);
 
-        /*
-        Initialize the database
-         */
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
 
-        docReference.get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                                for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
-                                    PlayerCode plCode = document.toObject(PlayerCode.class);
-                                    playerCodes.add(plCode);
-//                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
-                                }
-                                adapter.clear();
-                                adapter.addAll(playerCodes);
-                            }
-                        });
 
 
 
@@ -113,19 +108,17 @@ public class ProfileActivity extends AppCompatActivity {
             private String HashCode;
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                HashCode=playerCodes.get(i).getHashCode();
-                PlayerCode playerCode = playerCodes.get(i);
-                db.collection("Users/"+Globals.username+"/QRCodes")
-                        .whereEqualTo(FieldPath.documentId(),HashCode)
-                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                Intent intent = new Intent(ProfileActivity.this, SelectCodeActivity.class );
-                                intent.putExtra("HashCode",HashCode);
-                                startActivity(intent);
-                            }
-                        });
-                finish();
+                HashCode = playerCodes.get(i).getHashCode();
+                f.getSpecificCode(HashCode, new FireStorePlayerCodeResults() {
+                    @Override
+                    public void onResultGetPlayerCode(PlayerCode pCode) {
+                        Intent intent = new Intent(ProfileActivity.this, SelectCodeActivity.class );
+                        intent.putExtra("HashCode",HashCode);
+                        startActivity(intent);
+
+                    }
+                });
+                //finish();
             }
         });
 
@@ -175,3 +168,35 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 }
+
+/*
+                db.collection("Users/"+Globals.username+"/QRCodes")
+                        .whereEqualTo(FieldPath.documentId(),HashCode)
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+@Override
+public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        Intent intent = new Intent(ProfileActivity.this, SelectCodeActivity.class );
+        intent.putExtra("HashCode",HashCode);
+        startActivity(intent);
+        }
+        });
+
+
+
+        final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
+
+        docReference.get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                                for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                                    PlayerCode plCode = document.toObject(PlayerCode.class);
+                                    playerCodes.add(plCode);
+//                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
+                                }
+                                adapter.clear();
+                                adapter.addAll(playerCodes);
+                            }
+                        });
+ */
