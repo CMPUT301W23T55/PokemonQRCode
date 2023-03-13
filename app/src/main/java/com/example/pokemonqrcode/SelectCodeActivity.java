@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -114,6 +115,37 @@ public class SelectCodeActivity extends AppCompatActivity {
         del_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                docReference
+                        .whereEqualTo(FieldPath.documentId(),Hashcode)
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful() && !task.getResult().isEmpty()){
+                                    DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                                    String documentID = documentSnapshot.getId();
+                                    docReference
+                                            .document(documentID)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Log.d("Working","Data Successfully Deleted!");
+                                                    Toast.makeText(SelectCodeActivity.this,"Code deleted!", Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("Working","Data Not Deleted!");
+                                                }
+                                            });
+                                }
+                                else{
+                                    Log.d("Failed","Error, Not Deleting!");
+                                }
+                            }
+                        });
                 fireStoreClass.deleteCode(Hashcode);
                 finish();
 
@@ -132,6 +164,7 @@ public class SelectCodeActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void unused) {
                                 Log.d("Working","Data Added Successfully!");
+                                Toast.makeText(SelectCodeActivity.this,"Comment saved!", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
