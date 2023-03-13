@@ -126,7 +126,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 HashCode=playerCodes.get(i).getHashCode();
                 PlayerCode playerCode = playerCodes.get(i);
-                db.collection("Users/Admin/QRCodes")
+                db.collection("Users/"+Globals.username+"/QRCodes")
                         .whereEqualTo(FieldPath.documentId(),HashCode)
                         .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
