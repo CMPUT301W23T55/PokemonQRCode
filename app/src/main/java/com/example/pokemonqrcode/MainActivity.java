@@ -1,13 +1,4 @@
 package com.example.pokemonqrcode;
-
-
-
-import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -132,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         SharedPreferences preferences = getSharedPreferences("valid", MODE_PRIVATE);
         String remember = preferences.getString("remember", "");
 
-        if (remember.equals("trueS")){
+        if (remember.equals("true")){
             SharedPreferences preferences1 = getSharedPreferences("name", MODE_PRIVATE);
             Globals.username = preferences1.getString("username", "");
         } else {
@@ -203,12 +194,13 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             LayoutInflater inflater = getLayoutInflater();
-            builder.setView(inflater.inflate(R.layout.code_captured, null));
+            View v = inflater.inflate(R.layout.code_captured, null);
+            builder.setView(v);
 
 
             //builder.setTitle("Result");
             try {
-                ScannedCode code = null;
+                ScannedCode code;
                 code = new ScannedCode(result);
 
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
@@ -226,18 +218,19 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 builder.setMessage(test);
 
                  */
-                TextView codeImage = findViewById(R.id.code_image);
-                TextView codeName = findViewById(R.id.code_name);
-                TextView codeScore = findViewById(R.id.code_score);
-                codeImage.setText(pCode.getPicture().toString());
-                codeName.setText(pCode.getName().toString());
+                TextView codeImage = v.findViewById(R.id.code_image);
+                TextView codeName = v.findViewById(R.id.code_name);
+                TextView codeScore = v.findViewById(R.id.code_score);
+                Log.d("Working", pCode.getPicture());
+                codeImage.setText(pCode.getPicture());
+                codeName.setText(pCode.getName());
                 codeScore.setText(Integer.toString(pCode.getScore()));
                 builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                }).show();
+                });
 
                 builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
                     @Override
@@ -246,7 +239,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                         f.addAQRCode(pCode);
                         dialog.dismiss();
                     }
-                }).show();
+                });
+                builder.show();
                 // e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
