@@ -195,13 +195,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             LayoutInflater inflater = getLayoutInflater();
-            builder.setView(inflater.inflate(R.layout.code_captured, null));
+            View v = inflater.inflate(R.layout.code_captured, null);
+            builder.setView(v);
 
 
             //builder.setTitle("Result");
             try {
-                ScannedCode code = null;
-                code = new ScannedCode(result);
+
+                ScannedCode code = new ScannedCode(result);
 
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
@@ -218,9 +219,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 builder.setMessage(test);
 
                  */
-                TextView codeImage = findViewById(R.id.code_image);
-                TextView codeName = findViewById(R.id.code_name);
-                TextView codeScore = findViewById(R.id.code_score);
+                TextView codeImage = (TextView) v.findViewById(R.id.code_image);
+                TextView codeName = (TextView) v.findViewById(R.id.code_name);
+                TextView codeScore = (TextView) v.findViewById(R.id.code_score);
                 codeImage.setText(pCode.getPicture().toString());
                 codeName.setText(pCode.getName().toString());
                 codeScore.setText(Integer.toString(pCode.getScore()));
