@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     FloatingActionButton cameraButton;
     Bitmap currentImage;
-    Button profileButton;
+    Button profileButton, logOutBtn;
 
 
     String currentLocationSetting; //yes or no
@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,13 +124,15 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         SharedPreferences preferences = getSharedPreferences("valid", MODE_PRIVATE);
         String remember = preferences.getString("remember", "");
 
-        if (remember.equals("true")){
+        if (remember.equals("trues")){
             SharedPreferences preferences1 = getSharedPreferences("name", MODE_PRIVATE);
             Globals.username = preferences1.getString("username", "");
         } else {
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
+
+        logOutBtn = findViewById(R.id.logoutBtn);
 
         profileButton = findViewById(R.id.profile_btn);
         cameraButton = findViewById(R.id.open_camera_button);
@@ -144,11 +147,22 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             }
         });
 
-        Button btn1 = findViewById(R.id.location_btn);
-        btn1.setOnClickListener(new View.OnClickListener() {
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, Globals.username, Toast.LENGTH_SHORT).show();
+
+                SharedPreferences pref = getSharedPreferences("name", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("username","");
+                editor.apply();
+
+                SharedPreferences preferences = getSharedPreferences("valid", MODE_PRIVATE);
+                SharedPreferences.Editor editor1 = preferences.edit();
+                editor1.putString("remember","false");
+                editor1.apply();
+
+                Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(newIntent);
             }
         });
 
