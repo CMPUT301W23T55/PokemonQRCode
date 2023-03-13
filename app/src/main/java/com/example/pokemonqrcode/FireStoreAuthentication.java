@@ -81,8 +81,9 @@ public class FireStoreAuthentication {
      * Checks the users password when they login
      * @param username the users username
      * @param password the users password
-     * @return true if the usser gave the correct password for his username, returns false otherwise
+     * @return true if the user gave the correct password for his username, returns false otherwise
      */
+
     public void checkPassword(String username, String password, FireStoreResults fireStoreResults){
         db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users");

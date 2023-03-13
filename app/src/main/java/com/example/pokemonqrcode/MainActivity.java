@@ -30,6 +30,7 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -200,18 +201,21 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
             new CodeFoundFragment().show(getSupportFragmentManager(), "Code Found");
 
-
-
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("Result");
+            LayoutInflater inflater = getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.code_captured, null));
+
+
+            //builder.setTitle("Result");
             try {
                 ScannedCode code = null;
                 code = new ScannedCode(result);
 
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
-                builder.setMessage(pCode.getPicture());
+                //builder.setMessage(pCode.getPicture());
                 //builder.setMessage(pCode.getName());
+                /*
                 String test = "a";
                 getCurrentLocation();
                 for(Address address : currentLocation) {
@@ -220,6 +224,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 }
                 Log.d("please+++++++++++++++++++++++++++++++++", test);
                 builder.setMessage(test);
+
+                 */
+                TextView codeImage = findViewById(R.id.code_image);
+                TextView codeName = findViewById(R.id.code_name);
+                TextView codeScore = findViewById(R.id.code_score);
+                codeImage.setText(pCode.getPicture().toString());
+                codeName.setText(pCode.getName().toString());
+                codeScore.setText(Integer.toString(pCode.getScore()));
                 builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -231,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Add the player code to the database in here
+                        f.addAQRCode(pCode);
                         dialog.dismiss();
                     }
                 }).show();
