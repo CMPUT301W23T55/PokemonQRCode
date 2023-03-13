@@ -132,6 +132,7 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
 
                 })
                 .create();
+
     }
     public void passData(Bitmap bitmap, String setting) {
         listener.onDataPass(bitmap, setting);
