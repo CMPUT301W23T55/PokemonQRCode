@@ -115,6 +115,7 @@ public class SelectCodeActivity extends AppCompatActivity {
         del_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 docReference
                         .whereEqualTo(FieldPath.documentId(),Hashcode)
                         .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -146,8 +147,10 @@ public class SelectCodeActivity extends AppCompatActivity {
                                 }
                             }
                         });
+
                 fireStoreClass.deleteCode(Hashcode);
                 finish();
+
 
             }
         });
