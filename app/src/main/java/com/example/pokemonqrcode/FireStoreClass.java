@@ -4,6 +4,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
@@ -123,14 +125,14 @@ public class FireStoreClass implements Serializable {
                     Date date = document.get("Date", Date.class);
                     String hashCode = document.get("HashCode", String.class);
                     String picture = document.get("Picture", String.class);
-                    if(((ArrayList<String>) document.get("Comments")) == null){
-                        PlayerCode pc = new PlayerCode(hashCode, name, score, picture);
-                        codes.add(pc);
-                    } else {
-                        String comments = (String) document.get("Comments");
-                        PlayerCode pc = new PlayerCode(hashCode, name, score, picture, date, comments);
-                        codes.add(pc);
-                    }
+//                    if(((ArrayList<String>) document.get("Comments")) == null){
+//                        PlayerCode pc = new PlayerCode(hashCode, name, score, picture);
+//                        codes.add(pc);
+//                    } else {
+//                        String comments = (String) document.get("Comments");
+//                        PlayerCode pc = new PlayerCode(hashCode, name, score, picture, date, comments);
+//                        codes.add(pc);
+//                    }
                     totalScore += score;
                     count ++;
 

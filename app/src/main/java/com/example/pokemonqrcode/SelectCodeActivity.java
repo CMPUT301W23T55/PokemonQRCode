@@ -32,7 +32,6 @@ public class SelectCodeActivity extends AppCompatActivity {
     private String commentsString;
     private EditText commentField;
     private FireStoreClass fireStoreClass;
-    private String userName;
     private Button del_btn;
     private Button save_com_btn;
     private Button return_btn;
@@ -44,12 +43,27 @@ public class SelectCodeActivity extends AppCompatActivity {
         String Hashcode = getIntent.getStringExtra("HashCode");
         Log.d("SelectCodeActivity",Hashcode);
         commentField = findViewById(R.id.comments);
+        if (commentField.getText()==null || commentField.getText().equals("")) {
+            commentField.setText("No Comment");
+        }
 
-        userName = "Admin";
-        fireStoreClass = new FireStoreClass(userName);
+        FireStoreClass fireStoreClass;
+        Log.d("SelectCodeActivity", Globals.username);
+
+        fireStoreClass = new FireStoreClass(Globals.username);
+
+//        fireStoreClass.refreshCodes(new FireStoreIntegerResults() {
+//            @Override
+//            public void onResultGetInt(int result, int count) {
+//                commentField.setText((CharSequence) commentField);
+//
+//            }
+//        });
+
+
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final CollectionReference docReference = db.collection("Users/"+userName+"/QRCodes");
+        final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
         docReference.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -120,56 +134,13 @@ public class SelectCodeActivity extends AppCompatActivity {
                                             });
                                 }
                                 else{
-                                    Log.d("Failed","Error!");
+                                    Log.d("Failed","Error, Not Deleting!");
                                 }
                             }
                         });
 
             }
         });
-
-
-
-//        cityList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            private String city;
-//            private String province;
-//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                city=cityDataList.get(i).getCityName();
-//                province=cityDataList.get(i).getProvinceName();
-//                db.collection("Cities")
-//                        .whereEqualTo(FieldPath.documentId(),city)
-//                        .whereEqualTo("Province Name", province)
-//                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                if (task.isSuccessful() && !task.getResult().isEmpty()){
-//                                    DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-//                                    String documentID = documentSnapshot.getId();
-//                                    db.collection("Cities")
-//                                            .document(documentID)
-//                                            .delete()
-//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void unused) {
-//                                                    Log.d("Working","Data Successfully Deleted!");
-//                                                }
-//                                            })
-//                                            .addOnFailureListener(new OnFailureListener() {
-//                                                @Override
-//                                                public void onFailure(@NonNull Exception e) {
-//                                                    Log.d("Working","Data Not Deleted!");
-//                                                }
-//                                            });
-//                                }
-//                                else{
-//                                    Log.d("Failed","Error!");
-//                                }
-//                            }
-//                        });
-//
-//                return false;
-//            }
-//        });
 
         save_com_btn = findViewById(R.id.save_comment_btn);
 

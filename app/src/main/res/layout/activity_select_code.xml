@@ -12,12 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Add Comments here"
         android:inputType="textPersonName"
-        android:text="Comment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.874" />
 
     <Button
         android:id="@+id/delete_btn"
@@ -28,10 +30,10 @@
         app:iconTint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.566"
+        app:layout_constraintHorizontal_bias="0.401"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comments"
-        app:layout_constraintVertical_bias="0.979" />
+        app:layout_constraintVertical_bias="0.71" />
 
     <Button
         android:id="@+id/save_comment_btn"
@@ -44,7 +46,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/delete_btn"
         app:layout_constraintTop_toBottomOf="@+id/comments"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintVertical_bias="0.694" />
 
     <Button
         android:id="@+id/return_to_profile_btn"
