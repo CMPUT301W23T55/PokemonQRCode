@@ -16,6 +16,7 @@
 
     <TextView
         android:id="@+id/code_image"
+        android:text="Image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="image"/>

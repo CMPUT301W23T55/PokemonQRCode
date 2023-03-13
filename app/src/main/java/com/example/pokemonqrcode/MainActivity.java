@@ -190,7 +190,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 }, 100);
             }
 
-            new CodeFoundFragment().show(getSupportFragmentManager(), "Code Found");
+            CodeFoundFragment codeFoundFragment = new CodeFoundFragment();
+            codeFoundFragment.show(getSupportFragmentManager(), "Code Found");;
+
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             LayoutInflater inflater = getLayoutInflater();
@@ -200,9 +202,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
             //builder.setTitle("Result");
             try {
-                ScannedCode code;
-                code = new ScannedCode(result);
-
+                ScannedCode code = new ScannedCode(result);
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
                 //builder.setMessage(pCode.getPicture());
@@ -218,12 +218,11 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 builder.setMessage(test);
 
                  */
-                TextView codeImage = v.findViewById(R.id.code_image);
-                TextView codeName = v.findViewById(R.id.code_name);
-                TextView codeScore = v.findViewById(R.id.code_score);
-                Log.d("Working", pCode.getPicture());
-                codeImage.setText(pCode.getPicture());
-                codeName.setText(pCode.getName());
+                TextView codeImage = (TextView) v.findViewById(R.id.code_image);
+                TextView codeName = (TextView) v.findViewById(R.id.code_name);
+                TextView codeScore = (TextView) v.findViewById(R.id.code_score);
+                codeImage.setText(pCode.getPicture().toString());
+                codeName.setText(pCode.getName().toString());
                 codeScore.setText(Integer.toString(pCode.getScore()));
                 builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override

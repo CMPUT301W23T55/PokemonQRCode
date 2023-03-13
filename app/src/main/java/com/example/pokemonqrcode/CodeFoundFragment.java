@@ -127,11 +127,9 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
                 .setPositiveButton("Capture", (dialog, which) -> {
                         listener.onDataPass(((BitmapDrawable)image.getDrawable()).getBitmap(), locationSpinner.getSelectedItem().toString());
 
-
-
-
                 })
                 .create();
+
     }
     public void passData(Bitmap bitmap, String setting) {
         listener.onDataPass(bitmap, setting);
