@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         Context context = getApplicationContext();
 
         if(username.equals("") || pass_wrd.equals("")) {
-            Toast.makeText(context, "Ensure all fields have tex", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Ensure all fields have text", Toast.LENGTH_SHORT).show();
         } else {
             authentication.checkPassword(username, pass_wrd, new FireStoreResults() {
                 @Override
@@ -93,13 +94,13 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 
     /**
      * Opens dialog fragment and allows user to register
      * Adapted from https://guides.codepath.com/android/using-dialogfragment#things-to-note
      * Retrieved Mar 11, 2023
+     * cc-wiki
      */
     private void registerUser() {
         FragmentManager fragmentManager = getSupportFragmentManager();

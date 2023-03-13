@@ -16,6 +16,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 // Adapted from https://guides.codepath.com/android/using-dialogfragment#things-to-note
+// Accessed Mar 11 2023
+// cc-wiki
 
 /**
  * Dialog fragment that allows a new user to register for the app
