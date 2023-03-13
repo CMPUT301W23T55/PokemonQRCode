@@ -43,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView totalCode;
     ArrayList<PlayerCode> playerCodes = new ArrayList<>();
 
+    TextView totalCode,userName;
 
     TextView totalScoreView, totalCodeView;
 
@@ -53,6 +54,8 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         FireStoreClass f = new FireStoreClass(Globals.username);
         // find views
+        userName=findViewById(R.id.UserName);
+        userName.setText(Globals.username);
         totalCode = findViewById(R.id.total_codes);
         returnHomeBtn = findViewById(R.id.home_btn);
         totalScoreView = findViewById(R.id.total_score_value);
