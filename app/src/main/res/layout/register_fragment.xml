@@ -43,7 +43,7 @@
 
     <Button
         android:id="@+id/submit_register"
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="@string/login"
         android:backgroundTint="@color/teal_200">
@@ -51,7 +51,7 @@
 
     <Button
         android:id="@+id/cancel_register"
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
         android:backgroundTint="@color/teal_200">

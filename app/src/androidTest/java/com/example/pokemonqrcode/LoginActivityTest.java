@@ -1,11 +1,15 @@
 package com.example.pokemonqrcode;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.fragment.app.FragmentManager;
+import android.app.Fragment;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.ActivityTestRule$$ExternalSyntheticLambda0;
@@ -43,26 +47,42 @@ public class LoginActivityTest {
         Activity activity = rule.getActivity();
     }
 
+    /**
+     * Test case that checks for proper behaviour for the log in activity
+     */
     @Test
     public void checkLogin() {
         solo.assertCurrentActivity("Wrong activity", LoginActivity.class);
-
         solo.clickOnView(solo.getView(R.id.submit_button));
-        solo.waitForText("Ensure fields are filled in");
-
+        solo.waitForText("Ensure all fields have text", 1, 10000);
         EditText user = (EditText) solo.getView(R.id.edit_user_name_text);
         EditText pass = (EditText) solo.getView(R.id.edit_password_text);
         solo.enterText(user, "Hello:)");
-        solo.clearEditText(user);
         solo.enterText(pass,"World");
+        solo.clickOnView(solo.getView(R.id.submit_button));
+        solo.waitForText("Username/Password doesn't exist", 1, 10000);
+        solo.clearEditText(user);
         solo.clearEditText(pass);
     }
 
+    /**
+     * Test that checks for proper behaviour from the register fragment
+     */
     @Test
     public void checkRegisterFrag() {
         solo.assertCurrentActivity("Wrong activity", LoginActivity.class);
         solo.clickOnView(solo.getView(R.id.register_button));
-        
+        solo.waitForFragmentById(R.id.register_fragment, 15000);
+        EditText new_user = (EditText) solo.getView(R.id.new_username_edit_text);
+        EditText new_pass = (EditText) solo.getView(R.id.new_password_edit_text);
+        EditText new_email = (EditText) solo.getView(R.id.new_email_edit_text);
+        solo.enterText(new_user, "hello");
+        solo.enterText(new_pass, "hello2");
+        solo.enterText(new_email, "hello@test.com");
+        solo.clearEditText(new_user);
+        solo.clearEditText(new_pass);
+        solo.clickOnView(solo.getView(R.id.cancel_register));
+        assertFalse(solo.waitForFragmentById(R.id.register_fragment, 15000));
     }
 
     /**

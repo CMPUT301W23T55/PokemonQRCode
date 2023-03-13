@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         Context context = getApplicationContext();
 
         if(username.equals("") || pass_wrd.equals("")) {
-            Toast.makeText(context, "Ensure all fields have tex", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Ensure all fields have text", Toast.LENGTH_SHORT).show();
         } else {
             authentication.checkPassword(username, pass_wrd, new FireStoreResults() {
                 @Override
