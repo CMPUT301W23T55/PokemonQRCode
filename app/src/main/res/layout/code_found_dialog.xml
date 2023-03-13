@@ -18,9 +18,10 @@
     <ImageView
         android:id="@+id/found_user_image"
         android:layout_width="match_parent"
+        android:layout_height="350dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:layout_height="350dp" />
+        app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <Button
         android:id="@+id/found_open_camera"
