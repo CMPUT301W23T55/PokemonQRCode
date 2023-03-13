@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,6 +35,7 @@ public class SelectCodeActivity extends AppCompatActivity {
     private String userName;
     private Button del_btn;
     private Button save_com_btn;
+    private Button return_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,9 +79,97 @@ public class SelectCodeActivity extends AppCompatActivity {
                     }
                 });
 
+        return_btn = findViewById(R.id.return_to_profile_btn);
+        return_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
 
 
         del_btn = findViewById(R.id.delete_btn);
+
+        del_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                docReference
+                        .whereEqualTo(FieldPath.documentId(),Hashcode)
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful() && !task.getResult().isEmpty()){
+                                    DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                                    String documentID = documentSnapshot.getId();
+                                    docReference
+                                            .document(documentID)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Log.d("Working","Data Successfully Deleted!");
+                                                    finish();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("Working","Data Not Deleted!");
+                                                }
+                                            });
+                                }
+                                else{
+                                    Log.d("Failed","Error!");
+                                }
+                            }
+                        });
+
+            }
+        });
+
+
+
+//        cityList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            private String city;
+//            private String province;
+//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                city=cityDataList.get(i).getCityName();
+//                province=cityDataList.get(i).getProvinceName();
+//                db.collection("Cities")
+//                        .whereEqualTo(FieldPath.documentId(),city)
+//                        .whereEqualTo("Province Name", province)
+//                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                if (task.isSuccessful() && !task.getResult().isEmpty()){
+//                                    DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+//                                    String documentID = documentSnapshot.getId();
+//                                    db.collection("Cities")
+//                                            .document(documentID)
+//                                            .delete()
+//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                @Override
+//                                                public void onSuccess(Void unused) {
+//                                                    Log.d("Working","Data Successfully Deleted!");
+//                                                }
+//                                            })
+//                                            .addOnFailureListener(new OnFailureListener() {
+//                                                @Override
+//                                                public void onFailure(@NonNull Exception e) {
+//                                                    Log.d("Working","Data Not Deleted!");
+//                                                }
+//                                            });
+//                                }
+//                                else{
+//                                    Log.d("Failed","Error!");
+//                                }
+//                            }
+//                        });
+//
+//                return false;
+//            }
+//        });
 
         save_com_btn = findViewById(R.id.save_comment_btn);
 
