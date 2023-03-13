@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
         } else {
             this.f = new FireStoreClass(Globals.username);
-
+            this.f.autoUpdate();
         }
     }
 
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         SharedPreferences preferences = getSharedPreferences("valid", MODE_PRIVATE);
         String remember = preferences.getString("remember", "");
 
-        if (remember.equals("true")){
+        if (remember.equals("trueS")){
             SharedPreferences preferences1 = getSharedPreferences("name", MODE_PRIVATE);
             Globals.username = preferences1.getString("username", "");
         } else {
@@ -149,6 +149,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             @Override
             public void onClick(View view) {
                 viewProfile();
+            }
+        });
+
+        Button btn1 = findViewById(R.id.location_btn);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, Globals.username, Toast.LENGTH_SHORT).show();
             }
         });
 

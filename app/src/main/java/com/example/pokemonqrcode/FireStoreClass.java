@@ -122,7 +122,7 @@ public class FireStoreClass {
                     Date date = document.get("Date", Date.class);
                     String hashCode = document.get("HashCode", String.class);
                     String picture = document.get("Picture", String.class);
-                    if(document.get("Comments") == null){
+                    if(((ArrayList<String>) document.get("Comments")).size() == 0){
                         PlayerCode pc = new PlayerCode(hashCode, name, score, picture);
                         codes.add(pc);
                     } else {
