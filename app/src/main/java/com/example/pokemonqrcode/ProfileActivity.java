@@ -30,23 +30,26 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 
+/**
+ * This is a class that is an activity containing all of user's code
+ * @author jawad
+ * @see MainActivity,FireStoreClass,PlayerCode,SelectCodeActivity
+ * @version 1.3
+ */
 public class ProfileActivity extends AppCompatActivity {
 
 
     //initialize views
     Button returnHomeBtn;
-
-//    private List<PlayerCode> codeDataList = new ArrayList<>();
-//    ArrayAdapter<PlayerCode> codeAdapter;
-//    CustomList customList;
-//    TextView codeName;
     ArrayList<PlayerCode> playerCodes = new ArrayList<>();
-
     TextView totalCode,userName;
-
     TextView totalScoreView, totalCodeView;
-
     private ArrayAdapter<PlayerCode> adapter;
+
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,19 +72,19 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        /*
+        Initialize list view, adapter and set adapter
+         */
         ListView codeListView = findViewById(R.id.code_list);
-//        adapter = new ArrayAdapter<PlayerCode>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                new ArrayList<PlayerCode>()
-//        );
         adapter = new PlayerCodeAdapter(this, new ArrayList<PlayerCode>());
         codeListView.setAdapter(adapter);
 
-
-
+        /*
+        Initialize the database
+         */
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
+
         docReference.get()
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
@@ -98,20 +101,6 @@ public class ProfileActivity extends AppCompatActivity {
                         });
 
 
-      //  gets the total number of qr codes
-/*
-        docReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    totalCode.setText("Total codes: "+Integer.toString(task.getResult().size()));
-//                    Log.d("TAG",  + "");
-                } else {
-                    Log.d("ProfileActivity", "Error getting documents: ", task.getException());
-                }
-            }
-        });
-*/
 
         returnHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 HashCode=playerCodes.get(i).getHashCode();
                 PlayerCode playerCode = playerCodes.get(i);
-                db.collection("Users/Admin/QRCodes")
+                db.collection("Users/"+Globals.username+"/QRCodes")
                         .whereEqualTo(FieldPath.documentId(),HashCode)
                         .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -145,7 +134,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * This is an adapter class responsible for rendering objects into listview
+     * @author jawad
+     * @version 1.3
+     */
     class PlayerCodeAdapter extends ArrayAdapter<PlayerCode> {
 
         ArrayList<PlayerCode> playerCodes;
@@ -160,6 +153,10 @@ public class ProfileActivity extends AppCompatActivity {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.content,parent,false);
             }
+
+            /*
+            Initialize the views
+             */
             TextView codeName = convertView.findViewById(R.id.itemName);
             TextView codeScore = convertView.findViewById((R.id.itemScore));
             TextView capturedDate = convertView.findViewById(R.id.itemDate);
