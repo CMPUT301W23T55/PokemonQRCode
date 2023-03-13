@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,6 +35,8 @@ public class FireStoreClass implements Serializable {
     private int totalScore;
     private int count;
 
+    private PlayerCode pCode;
+
     //needs username as that is the key to getting data from database
 
     /**
@@ -46,7 +49,7 @@ public class FireStoreClass implements Serializable {
 
 
     /**
-     *
+     * This method adds a PLayercode to the database
      * @param pC needs a player code to add it to the database
      */
     public void addAQRCode(@NonNull PlayerCode pC){
@@ -81,28 +84,16 @@ public class FireStoreClass implements Serializable {
 
     /**
      * Given a PlayerCode, this method will delete that associated record from the database
-     * @param pC PlayerCode that should be deleted from the database
+     * @param hashCode that should be deleted from the database
      */
-    public void deleteCode(PlayerCode pC){
+    public void deleteCode(String hashCode){
         db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef
-                .document(pC.getHashCode())
+                .document(hashCode)
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
-    }
-
-    /**
-     *
-     * @return an array of PlayerCodes from the firestore database
-     */
-    public ArrayList<PlayerCode> getPlayerCodes(){
-        return this.codes;
-    }
-
-    public int getPlayerScore(){
-        return this.totalScore;
     }
     /**
      * sets a snapshot listener, so that whenever a record is added or deleted, it will
@@ -142,6 +133,11 @@ public class FireStoreClass implements Serializable {
         });
     }
 
+    /**
+     * this method will delete a selected comment from the PlayerCode in the database
+     * @param comment the comment that will be removed
+     * @param pc the pc that the comment is associated with
+     */
     public void deleteComment(String comment, PlayerCode pc) {
         db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
@@ -151,6 +147,11 @@ public class FireStoreClass implements Serializable {
 
     }
 
+    /**
+     * this method will add a comment to a playercode
+     * @param comment the comment that should be added
+     * @param pc the playercode that the comment is associated with
+     */
     public void addComment(String comment, PlayerCode pc){
         db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
@@ -159,6 +160,10 @@ public class FireStoreClass implements Serializable {
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
     }
 
+    /**
+     * This function will refresh the total score and total count of the scanned codes associated with the user
+     * @param fireStoreIntegerResults this waits until the database query runs and then gets the result(total score, and #codes)
+     */
     public void refreshCodes(FireStoreIntegerResults fireStoreIntegerResults){
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
@@ -177,6 +182,40 @@ public class FireStoreClass implements Serializable {
                             }
                             fireStoreIntegerResults.onResultGetInt(totalScore, count);
                         }
+                    }
+                });
+    }
+
+    /**
+     * This method will query the database until it finds a record associated with the passed hashcode
+     * @param hashcode to find the correct Playercode in the database
+     * @param fireStorePlayerCodeResults this waits until the database query runs and then gets the result(Player code)
+     */
+    public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
+        db = FirebaseFirestore.getInstance();
+        CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
+        collectionRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+
+                            String docHashCode= (String) document.get("HashCode");
+//                            Log.d("SelectCodeActivity", "Intent "+Hashcode);
+//                            Log.d("SelectCodeActivity", "Code "+docHashCode);
+                            if (docHashCode.equals(hashcode)) {
+                                pCode = document.toObject(PlayerCode.class);
+//                                if (commentField.getText().equals(commentsString) == false) {
+//                                    fireStoreClass.deleteComment(Hashcode);
+//                                    fireStoreClass.addComment(commentField.getText(), Hashcode);
+
+//                                }
+
+                            }
+//                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
+                        }
+                        fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
                     }
                 });
     }
