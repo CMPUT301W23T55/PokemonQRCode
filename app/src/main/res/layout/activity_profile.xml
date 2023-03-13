@@ -42,23 +42,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <!--    <ListView-->
-<!--        android:id="@+id/code_list"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_marginTop="50dp"-->
-<!--        android:footerDividersEnabled="true"-->
-<!--        android:headerDividersEnabled="true"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/total_codes"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/UserName"-->
-<!--        app:layout_constraintVertical_bias="1.0" />-->
-
     <ListView
         android:id="@+id/code_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
+        android:divider="@color/black"
+        android:dividerHeight="0.25dp"
         app:layout_constraintBottom_toTopOf="@id/total_codes"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/UserName" />
@@ -67,12 +57,13 @@
         android:id="@+id/total_codes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:text="Total Codes:"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/code_list"
-        app:layout_constraintStart_toEndOf="@id/code_list" />
+        app:layout_constraintStart_toEndOf="@id/code_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/code_list" />
     <!--    &lt;!&ndash;        app:layout_constraintTop_toBottomOf="@+id/code_list"/>&ndash;&gt;-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

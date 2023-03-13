@@ -13,24 +13,33 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="Name:"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf = "parent"
-        app:layout_constraintTop_toTopOf = "parent"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/itemName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        app:layout_constraintStart_toEndOf = "@+id/itemNameLabel"
-        app:layout_constraintTop_toTopOf = "@+id/itemNameLabel"/>
+        android:fontFamily="sans-serif"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/itemNameLabel"
+        app:layout_constraintTop_toTopOf="@+id/itemNameLabel" />
     <TextView
         android:id="@+id/itemScoreLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="Score:"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-black"
         app:layout_constraintStart_toStartOf = "parent"
         app:layout_constraintTop_toBottomOf = "@+id/itemNameLabel"/>
 
@@ -39,6 +48,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/itemScoreLabel"
         app:layout_constraintTop_toTopOf="@+id/itemScoreLabel" />
 
@@ -48,7 +60,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="Date:"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-black"
         app:layout_constraintStart_toStartOf = "parent"
         app:layout_constraintTop_toBottomOf = "@+id/itemScoreLabel"/>
     <TextView
@@ -56,6 +71,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf = "@+id/itemDateLabel"
         app:layout_constraintTop_toTopOf = "@id/itemDateLabel"/>
 

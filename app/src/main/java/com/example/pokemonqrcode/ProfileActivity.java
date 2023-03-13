@@ -46,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
 //    TextView codeName;
     TextView totalCode;
     TextView userName;
+//    ScannedCode image;
 
     private ArrayAdapter<PlayerCode> adapter;
     @Override
@@ -79,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
                                     PlayerCode plCode = document.toObject(PlayerCode.class);
                                     playerCodes.add(plCode);
-//                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
+                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
                                 }
                                 adapter.clear();
                                 adapter.addAll(playerCodes);
