@@ -210,7 +210,7 @@ public class ScannedCode {
      * String representing image of code
      */
     public String getPicture() {
-        return picture;
+        return this.picture;
     }
 
     /**

@@ -29,10 +29,11 @@ import java.util.HashMap;
 public class FireStoreClass {
 
     final private String userName;
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();;
+    private FirebaseFirestore db;
 
     private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
     private int totalScore;
+    private int count;
 
     //needs username as that is the key to getting data from database
 
@@ -50,6 +51,7 @@ public class FireStoreClass {
      * @param pC needs a player code to add it to the database
      */
     public void addAQRCode(@NonNull PlayerCode pC){
+        db = FirebaseFirestore.getInstance();
         HashMap<String, Object> data = new HashMap<>();
 
 
@@ -83,6 +85,7 @@ public class FireStoreClass {
      * @param pC PlayerCode that should be deleted from the database
      */
     public void deleteCode(PlayerCode pC){
+        db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef
                 .document(pC.getHashCode())
@@ -108,6 +111,7 @@ public class FireStoreClass {
      */
 
     public void autoUpdate(){
+        db = FirebaseFirestore.getInstance();
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -122,7 +126,7 @@ public class FireStoreClass {
                     Date date = document.get("Date", Date.class);
                     String hashCode = document.get("HashCode", String.class);
                     String picture = document.get("Picture", String.class);
-                    if(document.get("Comments") == null){
+                    if(((ArrayList<String>) document.get("Comments")) == null){
                         PlayerCode pc = new PlayerCode(hashCode, name, score, picture);
                         codes.add(pc);
                     } else {
@@ -131,6 +135,7 @@ public class FireStoreClass {
                         codes.add(pc);
                     }
                     totalScore += score;
+                    count ++;
 
                     Log.d("Working", document.getId() + " is in the database");
                 }
@@ -139,6 +144,7 @@ public class FireStoreClass {
     }
 
     public void deleteComment(String comment, PlayerCode pc) {
+        db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
         docRef.update("Comments", FieldValue.arrayRemove(comment))
                 .addOnCompleteListener(unused -> Log.d("Working", "Comment successfully deleted"))
@@ -147,9 +153,32 @@ public class FireStoreClass {
     }
 
     public void addComment(String comment, PlayerCode pc){
+        db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
         docRef.update("Comments", FieldValue.arrayUnion(comment))
                 .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
+    }
+
+    public void refreshCodes(FireStoreIntegerResults fireStoreIntegerResults){
+        db = FirebaseFirestore.getInstance();
+        CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
+        collectionRef
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                int score = document.get("Score", int.class);
+
+                                totalScore += score;
+                                count++;
+                                Log.d("Working", document.getId() + " is in the database");
+                            }
+                            fireStoreIntegerResults.onResultGetInt(totalScore, count);
+                        }
+                    }
+                });
     }
 }

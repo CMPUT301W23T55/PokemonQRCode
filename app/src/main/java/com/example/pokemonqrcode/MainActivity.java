@@ -1,13 +1,4 @@
 package com.example.pokemonqrcode;
-
-
-
-import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -118,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
         } else {
             this.f = new FireStoreClass(Globals.username);
-
+            this.f.autoUpdate();
         }
     }
 
@@ -150,6 +141,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             @Override
             public void onClick(View view) {
                 viewProfile();
+            }
+        });
+
+        Button btn1 = findViewById(R.id.location_btn);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, Globals.username, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -203,9 +202,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
             //builder.setTitle("Result");
             try {
-
                 ScannedCode code = new ScannedCode(result);
-
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
                 //builder.setMessage(pCode.getPicture());
