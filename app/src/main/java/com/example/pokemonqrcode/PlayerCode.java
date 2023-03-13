@@ -26,7 +26,7 @@ public class PlayerCode {
     private String Picture;
     private Bitmap photo;
     private List<Address> location;
-    private ArrayList<String> Comments;
+    private String Comments;
 
 
     public PlayerCode(ScannedCode code, Bitmap photo, List<Address> location) {
@@ -65,7 +65,7 @@ public class PlayerCode {
     }
 
     public PlayerCode(String hash, String name, int score, String image,
-                      Date date, ArrayList<String>comments) {
+                      Date date, String comments) {
         this.HashCode = hash;
         this.Name = name;
         this.Score = score;
@@ -110,17 +110,17 @@ public class PlayerCode {
     public void setDate(Date date) {this.Date = date;}
 
 
-    public ArrayList<String> getComments(){
+    public String getComments(){
         return this.Comments;
     }
 
-    public void addComment(String comment){
-        Comments.add(comment);
-    }
+//    public void addComment(String comment){
+//        Comments.add(comment);
+//    }
 
-    public void deleteComment(String comment){
-        this.Comments.remove(comment);
-    }
+//    public void deleteComment(String comment){
+//        this.Comments.remove(comment);
+//    }
 
     @NonNull
     @Override
