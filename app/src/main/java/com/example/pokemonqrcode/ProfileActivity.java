@@ -40,7 +40,6 @@ public class ProfileActivity extends AppCompatActivity {
 //    ArrayAdapter<PlayerCode> codeAdapter;
 //    CustomList customList;
 //    TextView codeName;
-    TextView totalCode;
     ArrayList<PlayerCode> playerCodes = new ArrayList<>();
 
     TextView totalCode,userName;
