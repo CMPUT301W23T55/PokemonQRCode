@@ -219,4 +219,23 @@ public class FireStoreClass implements Serializable {
                     }
                 });
     }
+
+    public void getCodesList(FireStoreLIstResults fireStoreLIstResults){
+        db = FirebaseFirestore.getInstance();
+        CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
+
+        docReference.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                            PlayerCode plCode = document.toObject(PlayerCode.class);
+                            codes.add(plCode);
+//                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
+                        }
+                        fireStoreLIstResults.onResultGetList(codes);
+                    }
+                });
+    }
 }
