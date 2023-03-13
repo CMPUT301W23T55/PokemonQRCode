@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -149,6 +150,7 @@ public class SelectCodeActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Void unused) {
                                                     Log.d("Working","Data Successfully Deleted!");
+                                                    Toast.makeText(SelectCodeActivity.this,"Code deleted!", Toast.LENGTH_SHORT).show();
                                                     finish();
                                                 }
                                             })
@@ -180,6 +182,7 @@ public class SelectCodeActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void unused) {
                                 Log.d("Working","Data Added Successfully!");
+                                Toast.makeText(SelectCodeActivity.this,"Comment saved!", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
