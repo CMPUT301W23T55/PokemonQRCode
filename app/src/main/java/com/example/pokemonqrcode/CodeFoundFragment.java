@@ -36,6 +36,11 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
+/**
+ * This is the fragment that appears after the camera detects a QR code from the MainActivity
+ * Here, the user can take a picture of the code with their camera, and decide whether to tag
+ * the code with a geolocation
+ */
 public class CodeFoundFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
 
     @Override
