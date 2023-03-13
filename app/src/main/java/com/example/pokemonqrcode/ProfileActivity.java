@@ -5,11 +5,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -44,6 +47,8 @@ public class ProfileActivity extends AppCompatActivity {
 //    CustomList customList;
 //    TextView codeName;
     TextView totalCode;
+    ArrayList<PlayerCode> playerCodes = new ArrayList<>();
+
 
     private ArrayAdapter<PlayerCode> adapter;
     @Override
@@ -71,7 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                ArrayList<PlayerCode> playerCodes = new ArrayList<>();
+
                                 for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
                                     PlayerCode plCode = document.toObject(PlayerCode.class);
                                     playerCodes.add(plCode);
@@ -104,6 +109,27 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        codeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            private String HashCode;
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                HashCode=playerCodes.get(i).getHashCode();
+                db.collection("Users/Admin/QRCodes")
+                        .whereEqualTo(FieldPath.documentId(),HashCode)
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                Intent intent = new Intent(ProfileActivity.this, SelectCodeActivity.class );
+                                intent.putExtra("HashCode",HashCode);
+                                startActivity(intent);
+                            }
+                        });
+
+
+            }
+        });
+
 
 
     }
