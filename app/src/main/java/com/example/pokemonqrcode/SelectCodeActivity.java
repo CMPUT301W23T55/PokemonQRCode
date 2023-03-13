@@ -26,7 +26,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * This is a class that creates and maintains an activity which shows detailed info
+ * and extra functionalities for each scanned code from the list of codes.
+ * @author Araf
+ * @see ProfileActivity, FireStoreClass, PlayerCode
+ * @version 1.3
+ */
 public class SelectCodeActivity extends AppCompatActivity {
+
 
     private PlayerCode plCode;
     private String docHashCode;
@@ -39,6 +47,11 @@ public class SelectCodeActivity extends AppCompatActivity {
     TextView codeImage;
 
 
+    /**
+     * Takes cares of commenting, deleting code, returning to previous activites and other
+     * additional functionalities using buttons and edit texts.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
