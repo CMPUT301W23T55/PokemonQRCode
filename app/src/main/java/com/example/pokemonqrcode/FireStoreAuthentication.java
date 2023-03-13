@@ -32,7 +32,7 @@ public class FireStoreAuthentication {
     /**
      * This method validates the username to see if it already exists in the database
      * @param username username user wishes to go by
-     * @return true if username does not already exist in database, else otherwise
+     * @param fireStoreResults this waits until the database query runs and then gets the result(boolean)
      */
     public void validUsername(String username, FireStoreResults fireStoreResults){
         db = FirebaseFirestore.getInstance();
@@ -81,7 +81,7 @@ public class FireStoreAuthentication {
      * Checks the users password when they login
      * @param username the users username
      * @param password the users password
-     * @return true if the user gave the correct password for his username, returns false otherwise
+     * @param fireStoreResults this waits until the database query runs and then gets the result(boolean)
      */
 
     public void checkPassword(String username, String password, FireStoreResults fireStoreResults){
