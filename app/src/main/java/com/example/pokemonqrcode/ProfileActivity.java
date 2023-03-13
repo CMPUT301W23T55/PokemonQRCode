@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 HashCode=playerCodes.get(i).getHashCode();
+                PlayerCode playerCode = playerCodes.get(i);
                 db.collection("Users/Admin/QRCodes")
                         .whereEqualTo(FieldPath.documentId(),HashCode)
                         .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

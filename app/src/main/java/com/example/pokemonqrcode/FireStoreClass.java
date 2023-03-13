@@ -4,12 +4,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -17,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,7 +23,7 @@ import java.util.HashMap;
  */
 //for all query operations, https://firebase.google.com/docs/firestore/
 //was used as a reference
-public class FireStoreClass {
+public class FireStoreClass implements Serializable {
 
     final private String userName;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();;
@@ -58,7 +55,7 @@ public class FireStoreClass {
         Date date = pC.getDate();
         String hashcode = pC.getHashCode();
         String picture = pC.getPicture();
-        ArrayList<String> comments = pC.getComments();
+        String comments = pC.getComments();
 
 
         data.put("Name",name);
@@ -124,7 +121,7 @@ public class FireStoreClass {
                         PlayerCode pc = new PlayerCode(hashCode, name, score, picture);
                         codes.add(pc);
                     } else {
-                        ArrayList<String> comments = (ArrayList<String>) document.get("Comments");
+                        String comments = (String) document.get("Comments");
                         PlayerCode pc = new PlayerCode(hashCode, name, score, picture, date, comments);
                         codes.add(pc);
                     }
