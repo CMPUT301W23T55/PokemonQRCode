@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         SharedPreferences preferences = getSharedPreferences("valid", MODE_PRIVATE);
         String remember = preferences.getString("remember", "");
 
-        if (remember.equals("trues")){
+        if (remember.equals("true")){
             SharedPreferences preferences1 = getSharedPreferences("name", MODE_PRIVATE);
             Globals.username = preferences1.getString("username", "");
         } else {
