@@ -48,6 +48,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * the MainActivity of the app, contains buttons to open the camera to scan a code,
+ * view the users profile, open the map, and view other players' stats
+ */
 public class MainActivity extends AppCompatActivity implements CodeFoundFragment.CodeFoundDialogListener {
 
     FloatingActionButton cameraButton;
@@ -168,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     }
 
-    /*
-    viewProfile shows all scanned qr codes of the user in a new Activity
+    /**
+     * viewProfile shows all scanned qr codes of the user in a new Activity
      */
     private void viewProfile(){
         Intent intent = new Intent(this, ProfileActivity.class);
@@ -183,6 +187,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     https://choosealicense.com/licenses/mit/
      */
 
+    /**
+     * creates the activity that opens the phone's camera to scan a code
+     */
     private void scanCode() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Volume up to turn on flash");
