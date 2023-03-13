@@ -1,15 +1,15 @@
 package com.example.pokemonqrcode;
-
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Address;
@@ -17,7 +17,11 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
+import android.os.SystemClock;
+import android.provider.MediaStore;
+
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -34,6 +38,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -47,12 +52,15 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     FloatingActionButton cameraButton;
     Bitmap currentImage;
-    Button profileButton;
+    Button profileButton, logOutBtn;
 
 
     String currentLocationSetting; //yes or no
     List<Address> currentLocation = new ArrayList<Address>();
     FusedLocationProviderClient fusedLocationProviderClient;
+
+    FireStoreClass f;
+
 
 
     @Override
@@ -62,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     }
     private void getCurrentLocation() {
 
-        if(currentLocationSetting == "Yes") {
+        if(currentLocationSetting.equals("yes")) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                 fusedLocationProviderClient.getLastLocation()
@@ -93,14 +101,38 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
          */
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Globals.username == null){
+
+        } else {
+            this.f = new FireStoreClass(Globals.username);
+            this.f.autoUpdate();
+        }
+    }
+
+
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
-        //startActivity(newIntent);
-        //startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        SharedPreferences preferences = getSharedPreferences("valid", MODE_PRIVATE);
+        String remember = preferences.getString("remember", "");
+
+        if (remember.equals("true")){
+            SharedPreferences preferences1 = getSharedPreferences("name", MODE_PRIVATE);
+            Globals.username = preferences1.getString("username", "");
+        } else {
+            Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(newIntent);
+        }
+
+        logOutBtn = findViewById(R.id.logoutBtn);
 
         profileButton = findViewById(R.id.profile_btn);
         cameraButton = findViewById(R.id.open_camera_button);
@@ -112,6 +144,25 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             @Override
             public void onClick(View view) {
                 viewProfile();
+            }
+        });
+
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                SharedPreferences pref = getSharedPreferences("name", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("username","");
+                editor.apply();
+
+                SharedPreferences preferences = getSharedPreferences("valid", MODE_PRIVATE);
+                SharedPreferences.Editor editor1 = preferences.edit();
+                editor1.putString("remember","false");
+                editor1.apply();
+
+                Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(newIntent);
             }
         });
 
@@ -153,20 +204,24 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 }, 100);
             }
 
-            new CodeFoundFragment().show(getSupportFragmentManager(), "Code Found");
-
+            CodeFoundFragment codeFoundFragment = new CodeFoundFragment();
+            codeFoundFragment.show(getSupportFragmentManager(), "Code Found");;
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("Result");
-            try {
-                ScannedCode code = null;
-                code = new ScannedCode(result);
+            LayoutInflater inflater = getLayoutInflater();
+            View v = inflater.inflate(R.layout.code_captured, null);
+            builder.setView(v);
 
+
+            //builder.setTitle("Result");
+            try {
+                ScannedCode code = new ScannedCode(result);
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
-                builder.setMessage(pCode.getPicture());
+                //builder.setMessage(pCode.getPicture());
                 //builder.setMessage(pCode.getName());
+                /*
                 String test = "a";
                 getCurrentLocation();
                 for(Address address : currentLocation) {
@@ -175,20 +230,30 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 }
                 Log.d("please+++++++++++++++++++++++++++++++++", test);
                 builder.setMessage(test);
+
+                 */
+                TextView codeImage = (TextView) v.findViewById(R.id.code_image);
+                TextView codeName = (TextView) v.findViewById(R.id.code_name);
+                TextView codeScore = (TextView) v.findViewById(R.id.code_score);
+                codeImage.setText(pCode.getPicture().toString());
+                codeName.setText(pCode.getName().toString());
+                codeScore.setText(Integer.toString(pCode.getScore()));
                 builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                }).show();
+                });
 
                 builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Add the player code to the database in here
+                        f.addAQRCode(pCode);
                         dialog.dismiss();
                     }
-                }).show();
+                });
+                builder.show();
                 // e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
@@ -197,7 +262,4 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
         }
     });
-
-
-
 }

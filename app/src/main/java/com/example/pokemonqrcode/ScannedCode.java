@@ -30,13 +30,21 @@ public class ScannedCode {
         this.createName();
         this.createImage();
     }
+
+    // Constructor used for testing purposes
+    public ScannedCode(byte[] mockArray) {
+        this.hashedCode = mockArray;
+        this.calculateScore();
+        this.createImage();
+        this.createName();
+    }
+
     /*
     https://www.geeksforgeeks.org/sha-256-hash-in-java/
     Retrieved March 4, 2023
     https://www.geeksforgeeks.org/copyright-information/
     Licensed under CCBY-SA
      */
-
     /**
      * @param input
      * String of the contents of the scanned code
@@ -79,10 +87,8 @@ public class ScannedCode {
     }
 
     /**
-     * calculates the score according to the hash (use eClass rules)
+     * calculates the score according to the hash, sums all of the digits in the hashCode
      */
-
-
     public void calculateScore() {
         // Currently calculate score does not use the eClass rules
         // just sums all of the byte values
@@ -102,7 +108,6 @@ public class ScannedCode {
      */
     public void setScore(int score) {
         this.score = score;
-
     }
 
     /**
@@ -205,7 +210,7 @@ public class ScannedCode {
      * String representing image of code
      */
     public String getPicture() {
-        return picture;
+        return this.picture;
     }
 
     /**

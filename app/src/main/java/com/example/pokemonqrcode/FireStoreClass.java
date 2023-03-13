@@ -26,10 +26,11 @@ import java.util.HashMap;
 public class FireStoreClass implements Serializable {
 
     final private String userName;
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();;
+    private FirebaseFirestore db;
 
     private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
     private int totalScore;
+    private int count;
 
     //needs username as that is the key to getting data from database
 
@@ -37,7 +38,7 @@ public class FireStoreClass implements Serializable {
      * Used when they log back into an existing account, or when device auto-identifies user
      * @param userName unique identifier
      */
-    public FireStoreClass(String userName){
+    public FireStoreClass(@NonNull String userName){
         this.userName = userName;
     }
 
@@ -47,6 +48,7 @@ public class FireStoreClass implements Serializable {
      * @param pC needs a player code to add it to the database
      */
     public void addAQRCode(@NonNull PlayerCode pC){
+        db = FirebaseFirestore.getInstance();
         HashMap<String, Object> data = new HashMap<>();
 
 
@@ -65,12 +67,14 @@ public class FireStoreClass implements Serializable {
         data.put("Picture",picture);
         data.put("Comments",comments);
 
+        this.codes.add(pC);
+
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef
                 .document(String.valueOf(hashcode))
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully"))
-                .addOnFailureListener(e -> Log.d("Working", "data not added" + e));
+                .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
     }
 
     /**
@@ -78,12 +82,13 @@ public class FireStoreClass implements Serializable {
      * @param pC PlayerCode that should be deleted from the database
      */
     public void deleteCode(PlayerCode pC){
+        db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users/"+userName+"/QRCodes");
         innerCollectionRef
                 .document(pC.getHashCode())
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
-                .addOnFailureListener(e -> Log.w("Working", "Error deleting document", e));
+                .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
     }
 
     /**
@@ -103,6 +108,7 @@ public class FireStoreClass implements Serializable {
      */
 
     public void autoUpdate(){
+        db = FirebaseFirestore.getInstance();
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -117,7 +123,7 @@ public class FireStoreClass implements Serializable {
                     Date date = document.get("Date", Date.class);
                     String hashCode = document.get("HashCode", String.class);
                     String picture = document.get("Picture", String.class);
-                    if(document.get("Comments") == null){
+                    if(((ArrayList<String>) document.get("Comments")) == null){
                         PlayerCode pc = new PlayerCode(hashCode, name, score, picture);
                         codes.add(pc);
                     } else {
@@ -126,26 +132,50 @@ public class FireStoreClass implements Serializable {
                         codes.add(pc);
                     }
                     totalScore += score;
+                    count ++;
 
-                    Log.d("Working", document.getId() + " => " + document.get("Score")
-                            + " => " + codes.size());
+                    Log.d("Working", document.getId() + " is in the database");
                 }
             }
         });
     }
 
-    public void deleteComment(String comment, String hashcode) {
-        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
+    public void deleteComment(String comment, PlayerCode pc) {
+        db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
         docRef.update("Comments", FieldValue.arrayRemove(comment))
-                .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
-                .addOnFailureListener(e -> Log.w("Working", "Error deleting comment", e));
+                .addOnCompleteListener(unused -> Log.d("Working", "Comment successfully deleted"))
+                .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
 
     }
 
-    public void addComment(String comment, String hashcode){
-        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
+    public void addComment(String comment, PlayerCode pc){
+        db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
         docRef.update("Comments", FieldValue.arrayUnion(comment))
                 .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
-                .addOnFailureListener(e -> Log.w("Working", "Error deleting comment", e));
+                .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
+    }
+
+    public void refreshCodes(FireStoreIntegerResults fireStoreIntegerResults){
+        db = FirebaseFirestore.getInstance();
+        CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
+        collectionRef
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                int score = document.get("Score", int.class);
+
+                                totalScore += score;
+                                count++;
+                                Log.d("Working", document.getId() + " is in the database");
+                            }
+                            fireStoreIntegerResults.onResultGetInt(totalScore, count);
+                        }
+                    }
+                });
     }
 }
