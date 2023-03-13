@@ -44,7 +44,10 @@ public class SelectCodeActivity extends AppCompatActivity {
     private Button del_btn;
     private Button save_com_btn;
     private Button return_btn;
+    TextView codeName;
     TextView codeImage;
+    TextView codeScore;
+
 
 
     /**
@@ -93,8 +96,12 @@ public class SelectCodeActivity extends AppCompatActivity {
                             Log.d("SelectCodeActivity", "Code "+docHashCode);
                             if (docHashCode.equals(Hashcode)) {
                                 PlayerCode plCode = document.toObject(PlayerCode.class);
+                                codeName = findViewById(R.id.select_code_name);
+                                codeName.setText(plCode.getName());
                                 codeImage = findViewById(R.id.itemImage);
                                 codeImage.setText(plCode.getPicture());
+                                codeScore = findViewById(R.id.select_code_score);
+                                codeScore.setText(Integer.toString(plCode.getScore()));
                                 commentsString= (String) document.get("Comments");
                                 Log.d("SelectCodeActivity", "Comment "+commentsString);
                                 Log.d("SelectCodeActivity","editText"+commentField);
