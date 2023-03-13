@@ -191,7 +191,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 }, 100);
             }
 
-            new CodeFoundFragment().show(getSupportFragmentManager(), "Code Found");
+            CodeFoundFragment codeFoundFragment = new CodeFoundFragment();
+            codeFoundFragment.show(getSupportFragmentManager(), "Code Found");;
+
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             LayoutInflater inflater = getLayoutInflater();
@@ -230,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                }).show();
+                });
 
                 builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
                     @Override
@@ -239,7 +241,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                         f.addAQRCode(pCode);
                         dialog.dismiss();
                     }
-                }).show();
+                });
+                builder.show();
                 // e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
