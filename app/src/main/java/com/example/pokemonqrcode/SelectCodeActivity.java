@@ -105,7 +105,7 @@ public class SelectCodeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
-            }
+            }:
         });
 
 
@@ -115,7 +115,7 @@ public class SelectCodeActivity extends AppCompatActivity {
         del_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-<<<<<<< HEAD
+
                 docReference
                         .whereEqualTo(FieldPath.documentId(),Hashcode)
                         .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -126,7 +126,7 @@ public class SelectCodeActivity extends AppCompatActivity {
                                     String documentID = documentSnapshot.getId();
                                     docReference
                                             .document(documentID)
-                                            .delete()
+                                            .delete)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
@@ -147,10 +147,15 @@ public class SelectCodeActivity extends AppCompatActivity {
                                 }
                             }
                         });
+<<<<<<< HEAD
 =======
                 fireStoreClass.deleteCode(Hashcode);
                 finish();
 >>>>>>> ad407a1490943a10d2177b42afa1d145ff03d949
+=======
+                fireStoreClass.deleteCode(Hashcode);
+                finish();
+>>>>>>> 5973b0528cb0482a0b942b0afa63d24c90bda9a3
 
             }
         });
