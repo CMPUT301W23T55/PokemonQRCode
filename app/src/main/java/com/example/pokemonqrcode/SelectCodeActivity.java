@@ -84,40 +84,20 @@ public class SelectCodeActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
-        docReference.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+        fireStoreClass.getSpecificCode(Hashcode, new FireStorePlayerCodeResults() {
+            @Override
+            public void onResultGetPlayerCode(PlayerCode pCode) {
+                codeName = findViewById(R.id.select_code_name);
+                codeName.setText(pCode.getName());
+                codeImage = findViewById(R.id.itemImage);
+                codeImage.setText(pCode.getPicture());
+                codeScore = findViewById(R.id.select_code_score);
+                codeScore.setText(Integer.toString(pCode.getScore()));
+                commentField = findViewById(R.id.comments);
+                commentField.setText(pCode.getComments());
 
-                        for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
-
-                            docHashCode= (String) document.get("HashCode");
-                            Log.d("SelectCodeActivity", "Intent "+Hashcode);
-                            Log.d("SelectCodeActivity", "Code "+docHashCode);
-                            if (docHashCode.equals(Hashcode)) {
-                                PlayerCode plCode = document.toObject(PlayerCode.class);
-                                codeName = findViewById(R.id.select_code_name);
-                                codeName.setText(plCode.getName());
-                                codeImage = findViewById(R.id.itemImage);
-                                codeImage.setText(plCode.getPicture());
-                                codeScore = findViewById(R.id.select_code_score);
-                                codeScore.setText(Integer.toString(plCode.getScore()));
-                                commentsString= (String) document.get("Comments");
-                                Log.d("SelectCodeActivity", "Comment "+commentsString);
-                                Log.d("SelectCodeActivity","editText"+commentField);
-                                Log.d("SelectCodeActivity","PlCODE"+plCode.getHashCode());
-                                commentField.setText(commentsString);
-//                                if (commentField.getText().equals(commentsString) == false) {
-//                                    fireStoreClass.deleteComment(Hashcode);
-//                                    fireStoreClass.addComment(commentField.getText(), Hashcode);
-
-//                                }
-
-                            }
-//                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
-                        }
-                    }
-                });
+            }
+        });
 
         return_btn = findViewById(R.id.return_to_profile_btn);
         return_btn.setOnClickListener(new View.OnClickListener() {
@@ -134,36 +114,8 @@ public class SelectCodeActivity extends AppCompatActivity {
         del_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                docReference
-                        .whereEqualTo(FieldPath.documentId(),Hashcode)
-                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful() && !task.getResult().isEmpty()){
-                                    DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                                    String documentID = documentSnapshot.getId();
-                                    docReference
-                                            .document(documentID)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    Log.d("Working","Data Successfully Deleted!");
-                                                    finish();
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.d("Working","Data Not Deleted!");
-                                                }
-                                            });
-                                }
-                                else{
-                                    Log.d("Failed","Error, Not Deleting!");
-                                }
-                            }
-                        });
+                fireStoreClass.deleteCode(Hashcode);
+                finish();
 
             }
         });
@@ -193,3 +145,28 @@ public class SelectCodeActivity extends AppCompatActivity {
         });
     };
 }
+/*
+fireStoreClass.getSpecificCode(Hashcode, new FireStorePlayerCodeResults() {
+@Override
+public void onResultGetPlayerCode(PlayerCode pCode) {
+        codeName.setText(pCode.getName());
+        codeImage.setText(pCode.getPicture());
+        codeScore.setText(Integer.toString(pCode.getScore()));
+
+        }
+        });
+
+
+        codeName = findViewById(R.id.select_code_name);
+        codeName.setText(plCode.getName());
+        codeImage = findViewById(R.id.itemImage);
+        codeImage.setText(plCode.getPicture());
+        codeScore = findViewById(R.id.select_code_score);
+        codeScore.setText(Integer.toString(plCode.getScore()));
+        commentsString= (String) document.get("Comments");
+        Log.d("SelectCodeActivity", "Comment "+commentsString);
+        Log.d("SelectCodeActivity","editText"+commentField);
+        Log.d("SelectCodeActivity","PlCODE"+plCode.getHashCode());
+        commentField.setText(commentsString);
+
+ */
