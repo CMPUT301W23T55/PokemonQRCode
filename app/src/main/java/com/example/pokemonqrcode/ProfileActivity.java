@@ -2,9 +2,12 @@ package com.example.pokemonqrcode;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +33,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * This is a class that is an activity containing all of user's code
@@ -41,10 +48,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     //initialize views
     Button returnHomeBtn;
+
+    Spinner spinner;
     ArrayList<PlayerCode> playerCodes = new ArrayList<>();
     TextView totalCode,userName;
     TextView totalScoreView, totalCodeView;
-    private ArrayAdapter<PlayerCode> adapter;
+    private ArrayAdapter<PlayerCode> adapterPlayerCode;
 
     @Override
     protected void onStart() {
@@ -53,9 +62,10 @@ public class ProfileActivity extends AppCompatActivity {
         f.getCodesList(new FireStoreLIstResults() {
             @Override
             public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
-                adapter.clear();
+                adapterPlayerCode.clear();
                 playerCodes = playerCodeList;
-                adapter.addAll(playerCodes);
+                playerCodes.sort(PlayerCode.PlayerScoreComparator);
+                adapterPlayerCode.addAll(playerCodes);
             }
         });
         f.refreshCodes(new FireStoreIntegerResults() {
@@ -73,6 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
      *
      * @param savedInstanceState
      */
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,10 +101,45 @@ public class ProfileActivity extends AppCompatActivity {
         Initialize list view, adapter and set adapter
          */
         ListView codeListView = findViewById(R.id.code_list);
-        adapter = new PlayerCodeAdapter(this, new ArrayList<PlayerCode>());
-        codeListView.setAdapter(adapter);
+        adapterPlayerCode = new PlayerCodeAdapter(this, new ArrayList<PlayerCode>());
+        codeListView.setAdapter(adapterPlayerCode);
 
 
+        //sets the sorting preference
+        spinner = findViewById(R.id.sorting_spinner);
+        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this,
+                R.array.sort_by, android.R.layout.simple_spinner_item);
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapterSpinner);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String value = (String) adapterView.getItemAtPosition(i);
+                if(value.equals("Score Ascending")) {
+                    adapterPlayerCode.clear();
+                    playerCodes.sort(PlayerCode.PlayerScoreComparator);
+                    adapterPlayerCode.addAll(playerCodes);
+                }
+                if(value.equals("Score Descending")) {
+                    adapterPlayerCode.clear();
+                    playerCodes.sort(PlayerCode.PlayerScoreComparator);
+                    Collections.reverse(playerCodes);
+                    adapterPlayerCode.addAll(playerCodes);
+                }
+                if(value.equals("Date")) {
+                    adapterPlayerCode.clear();
+                    playerCodes.sort(PlayerCode.PlayerDateComparator);
+                    adapterPlayerCode.addAll(playerCodes);
+                    Log.d("----------------------------", value);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
 
 

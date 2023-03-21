@@ -10,7 +10,7 @@
         android:id="@+id/UserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Username"
+        android:text=""
         android:textSize="34sp"
         app:layout_constraintEnd_toStartOf="@+id/info_btn"
         app:layout_constraintStart_toEndOf="@+id/home_btn"
@@ -68,7 +68,7 @@
         android:id="@+id/total_codes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Total Codes:"
+        android:text="@string/total_codes"
         android:layout_margin="3dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -80,7 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
-        android:text="Total Score:"
+        android:text="@string/total_score"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="@id/code_list"
@@ -110,5 +110,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.995"/>
+
+    <Spinner
+        android:id="@+id/sorting_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.960"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.980"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -127,4 +128,25 @@ public class PlayerCode {
     public String toString() {
         return this.getName()+"\n"+this.Score+"\n"+this.Date;
     }
+
+    public static Comparator<PlayerCode> PlayerScoreComparator = new Comparator<PlayerCode>() {
+        @Override
+        public int compare(PlayerCode playerCode, PlayerCode t1) {
+            return t1.getScore() - playerCode.getScore();
+        }
+    };
+
+    public static Comparator<PlayerCode> PlayerDateComparator = new Comparator<PlayerCode>() {
+        @Override
+        public int compare(PlayerCode playerCode, PlayerCode t1) {
+            if(playerCode.getDate().after(t1.getDate())){
+                return -1;
+            } else if (playerCode.getDate().equals(t1.getDate())){
+                return 0;
+            }
+            return 1;
+        }
+    };
 }
+
+

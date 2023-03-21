@@ -93,7 +93,7 @@ public class SelectCodeActivity extends AppCompatActivity {
                 codeImage = findViewById(R.id.itemImage);
                 codeImage.setText(pCode.getPicture());
                 codeScore = findViewById(R.id.select_code_score);
-                codeScore.setText(Integer.toString(pCode.getScore()));
+                codeScore.setText(Integer.toString(pCode.getScore()) + " Pts");
                 commentField = findViewById(R.id.comments);
                 commentField.setText(pCode.getComments());
 
