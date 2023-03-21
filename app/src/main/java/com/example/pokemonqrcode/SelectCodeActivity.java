@@ -1,6 +1,7 @@
 package com.example.pokemonqrcode;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -73,21 +74,13 @@ public class SelectCodeActivity extends AppCompatActivity {
 
         fireStoreClass = new FireStoreClass(Globals.username);
 
-//        fireStoreClass.refreshCodes(new FireStoreIntegerResults() {
-//            @Override
-//            public void onResultGetInt(int result, int count) {
-//                commentField.setText((CharSequence) commentField);
-//
-//            }
-//        });
-
-
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
         fireStoreClass.getSpecificCode(Hashcode, new FireStorePlayerCodeResults() {
             @Override
             public void onResultGetPlayerCode(PlayerCode pCode) {
+                plCode = pCode;
                 codeName = findViewById(R.id.select_code_name);
                 codeName.setText(pCode.getName());
                 codeImage = findViewById(R.id.itemImage);
@@ -115,43 +108,15 @@ public class SelectCodeActivity extends AppCompatActivity {
         del_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                docReference
-                        .whereEqualTo(FieldPath.documentId(),Hashcode)
-                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful() && !task.getResult().isEmpty()){
-                                    DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                                    String documentID = documentSnapshot.getId();
-                                    docReference
-                                            .document(documentID)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    Log.d("Working","Data Successfully Deleted!");
-                                                    Toast.makeText(SelectCodeActivity.this,"Code deleted!", Toast.LENGTH_SHORT).show();
-                                                    finish();
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.d("Working","Data Not Deleted!");
-                                                }
-                                            });
-                                }
-                                else{
-                                    Log.d("Failed","Error, Not Deleting!");
-                                }
-                            }
-                        });
-
-                fireStoreClass.deleteCode(Hashcode);
-                finish();
-
-
+                AlertDialog.Builder aDB = new AlertDialog.Builder(SelectCodeActivity.this);
+                aDB.setTitle("Delete?");
+                aDB.setMessage("Are you sure you want to delete " + plCode.getName());
+                aDB.setNegativeButton("Cancel", null);
+                aDB.setPositiveButton("OK", (dialog, which) -> {
+                    fireStoreClass.deleteCode(Hashcode);
+                    finish();
+                });
+                aDB.show();
             }
         });
 
@@ -181,28 +146,4 @@ public class SelectCodeActivity extends AppCompatActivity {
         });
     };
 }
-/*
-fireStoreClass.getSpecificCode(Hashcode, new FireStorePlayerCodeResults() {
-@Override
-public void onResultGetPlayerCode(PlayerCode pCode) {
-        codeName.setText(pCode.getName());
-        codeImage.setText(pCode.getPicture());
-        codeScore.setText(Integer.toString(pCode.getScore()));
 
-        }
-        });
-
-
-        codeName = findViewById(R.id.select_code_name);
-        codeName.setText(plCode.getName());
-        codeImage = findViewById(R.id.itemImage);
-        codeImage.setText(plCode.getPicture());
-        codeScore = findViewById(R.id.select_code_score);
-        codeScore.setText(Integer.toString(plCode.getScore()));
-        commentsString= (String) document.get("Comments");
-        Log.d("SelectCodeActivity", "Comment "+commentsString);
-        Log.d("SelectCodeActivity","editText"+commentField);
-        Log.d("SelectCodeActivity","PlCODE"+plCode.getHashCode());
-        commentField.setText(commentsString);
-
- */
