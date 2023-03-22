@@ -32,6 +32,13 @@ public class LoginActivity extends AppCompatActivity {
     EditText password_etxt;
     TextView title;
 
+
+    @Override
+    public void onBackPressed(){
+        moveTaskToBack(true);
+        return;
+    }
+
     /**
      * creates a view of the activity and instantiates all of the necessary fields
      * sets up the onClickListeners for buttons
