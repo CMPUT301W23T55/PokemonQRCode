@@ -111,9 +111,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         super.onStart();
         if (Globals.username == null){
 
-        } else {
-            this.f = new FireStoreClass(Globals.username);
-            this.f.autoUpdate();
         }
     }
 
@@ -135,6 +132,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
+
+        this.f = new FireStoreClass(Globals.username);
+        this.f.refreshCodes(new FireStoreIntegerResults() {
+            @Override
+            public void onResultGetInt() {
+
+            }
+        });
 
         logOutBtn = findViewById(R.id.logoutBtn);
 

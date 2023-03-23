@@ -65,6 +65,7 @@ public class SelectCodeActivity extends AppCompatActivity {
         String Hashcode = getIntent.getStringExtra("HashCode");
         Log.d("SelectCodeActivity",Hashcode);
         commentField = findViewById(R.id.comments);
+
         if (commentField.getText()==null || commentField.getText().equals("")) {
             commentField.setText("No Comment");
         }
@@ -115,6 +116,9 @@ public class SelectCodeActivity extends AppCompatActivity {
                 aDB.setPositiveButton("OK", (dialog, which) -> {
                     fireStoreClass.deleteCode(Hashcode);
                     finish();
+                    Toast.makeText(SelectCodeActivity.this, "You have successfully deleted "
+                            + plCode.getName()
+                            , Toast.LENGTH_SHORT).show();
                 });
                 aDB.show();
             }

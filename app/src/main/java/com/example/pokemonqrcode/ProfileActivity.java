@@ -55,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView totalScoreView, totalCodeView;
     private ArrayAdapter<PlayerCode> adapterPlayerCode;
 
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -68,14 +69,17 @@ public class ProfileActivity extends AppCompatActivity {
                 adapterPlayerCode.addAll(playerCodes);
             }
         });
+
         f.refreshCodes(new FireStoreIntegerResults() {
             @Override
-            public void onResultGetInt(int result, int count) {
-                totalScoreView.setText(Integer.toString(result));
-                totalCodeView.setText(Integer.toString(count));
-
+            public void onResultGetInt() {
+                totalScoreView.setText(Integer.toString(f.getTotalScore()));
+                totalCodeView.setText(Integer.toString(f.getTotalCount()));
             }
         });
+
+
+
 
     }
 
@@ -89,6 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         FireStoreClass f = new FireStoreClass(Globals.username);
+
         // find views
         userName=findViewById(R.id.UserName);
         userName.setText(Globals.username);
