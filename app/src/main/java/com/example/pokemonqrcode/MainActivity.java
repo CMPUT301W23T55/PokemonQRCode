@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     public void onStart() {
         super.onStart();
         if (Globals.username == null){
-
         }
     }
 
@@ -182,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
      */
     private void viewProfile(){
         Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra("key",Globals.username);
         startActivity(intent);
     }
 

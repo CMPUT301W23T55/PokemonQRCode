@@ -55,11 +55,13 @@ public class ProfileActivity extends AppCompatActivity {
     TextView totalScoreView, totalCodeView;
     private ArrayAdapter<PlayerCode> adapterPlayerCode;
 
+    String firebaseUsername;
+
 
     @Override
     protected void onStart() {
         super.onStart();
-        FireStoreClass f = new FireStoreClass(Globals.username);
+        FireStoreClass f = new FireStoreClass(this.firebaseUsername);
         f.getCodesList(new FireStoreLIstResults() {
             @Override
             public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
@@ -91,12 +93,18 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            this.firebaseUsername = extras.getString("key");
+            //The key argument here must match that used in the other activity
+        }
         setContentView(R.layout.activity_profile);
-        FireStoreClass f = new FireStoreClass(Globals.username);
+        FireStoreClass f = new FireStoreClass(this.firebaseUsername);
 
         // find views
         userName=findViewById(R.id.UserName);
-        userName.setText(Globals.username);
+        userName.setText(this.firebaseUsername);
         totalCode = findViewById(R.id.total_codes);
         returnHomeBtn = findViewById(R.id.home_btn);
         totalScoreView = findViewById(R.id.total_score_value);
