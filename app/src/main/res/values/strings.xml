@@ -15,4 +15,11 @@
         <item>Yes</item>
         <item>No</item>
     </string-array>
+    <string name="total_codes">Total Codes:</string>
+    <string name="total_score">Total Score:</string>
+    <string-array name="sort_by">
+        <item>Score Ascending</item>
+        <item>Score Descending</item>
+        <item>Date</item>
+    </string-array>
 </resources>

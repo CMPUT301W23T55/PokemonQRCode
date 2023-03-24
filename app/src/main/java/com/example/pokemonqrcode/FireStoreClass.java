@@ -220,6 +220,10 @@ public class FireStoreClass implements Serializable {
                 });
     }
 
+    /**
+     * Gets the codes associated to an account
+     * @param fireStoreLIstResults
+     */
     public void getCodesList(FireStoreLIstResults fireStoreLIstResults){
         db = FirebaseFirestore.getInstance();
         CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
