@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
@@ -127,18 +128,42 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         if (remember.equals("true")){
             SharedPreferences preferences1 = getSharedPreferences("name", MODE_PRIVATE);
             Globals.username = preferences1.getString("username", "");
+            Toast.makeText(this, "Successfully logged in as " + Globals.username, Toast.LENGTH_SHORT).show();
         } else {
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
 
-        this.f = new FireStoreClass(Globals.username);
-        this.f.refreshCodes(new FireStoreIntegerResults() {
-            @Override
-            public void onResultGetInt() {
+        if (!(Globals.username == null)){
+            this.f = new FireStoreClass(Globals.username);
+            this.f.refreshCodes(new FireStoreIntegerResults() {
+                @Override
+                public void onResultGetInt() {
 
-            }
-        });
+                }
+            });
+        }
+
+
+
+
+
+        f.getUsersScannedSameCode("9a7cd5efda286fbcdd26f89e64a360c560208248b301ff49ad670cb5552790ff", new FireStoreUsersList() {
+                    @Override
+                    public void onResultGetUserList(ArrayList<String> userList) {
+                        ArrayList<String> s = userList;
+                        Toast.makeText(MainActivity.this, Integer.toString(userList.size()), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
+
+
+
+
+
+
 
         logOutBtn = findViewById(R.id.logoutBtn);
 

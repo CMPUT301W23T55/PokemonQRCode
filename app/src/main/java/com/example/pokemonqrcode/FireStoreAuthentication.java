@@ -32,9 +32,9 @@ public class FireStoreAuthentication {
     /**
      * This method validates the username to see if it already exists in the database
      * @param username username user wishes to go by
-     * @param fireStoreResults this waits until the database query runs and then gets the result(boolean)
+     * @param fireStoreBooleanResults this waits until the database query runs and then gets the result(boolean)
      */
-    public void validUsername(String username, FireStoreResults fireStoreResults){
+    public void validUsername(String username, FireStoreBooleanResults fireStoreBooleanResults){
         db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users").document(username);
                 docRef
@@ -50,7 +50,7 @@ public class FireStoreAuthentication {
                                 isUsernameValid = true;
                                 Log.d("Working", "Username does not exist");
                             }
-                            fireStoreResults.onResultGet(isUsernameValid);
+                            fireStoreBooleanResults.onResultGetBoolean(isUsernameValid);
                         } else {
                             Log.d("Working", "Get failed with", task.getException());
                         }
@@ -66,6 +66,7 @@ public class FireStoreAuthentication {
     public void createUser(String username, String password, String email){
         HashMap<String, Object> data = new HashMap<>();
 
+        data.put("Username",username);
         data.put("Password",password);
         data.put("Email", email);
         data.put("Total Score", null);
@@ -83,10 +84,10 @@ public class FireStoreAuthentication {
      * Checks the users password when they login
      * @param username the users username
      * @param password the users password
-     * @param fireStoreResults this waits until the database query runs and then gets the result(boolean)
+     * @param fireStoreBooleanResults this waits until the database query runs and then gets the result(boolean)
      */
 
-    public void checkPassword(String username, String password, FireStoreResults fireStoreResults){
+    public void checkPassword(String username, String password, FireStoreBooleanResults fireStoreBooleanResults){
         db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users");
         innerCollectionRef.document(username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -105,7 +106,7 @@ public class FireStoreAuthentication {
                     Log.d("Working", "Username not found");
                     correctPass = false;
                 }
-                fireStoreResults.onResultGet(correctPass);
+                fireStoreBooleanResults.onResultGetBoolean(correctPass);
             }
         });
     }

@@ -9,12 +9,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Document;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,10 +32,12 @@ import java.util.HashMap;
 public class FireStoreClass implements Serializable {
 
     final private String userName;
-    private FirebaseFirestore db;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
     private int totalScore, count;
     private PlayerCode pCode;
+
+    private ArrayList<String> usersScannedIdenticalCode = new ArrayList<String>();
 
     //needs username as that is the key to getting data from database
 
@@ -50,7 +55,6 @@ public class FireStoreClass implements Serializable {
      * @param pC needs a player code to add it to the database
      */
     public void addAQRCode(@NonNull PlayerCode pC){
-        db = FirebaseFirestore.getInstance();
         HashMap<String, Object> data = new HashMap<>();
 
 
@@ -84,7 +88,6 @@ public class FireStoreClass implements Serializable {
      * @param hashCode that should be deleted from the database
      */
     public void deleteCode(String hashCode){
-        db = FirebaseFirestore.getInstance();
         CollectionReference innerCollectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         innerCollectionRef
                 .document(hashCode)
@@ -113,7 +116,6 @@ public class FireStoreClass implements Serializable {
      * @param pc the playercode that the comment is associated with
      */
     public void addComment(String comment, PlayerCode pc){
-        db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
         docRef.update("Comments", FieldValue.arrayUnion(comment))
                 .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
@@ -125,7 +127,6 @@ public class FireStoreClass implements Serializable {
      * @param fireStoreIntegerResults this waits until the database query runs and then gets the result(total score, and #codes)
      */
     public void refreshCodes(FireStoreIntegerResults fireStoreIntegerResults){
-        db = FirebaseFirestore.getInstance();
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef
                 .get()
@@ -153,7 +154,6 @@ public class FireStoreClass implements Serializable {
      * @param fireStorePlayerCodeResults this waits until the database query runs and then gets the result(Player code)
      */
     public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
-        db = FirebaseFirestore.getInstance();
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -181,7 +181,6 @@ public class FireStoreClass implements Serializable {
      * @param fireStoreLIstResults
      */
     public void getCodesList(FireStoreLIstResults fireStoreLIstResults){
-        db = FirebaseFirestore.getInstance();
         CollectionReference docReference = db.collection("Users/"+this.userName+"/QRCodes");
 
         docReference.get()
@@ -200,7 +199,6 @@ public class FireStoreClass implements Serializable {
     }
 
     private void setUserAttributes(){
-        db = FirebaseFirestore.getInstance();
         HashMap<String, Object> data = new HashMap<>();
 
         data.put("Total Score",this.totalScore);
@@ -221,6 +219,36 @@ public class FireStoreClass implements Serializable {
 
     public int getTotalCount(){
         return this.count;
+    }
+
+    public void getUsersScannedSameCode(String tempHashcode, FireStoreUsersList fireStoreUserListResults){
+        CollectionReference docReference = db.collection("Users");
+
+        docReference.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                            String tempName = document.get("Username",String.class);
+
+                            CollectionReference collectionReference =
+                                    db.collection( "Users/"+ tempName +"/QRCodes");
+
+                            collectionReference.whereEqualTo("HashCode",tempHashcode)
+                                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (!task.getResult().isEmpty()){
+                                                Log.d("Working", tempName);
+                                                usersScannedIdenticalCode.add(tempName);
+                                            }
+                                        }
+                                    });
+                        }
+                        fireStoreUserListResults.onResultGetUserList(usersScannedIdenticalCode);
+                    }
+                });
     }
 
 }

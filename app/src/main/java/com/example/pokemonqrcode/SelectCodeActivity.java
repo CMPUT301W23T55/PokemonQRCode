@@ -77,7 +77,6 @@ public class SelectCodeActivity extends AppCompatActivity {
 
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
         fireStoreClass.getSpecificCode(Hashcode, new FireStorePlayerCodeResults() {
             @Override
             public void onResultGetPlayerCode(PlayerCode pCode) {
@@ -127,6 +126,7 @@ public class SelectCodeActivity extends AppCompatActivity {
         save_com_btn = findViewById(R.id.save_comment_btn);
 
         save_com_btn.setOnClickListener(new View.OnClickListener() {
+            final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
             @Override
             public void onClick(View view) {
                 docReference
