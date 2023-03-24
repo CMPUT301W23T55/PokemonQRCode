@@ -76,9 +76,9 @@ public class LoginActivityTest {
         EditText new_user = (EditText) solo.getView(R.id.new_username_edit_text);
         EditText new_pass = (EditText) solo.getView(R.id.new_password_edit_text);
         EditText new_email = (EditText) solo.getView(R.id.new_email_edit_text);
-        solo.enterText(new_user, "hello");
-        solo.enterText(new_pass, "hello2");
-        solo.enterText(new_email, "hello@test.com");
+        solo.enterText(new_user, "hellosolotest");
+        solo.enterText(new_pass, "hellosolotest");
+        solo.enterText(new_email, "hellosolo@test.com");
         solo.clearEditText(new_user);
         solo.clearEditText(new_pass);
         solo.clickOnView(solo.getView(R.id.cancel_register));

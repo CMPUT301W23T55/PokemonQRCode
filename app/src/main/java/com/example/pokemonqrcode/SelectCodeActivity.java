@@ -2,6 +2,9 @@ package com.example.pokemonqrcode;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +48,7 @@ public class SelectCodeActivity extends AppCompatActivity {
     private Button del_btn;
     private Button save_com_btn;
     private Button return_btn;
+    private Button view_other_btn;
     TextView codeName;
     TextView codeImage;
     TextView codeScore;
@@ -179,7 +183,21 @@ public class SelectCodeActivity extends AppCompatActivity {
 
             }
         });
-    };
+
+        view_other_btn = findViewById(R.id.view_other_players_button);
+        view_other_btn.setOnClickListener(v -> {
+            displayOtherPlayersFragment();
+        });
+    }
+
+    /**
+     * Displays fragment containing list of other players who have caught the same code
+     */
+    private void displayOtherPlayersFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        OtherPlayersCaughtFragment other_caught = new OtherPlayersCaughtFragment();//.newInstance("other_caught_fragment");
+        other_caught.show(fragmentManager, "other_caught_fragment");
+    }
 }
 /*
 fireStoreClass.getSpecificCode(Hashcode, new FireStorePlayerCodeResults() {
