@@ -79,7 +79,7 @@ public class FireStoreClass implements Serializable {
         innerCollectionRef
                 .document(String.valueOf(hashcode))
                 .set(data)
-                .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully"))
+                .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
                 .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
     }
 
