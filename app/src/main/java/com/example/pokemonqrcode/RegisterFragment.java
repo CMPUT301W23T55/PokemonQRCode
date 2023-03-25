@@ -74,7 +74,6 @@ public class RegisterFragment extends DialogFragment {
 
         submit.setOnClickListener(v -> {
             attemptRegistration();
-            this.dismiss();
         });
 
         cancel.setOnClickListener(v -> {
@@ -93,9 +92,9 @@ public class RegisterFragment extends DialogFragment {
             Toast.makeText(activity, "Ensure all fields have text", Toast.LENGTH_SHORT).show();
         } else {
 
-            authentication.validUsername(newUser, new FireStoreResults() {
+            authentication.validUsername(newUser, new FireStoreBooleanResults() {
                 @Override
-                public void onResultGet(boolean result) {
+                public void onResultGetBoolean(boolean result) {
                     if (!result) {
                         Toast.makeText(activity, "Username already exists", Toast.LENGTH_SHORT).show();
                     } else {
