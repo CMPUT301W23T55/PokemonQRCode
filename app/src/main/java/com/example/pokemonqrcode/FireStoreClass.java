@@ -201,8 +201,8 @@ public class FireStoreClass implements Serializable {
     private void setUserAttributes(){
         HashMap<String, Object> data = new HashMap<>();
 
-        data.put("Total Score",this.totalScore);
-        data.put("Total Codes",this.count);
+        data.put("Total_Score",this.totalScore);
+        data.put("Total_Codes",this.count);
 
 
         CollectionReference innerCollectionRef = db.collection("Users");
