@@ -177,7 +177,6 @@ public class SelectCodeActivity extends AppCompatActivity{
         FragmentManager fragmentManager = getSupportFragmentManager();
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("key",fireStoreClass.getUsersScannedIdenticalCode());
-        Log.d("-----f-f-f-f--f-f-f-f--f-f-f----",Integer.toString(fireStoreClass.getUsersScannedIdenticalCode().size()));
         OtherPlayersCaughtFragment other_caught = new OtherPlayersCaughtFragment();//.newInstance("other_caught_fragment");
         other_caught.setArguments(bundle);
         other_caught.show(fragmentManager, "other_caught_fragment");

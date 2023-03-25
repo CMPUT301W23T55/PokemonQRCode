@@ -26,13 +26,37 @@ public class SearchUserActivity extends AppCompatActivity {
     SearchAdapter mySearchAdapter;
     ArrayList<Users> usersList;
     RecyclerView recView;
-    FirebaseFirestore db;
     private SearchView searchView;
+
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_user);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            this.username = extras.getString("key");
+            //The key argument here must match that used in the other activity
+        }
+        homeBtn = findViewById(R.id.return_home);
+        recView =(RecyclerView) findViewById(R.id.rec_view);
+        recView.setLayoutManager(new LinearLayoutManager(this));
+        usersList = new ArrayList<>();
+        mySearchAdapter = new SearchAdapter(usersList);
+        recView.setAdapter(mySearchAdapter);
+
+        FireStoreClass f = new FireStoreClass(username);
+        f.getSearchList(new FireStoreIntegerResults() {
+            @Override
+            public void onResultGetInt() {
+                usersList = f.getUsersArrayList();
+                mySearchAdapter.notifyDataSetChanged();
+                filterList("");
+            }
+        });
+        Toast.makeText(this, Integer.toString(usersList.size()), Toast.LENGTH_SHORT).show();
 
         // find views by id
         searchView = findViewById(R.id.search_view);
@@ -50,41 +74,12 @@ public class SearchUserActivity extends AppCompatActivity {
             }
         });
 
-        homeBtn = findViewById(R.id.return_home);
-        recView =(RecyclerView) findViewById(R.id.rec_view);
-        recView.setLayoutManager(new LinearLayoutManager(this));
-        usersList = new ArrayList<>();
-        mySearchAdapter = new SearchAdapter(usersList);
-        recView.setAdapter(mySearchAdapter);
-
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-
-        db = FirebaseFirestore.getInstance();
-        CollectionReference col = db.collection("Users");
-
-        db.collection("Users").get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                                for (DocumentSnapshot d:list) {
-                                    Log.d("SearchUserActivity", String.valueOf(d.getData()));
-                                    Users user = d.toObject(Users.class);
-                                    Log.d("SearchUserActivity", " => " + user.getTotal_Codes());
-                                    usersList.add(user);
-                                }
-                                mySearchAdapter.notifyDataSetChanged();
-                            }
-                        });
-
-
-
-//        loadUsers();
 
     }
 
@@ -122,3 +117,24 @@ public class SearchUserActivity extends AppCompatActivity {
 //    }
 
 }
+/*
+
+        db = FirebaseFirestore.getInstance();
+                CollectionReference col = db.collection("Users");
+
+                col.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+@Override
+public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+        for (DocumentSnapshot d:list) {
+        Log.d("SearchUserActivity", String.valueOf(d.getData()));
+        Users user = d.toObject(Users.class);
+        Log.d("SearchUserActivity", " => " + user.getTotal_Codes());
+        usersList.add(user);
+        }
+        mySearchAdapter.notifyDataSetChanged();
+        }
+        });
+
+ */

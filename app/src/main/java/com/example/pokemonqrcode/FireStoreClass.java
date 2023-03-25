@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Create an instance of the Firestore database
@@ -38,6 +39,7 @@ public class FireStoreClass implements Serializable {
     private PlayerCode pCode;
 
     private ArrayList<String> usersScannedIdenticalCode = new ArrayList<String>();
+    private ArrayList<Users> usersArrayList = new ArrayList<Users>();
 
     //needs username as that is the key to getting data from database
 
@@ -79,7 +81,7 @@ public class FireStoreClass implements Serializable {
         innerCollectionRef
                 .document(String.valueOf(hashcode))
                 .set(data)
-                .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully"))
+                .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
                 .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
     }
 
@@ -201,8 +203,8 @@ public class FireStoreClass implements Serializable {
     private void setUserAttributes(){
         HashMap<String, Object> data = new HashMap<>();
 
-        data.put("Total Score",this.totalScore);
-        data.put("Total Codes",this.count);
+        data.put("Total_Score",this.totalScore);
+        data.put("Total_Codes",this.count);
 
 
         CollectionReference innerCollectionRef = db.collection("Users");
@@ -254,6 +256,29 @@ public class FireStoreClass implements Serializable {
                         }
                     }
                 });
+    }
+
+    public void getSearchList(FireStoreIntegerResults fireStoreIntegerResults){
+        db = FirebaseFirestore.getInstance();
+        CollectionReference col = db.collection("Users");
+
+        col.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                        for (DocumentSnapshot d:list) {
+                            Log.d("SearchUserActivity", String.valueOf(d.getData()));
+                            Users user = d.toObject(Users.class);
+                            Log.d("SearchUserActivity", " => " + user.getTotal_Codes());
+                            usersArrayList.add(user);
+                        }
+                        fireStoreIntegerResults.onResultGetInt();
+                    }
+                });
+    }
+    public ArrayList<Users> getUsersArrayList(){
+        return this.usersArrayList;
     }
 
 }

@@ -69,8 +69,8 @@ public class FireStoreAuthentication {
         data.put("Username",username);
         data.put("Password",password);
         data.put("Email", email);
-        data.put("Total Score", null);
-        data.put("Total Codes", null);
+        data.put("Total_Score", null);
+        data.put("Total_Codes", null);
 
         CollectionReference innerCollectionRef = db.collection("Users");
         innerCollectionRef
