@@ -3,9 +3,13 @@ package com.example.pokemonqrcode;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,7 +39,7 @@ import java.util.ArrayList;
  * @see ProfileActivity, FireStoreClass, PlayerCode
  * @version 1.3
  */
-public class SelectCodeActivity extends AppCompatActivity {
+public class SelectCodeActivity extends AppCompatActivity{
 
 
     private PlayerCode plCode;
@@ -46,6 +50,7 @@ public class SelectCodeActivity extends AppCompatActivity {
     private Button del_btn;
     private Button save_com_btn;
     private Button return_btn;
+    private Button view_other_btn;
     TextView codeName;
     TextView codeImage;
     TextView codeScore;
@@ -151,11 +156,31 @@ public class SelectCodeActivity extends AppCompatActivity {
 
             }
         });
+
+
+        view_other_btn = findViewById(R.id.view_other_players_button);
+        view_other_btn.setOnClickListener(v -> {
+            displayOtherPlayersFragment();
+        });
         fireStoreClass.getUsersScannedSameCode(HashCode, new FireStoreIntegerResults() {
             @Override
             public void onResultGetInt() {
+
             }
         });
-    };
+    }
+
+    /**
+     * Displays fragment containing list of other players who have caught the same code
+     */
+    private void displayOtherPlayersFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("key",fireStoreClass.getUsersScannedIdenticalCode());
+        Log.d("-----f-f-f-f--f-f-f-f--f-f-f----",Integer.toString(fireStoreClass.getUsersScannedIdenticalCode().size()));
+        OtherPlayersCaughtFragment other_caught = new OtherPlayersCaughtFragment();//.newInstance("other_caught_fragment");
+        other_caught.setArguments(bundle);
+        other_caught.show(fragmentManager, "other_caught_fragment");
+    }
 }
 

@@ -8,6 +8,9 @@
     <string name="email_hint">E-Mail</string>
     <string name="register_header_text">Register</string>
     <string name="cancel">Cancel</string>
+    <string name="players">Players</string>
+    <string name="score">Score: </string>
+    <string name="other_players_header">Players Who Caught this Code</string>
     <string-array name="options">
         <item>Yes</item>
         <item>No</item>
