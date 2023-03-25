@@ -56,7 +56,7 @@ public class SearchUserActivity extends AppCompatActivity {
                 filterList("");
             }
         });
-        Toast.makeText(this, Integer.toString(usersList.size()), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, Integer.toString(usersList.size()), Toast.LENGTH_SHORT).show();
 
         // find views by id
         searchView = findViewById(R.id.search_view);
