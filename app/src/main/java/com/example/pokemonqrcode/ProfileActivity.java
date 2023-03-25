@@ -46,6 +46,10 @@ public class ProfileActivity extends AppCompatActivity {
     TextView totalScoreView, totalCodeView;
     private ArrayAdapter<PlayerCode> adapter;
 
+    /*
+    is called everytime we get back to the activity
+     */
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -58,6 +62,9 @@ public class ProfileActivity extends AppCompatActivity {
                 adapter.addAll(playerCodes);
             }
         });
+        /*
+        refreshes to get latest codes and get totals,
+         */
         f.refreshCodes(new FireStoreIntegerResults() {
             @Override
             public void onResultGetInt(int result, int count) {
@@ -121,6 +128,7 @@ public class ProfileActivity extends AppCompatActivity {
                 //finish();
             }
         });
+
 
 
 
