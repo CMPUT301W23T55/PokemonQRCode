@@ -138,12 +138,12 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String value = (String) adapterView.getItemAtPosition(i);
-                if(value.equals("Score Ascending")) {
+                if(value.equals("Score: High -> Low")) {
                     adapterPlayerCode.clear();
                     playerCodes.sort(PlayerCode.PlayerScoreComparator);
                     adapterPlayerCode.addAll(playerCodes);
                 }
-                if(value.equals("Score Descending")) {
+                if(value.equals("Score: Low -> High")) {
                     adapterPlayerCode.clear();
                     playerCodes.sort(PlayerCode.PlayerScoreComparator);
                     Collections.reverse(playerCodes);

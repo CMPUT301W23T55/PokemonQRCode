@@ -44,7 +44,10 @@ public class SearchUserActivity extends AppCompatActivity {
         homeBtn = findViewById(R.id.return_home);
         recView =(RecyclerView) findViewById(R.id.rec_view);
         recView.setLayoutManager(new LinearLayoutManager(SearchUserActivity.this));
-        usersList = new ArrayList<>();
+        usersList = new ArrayList<>();        mySearchAdapter = new SearchAdapter(usersList);
+        recView.setAdapter(mySearchAdapter);
+        mySearchAdapter = new SearchAdapter(usersList);
+        recView.setAdapter(mySearchAdapter);
 
         FireStoreClass f = new FireStoreClass(username);
         f.getSearchList(new FireStoreIntegerResults() {
@@ -54,11 +57,8 @@ public class SearchUserActivity extends AppCompatActivity {
                 usersList = f.getUsersArrayList();
                 mySearchAdapter.notifyDataSetChanged();
                 filterList("");
-                //Toast.makeText(SearchUserActivity.this, Integer.toString(usersList.size()), Toast.LENGTH_SHORT).show();
             }
         });
-        mySearchAdapter = new SearchAdapter(usersList);
-        recView.setAdapter(mySearchAdapter);
 
         // find views by id
         searchView = findViewById(R.id.search_view);
