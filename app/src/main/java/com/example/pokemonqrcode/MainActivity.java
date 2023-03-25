@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     private void find_user() {
         Intent intent = new Intent(this, SearchUserActivity.class);
+        intent.putExtra("key",Globals.username);
         startActivity(intent);
     }
 
