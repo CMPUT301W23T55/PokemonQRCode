@@ -7,9 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -77,9 +74,9 @@ public class LoginActivity extends AppCompatActivity {
         if(username.equals("") || pass_wrd.equals("")) {
             Toast.makeText(context, "Ensure all fields have text", Toast.LENGTH_SHORT).show();
         } else {
-            authentication.checkPassword(username, pass_wrd, new FireStoreResults() {
+            authentication.checkPassword(username, pass_wrd, new FireStoreBooleanResults() {
                 @Override
-                public void onResultGet(boolean result) {
+                public void onResultGetBoolean(boolean result) {
                     if (!result) {
                         Toast.makeText(context, "Username/Password doesn't exist", Toast.LENGTH_SHORT).show();
                     } else {

@@ -1,6 +1,7 @@
 package com.example.pokemonqrcode;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -28,6 +30,8 @@ public class OtherPlayersCaughtFragment extends DialogFragment {
 
     private ListView playerList;
     private Button closeBtn;
+
+    private ArrayList<String> players;
 
     /**
      * Empty constructor used to just instantiate a OtherPLayersCaughtFragment
@@ -58,9 +62,11 @@ public class OtherPlayersCaughtFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstance) {
         super.onViewCreated(view, savedInstance);
+        assert getArguments() != null;
+        ArrayList<String> players = getArguments().getStringArrayList("key");
+        Log.d("--------------------------", Integer.toString(players.size()));
         playerList = view.findViewById(R.id.other_players_caught_list);
         closeBtn = view.findViewById(R.id.close_others_button);
-        List<String> players = Arrays.asList("Peter", "Carter", "Lucas", "Jawad", "Araf", "Ryan", "Sid");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, players);
         playerList.setAdapter(adapter);
 

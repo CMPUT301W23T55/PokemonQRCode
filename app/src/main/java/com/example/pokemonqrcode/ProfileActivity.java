@@ -55,10 +55,13 @@ public class ProfileActivity extends AppCompatActivity {
     TextView totalScoreView, totalCodeView;
     private ArrayAdapter<PlayerCode> adapterPlayerCode;
 
+    String firebaseUsername;
+
+
     @Override
     protected void onStart() {
         super.onStart();
-        FireStoreClass f = new FireStoreClass(Globals.username);
+        FireStoreClass f = new FireStoreClass(this.firebaseUsername);
         f.getCodesList(new FireStoreLIstResults() {
             @Override
             public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
@@ -68,14 +71,17 @@ public class ProfileActivity extends AppCompatActivity {
                 adapterPlayerCode.addAll(playerCodes);
             }
         });
+
         f.refreshCodes(new FireStoreIntegerResults() {
             @Override
-            public void onResultGetInt(int result, int count) {
-                totalScoreView.setText(Integer.toString(result));
-                totalCodeView.setText(Integer.toString(count));
-
+            public void onResultGetInt() {
+                totalScoreView.setText(Integer.toString(f.getTotalScore()));
+                totalCodeView.setText(Integer.toString(f.getTotalCount()));
             }
         });
+
+
+
 
     }
 
@@ -87,11 +93,18 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            this.firebaseUsername = extras.getString("key");
+            //The key argument here must match that used in the other activity
+        }
         setContentView(R.layout.activity_profile);
-        FireStoreClass f = new FireStoreClass(Globals.username);
+        FireStoreClass f = new FireStoreClass(this.firebaseUsername);
+
         // find views
         userName=findViewById(R.id.UserName);
-        userName.setText(Globals.username);
+        userName.setText(this.firebaseUsername);
         totalCode = findViewById(R.id.total_codes);
         returnHomeBtn = findViewById(R.id.home_btn);
         totalScoreView = findViewById(R.id.total_score_value);
@@ -131,7 +144,6 @@ public class ProfileActivity extends AppCompatActivity {
                     adapterPlayerCode.clear();
                     playerCodes.sort(PlayerCode.PlayerDateComparator);
                     adapterPlayerCode.addAll(playerCodes);
-                    Log.d("----------------------------", value);
                 }
             }
 
@@ -160,6 +172,7 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onResultGetPlayerCode(PlayerCode pCode) {
                         Intent intent = new Intent(ProfileActivity.this, SelectCodeActivity.class );
                         intent.putExtra("HashCode",HashCode);
+                        intent.putExtra("UserName",firebaseUsername);
                         startActivity(intent);
 
                     }

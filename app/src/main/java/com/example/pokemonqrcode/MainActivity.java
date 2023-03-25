@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
@@ -110,10 +111,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     public void onStart() {
         super.onStart();
         if (Globals.username == null){
-
-        } else {
-            this.f = new FireStoreClass(Globals.username);
-            this.f.autoUpdate();
         }
     }
 
@@ -131,11 +128,21 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         if (remember.equals("true")){
             SharedPreferences preferences1 = getSharedPreferences("name", MODE_PRIVATE);
             Globals.username = preferences1.getString("username", "");
+            Toast.makeText(this, "Successfully logged in as " + Globals.username, Toast.LENGTH_SHORT).show();
         } else {
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
 
+        if (!(Globals.username == null)){
+            this.f = new FireStoreClass(Globals.username);
+            this.f.refreshCodes(new FireStoreIntegerResults() {
+                @Override
+                public void onResultGetInt() {
+
+                }
+            });
+        }
         logOutBtn = findViewById(R.id.logoutBtn);
 
         profileButton = findViewById(R.id.profile_btn);
@@ -177,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
      */
     private void viewProfile(){
         Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra("key",Globals.username);
         startActivity(intent);
     }
 
