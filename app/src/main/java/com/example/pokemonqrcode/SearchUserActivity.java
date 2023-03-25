@@ -40,23 +40,25 @@ public class SearchUserActivity extends AppCompatActivity {
             this.username = extras.getString("key");
             //The key argument here must match that used in the other activity
         }
+
         homeBtn = findViewById(R.id.return_home);
         recView =(RecyclerView) findViewById(R.id.rec_view);
-        recView.setLayoutManager(new LinearLayoutManager(this));
+        recView.setLayoutManager(new LinearLayoutManager(SearchUserActivity.this));
         usersList = new ArrayList<>();
-        mySearchAdapter = new SearchAdapter(usersList);
-        recView.setAdapter(mySearchAdapter);
 
         FireStoreClass f = new FireStoreClass(username);
         f.getSearchList(new FireStoreIntegerResults() {
             @Override
             public void onResultGetInt() {
+                usersList.clear();
                 usersList = f.getUsersArrayList();
                 mySearchAdapter.notifyDataSetChanged();
                 filterList("");
+                //Toast.makeText(SearchUserActivity.this, Integer.toString(usersList.size()), Toast.LENGTH_SHORT).show();
             }
         });
-        Toast.makeText(this, Integer.toString(usersList.size()), Toast.LENGTH_SHORT).show();
+        mySearchAdapter = new SearchAdapter(usersList);
+        recView.setAdapter(mySearchAdapter);
 
         // find views by id
         searchView = findViewById(R.id.search_view);
@@ -86,7 +88,7 @@ public class SearchUserActivity extends AppCompatActivity {
     private void filterList(String text) {
         List<Users> filteredList = new ArrayList<>();
         for (Users user: usersList) {
-            if(user.getUsername().toLowerCase().contains((text.toLowerCase()))) {
+            if((user.getUsername()).toLowerCase().contains((text.toLowerCase()))) {
                 filteredList.add(user);
             }
         }
