@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.myViewHolder>
 {
@@ -17,6 +18,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.myViewHold
 
     public SearchAdapter(ArrayList<Users> userList) {
         this.userList = userList;
+    }
+
+    public void setFilteredList(List<Users> filteredList) {
+        this.userList = (ArrayList<Users>) filteredList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -37,9 +43,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.myViewHold
 //            holder.total_score.setText("0");
 //        }
 
-//        holder.total_code.setText(String.valueOf(userList.get(position).getTotal_Codes()));
+        holder.total_code.setText(String.valueOf(userList.get(position).getTotal_Codes()));
 //        holder.total_score.setText(userList.get(position).getTotal_Score());
-//        holder.total_score.setText(""+userList.get(position).getTotal_Score());
+        holder.total_score.setText(Integer.toString(userList.get(position).getTotal_Score()) );
 //        holder.picture.setText(userList.get(position).getPicture());
     }
 

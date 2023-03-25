@@ -176,14 +176,10 @@ public class FireStoreClass implements Serializable {
                 });
     }
 
-<<<<<<< HEAD
-
-=======
     /**
      * Gets the codes associated to an account
      * @param fireStoreLIstResults
      */
->>>>>>> 030063bad0cc91887a6f5f89797f7a99af6a099c
     public void getCodesList(FireStoreLIstResults fireStoreLIstResults){
         CollectionReference docReference = db.collection("Users/"+this.userName+"/QRCodes");
 
