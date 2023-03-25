@@ -144,7 +144,6 @@ public class ProfileActivity extends AppCompatActivity {
                     adapterPlayerCode.clear();
                     playerCodes.sort(PlayerCode.PlayerDateComparator);
                     adapterPlayerCode.addAll(playerCodes);
-                    Log.d("----------------------------", value);
                 }
             }
 
@@ -173,6 +172,7 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onResultGetPlayerCode(PlayerCode pCode) {
                         Intent intent = new Intent(ProfileActivity.this, SelectCodeActivity.class );
                         intent.putExtra("HashCode",HashCode);
+                        intent.putExtra("UserName",firebaseUsername);
                         startActivity(intent);
 
                     }

@@ -39,7 +39,7 @@ public class SelectCodeActivity extends AppCompatActivity {
 
 
     private PlayerCode plCode;
-    private String docHashCode;
+    private String HashCode, fireStoreUserName;
     private String commentsString;
     private EditText commentField;
     private FireStoreClass fireStoreClass;
@@ -62,22 +62,25 @@ public class SelectCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_code);
         Intent getIntent = getIntent();
-        String Hashcode = getIntent.getStringExtra("HashCode");
-        Log.d("SelectCodeActivity",Hashcode);
+        this.HashCode = getIntent.getStringExtra("HashCode");
+        this.fireStoreUserName = getIntent.getStringExtra("UserName");
+        Log.d("SelectCodeActivity",HashCode);
         commentField = findViewById(R.id.comments);
 
         if (commentField.getText()==null || commentField.getText().equals("")) {
             commentField.setText("No Comment");
         }
 
-        FireStoreClass fireStoreClass;
-        Log.d("SelectCodeActivity", Globals.username);
+        Log.d("SelectCodeActivity", fireStoreUserName);
 
-        fireStoreClass = new FireStoreClass(Globals.username);
+        this.fireStoreClass = new FireStoreClass(fireStoreUserName);
+
+        //initialises the list off users who have scanned this selected code
+
 
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        fireStoreClass.getSpecificCode(Hashcode, new FireStorePlayerCodeResults() {
+        fireStoreClass.getSpecificCode(HashCode, new FireStorePlayerCodeResults() {
             @Override
             public void onResultGetPlayerCode(PlayerCode pCode) {
                 plCode = pCode;
@@ -113,7 +116,7 @@ public class SelectCodeActivity extends AppCompatActivity {
                 aDB.setMessage("Are you sure you want to delete " + plCode.getName());
                 aDB.setNegativeButton("Cancel", null);
                 aDB.setPositiveButton("OK", (dialog, which) -> {
-                    fireStoreClass.deleteCode(Hashcode);
+                    fireStoreClass.deleteCode(HashCode);
                     finish();
                     Toast.makeText(SelectCodeActivity.this, "You have successfully deleted "
                             + plCode.getName()
@@ -130,7 +133,7 @@ public class SelectCodeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 docReference
-                        .document(Hashcode)
+                        .document(HashCode)
                         .update("Comments", commentField.getText().toString())
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -146,6 +149,11 @@ public class SelectCodeActivity extends AppCompatActivity {
                             }
                         });
 
+            }
+        });
+        fireStoreClass.getUsersScannedSameCode(HashCode, new FireStoreIntegerResults() {
+            @Override
+            public void onResultGetInt() {
             }
         });
     };

@@ -143,28 +143,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 }
             });
         }
-
-
-
-
-
-        f.getUsersScannedSameCode("9a7cd5efda286fbcdd26f89e64a360c560208248b301ff49ad670cb5552790ff", new FireStoreUsersList() {
-                    @Override
-                    public void onResultGetUserList(ArrayList<String> userList) {
-                        ArrayList<String> s = userList;
-                        Toast.makeText(MainActivity.this, Integer.toString(userList.size()), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-
-
-
-
-
-
-
-
         logOutBtn = findViewById(R.id.logoutBtn);
 
         profileButton = findViewById(R.id.profile_btn);

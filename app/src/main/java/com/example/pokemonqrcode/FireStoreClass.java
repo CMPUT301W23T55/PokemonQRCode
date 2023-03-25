@@ -221,7 +221,11 @@ public class FireStoreClass implements Serializable {
         return this.count;
     }
 
-    public void getUsersScannedSameCode(String tempHashcode, FireStoreUsersList fireStoreUserListResults){
+    public ArrayList<String> getUsersScannedIdenticalCode() {
+        return usersScannedIdenticalCode;
+    }
+
+    public void getUsersScannedSameCode(String tempHashcode, FireStoreIntegerResults fireStoreIntegerResults){
         CollectionReference docReference = db.collection("Users");
 
         docReference.get()
@@ -240,13 +244,14 @@ public class FireStoreClass implements Serializable {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                             if (!task.getResult().isEmpty()){
-                                                Log.d("Working", tempName);
                                                 usersScannedIdenticalCode.add(tempName);
+                                                Log.d("Working", tempName + " has been added to the list");
                                             }
+                                            usersScannedIdenticalCode.remove(userName);
+                                            fireStoreIntegerResults.onResultGetInt();
                                         }
                                     });
                         }
-                        fireStoreUserListResults.onResultGetUserList(usersScannedIdenticalCode);
                     }
                 });
     }
