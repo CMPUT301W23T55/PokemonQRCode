@@ -40,4 +40,5 @@ public class MainActivityTest {
     }
     //how do i test the camera with junit :(
 
+
 }
