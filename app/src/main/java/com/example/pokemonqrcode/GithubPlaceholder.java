@@ -7,10 +7,10 @@ public class GithubPlaceholder {
     public GithubPlaceholder() {
         this.test = 0;
     }
-    /*
-    public void incrementTest() {
+
+    public void increment() {
         this.test = this.test + 1;
     }
 
-     */
+
 }
