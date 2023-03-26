@@ -101,6 +101,10 @@ public class PlayerCode {
 
     public Date getDate() {return this.Date;}
 
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
     public void setScore(int score) {
         this.Score = score;
     }
@@ -109,7 +113,7 @@ public class PlayerCode {
     }
     public void setPicture(String picture) {this.Picture = picture;}
     public void setDate(Date date) {this.Date = date;}
-
+    public void setPhoto(Bitmap photo) {this.photo = photo;}
 
     public String getComments(){
         return this.Comments;
