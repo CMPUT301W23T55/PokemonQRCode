@@ -51,6 +51,8 @@ public class SelectCodeActivity extends AppCompatActivity{
     private Button save_com_btn;
     private Button return_btn;
     private Button view_other_btn;
+
+    private Boolean access;
     TextView codeName;
     TextView codeImage;
     TextView codeScore;
@@ -67,8 +69,10 @@ public class SelectCodeActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_code);
         Intent getIntent = getIntent();
-        this.HashCode = getIntent.getStringExtra("HashCode");
-        this.fireStoreUserName = getIntent.getStringExtra("UserName");
+
+        this.HashCode = getIntent().getStringExtra("HashCode");
+        this.fireStoreUserName = getIntent().getStringExtra("UserName");
+        this.access = getIntent().getExtras().getBoolean("access");
         Log.d("SelectCodeActivity",HashCode);
         commentField = findViewById(R.id.comments);
 
@@ -109,32 +113,34 @@ public class SelectCodeActivity extends AppCompatActivity{
             }
         });
 
-
-
         del_btn = findViewById(R.id.delete_btn);
+        if (access) {
 
-        del_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder aDB = new AlertDialog.Builder(SelectCodeActivity.this);
-                aDB.setTitle("Delete?");
-                aDB.setMessage("Are you sure you want to delete " + plCode.getName());
-                aDB.setNegativeButton("Cancel", null);
-                aDB.setPositiveButton("OK", (dialog, which) -> {
-                    fireStoreClass.deleteCode(HashCode);
-                    finish();
-                    Toast.makeText(SelectCodeActivity.this, "You have successfully deleted "
-                            + plCode.getName()
-                            , Toast.LENGTH_SHORT).show();
-                });
-                aDB.show();
-            }
-        });
+            del_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder aDB = new AlertDialog.Builder(SelectCodeActivity.this);
+                    aDB.setTitle("Delete?");
+                    aDB.setMessage("Are you sure you want to delete " + plCode.getName());
+                    aDB.setNegativeButton("Cancel", null);
+                    aDB.setPositiveButton("OK", (dialog, which) -> {
+                        fireStoreClass.deleteCode(HashCode);
+                        finish();
+                        Toast.makeText(SelectCodeActivity.this, "You have successfully deleted "
+                                        + plCode.getName()
+                                , Toast.LENGTH_SHORT).show();
+                    });
+                    aDB.show();
+                }
+            });
+        } else {
+            del_btn.setVisibility(4);
+        }
 
         save_com_btn = findViewById(R.id.save_comment_btn);
 
         save_com_btn.setOnClickListener(new View.OnClickListener() {
-            final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
+            final CollectionReference docReference = db.collection("Users/"+fireStoreUserName+"/QRCodes");
             @Override
             public void onClick(View view) {
                 docReference
@@ -162,9 +168,9 @@ public class SelectCodeActivity extends AppCompatActivity{
         view_other_btn.setOnClickListener(v -> {
             displayOtherPlayersFragment();
         });
-        fireStoreClass.getUsersScannedSameCode(HashCode, new FireStoreIntegerResults() {
+        fireStoreClass.getUsersScannedSameCode(HashCode, new FireStoreResults() {
             @Override
-            public void onResultGetInt() {
+            public void onResultGet() {
 
             }
         });

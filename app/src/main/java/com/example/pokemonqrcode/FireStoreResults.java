@@ -5,6 +5,6 @@ package com.example.pokemonqrcode;
  * from a firestore query (used to deal with Firestore's
  * asynchronous behaviour)
  */
-public interface FireStoreIntegerResults {
-    public void onResultGetInt();
+public interface FireStoreResults {
+    public void onResultGet();
 }

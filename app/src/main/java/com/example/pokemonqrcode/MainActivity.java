@@ -112,9 +112,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         super.onStart();
         if (!(Globals.username == null)){
             this.f = new FireStoreClass(Globals.username);
-            this.f.refreshCodes(new FireStoreIntegerResults() {
+            this.f.refreshCodes(new FireStoreResults() {
                 @Override
-                public void onResultGetInt() {
+                public void onResultGet() {
 
                 }
             });
@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     private void viewProfile(){
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("key",Globals.username);
+        intent.putExtra("access", true);
         startActivity(intent);
     }
 
