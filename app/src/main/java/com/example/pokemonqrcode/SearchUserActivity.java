@@ -59,6 +59,8 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
                 filterList("");
             }
         });
+//        Toast.makeText(this, Integer.toString(usersList.size()), Toast.LENGTH_SHORT).show();
+
 
         // find views by id
         searchView = findViewById(R.id.search_view);
