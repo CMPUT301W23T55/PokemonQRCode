@@ -73,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         currentImage = bitmap;
         currentLocationSetting = setting;
     }
+
+    @Override
+    public void onDataPass(Bitmap bitmap) {
+        currentImage = bitmap;
+    }
+
     private void getCurrentLocation() {
 
         if(currentLocationSetting.equals("yes")) {
@@ -244,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 ScannedCode code = new ScannedCode(result);
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
+                pCode.setPhoto(currentImage);
                 //builder.setMessage(pCode.getPicture());
                 //builder.setMessage(pCode.getName());
                 /*

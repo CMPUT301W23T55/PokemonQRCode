@@ -117,4 +117,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/select_code_photo"
+        android:layout_width="162dp"
+        android:layout_height="156dp"
+        android:layout_marginBottom="192dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_gallery"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
