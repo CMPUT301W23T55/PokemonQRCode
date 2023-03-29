@@ -55,7 +55,6 @@ public class OtherPlayersCaughtFragment extends DialogFragment {
      * On creating the view gets a list of players who have caught the same code as
      * Populates a list with the names of the players and dislplays them
      * Sets onclicklistener for closing the fragment
-     * Currently uses a mock list of player names
      * @param view
      * @param savedInstance
      */
