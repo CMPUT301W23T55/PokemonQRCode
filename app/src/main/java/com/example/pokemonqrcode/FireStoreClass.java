@@ -34,12 +34,12 @@ public class FireStoreClass implements Serializable {
 
     final private String userName;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
+    private final ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
     private int totalScore, count;
     private PlayerCode pCode;
 
-    private ArrayList<String> usersScannedIdenticalCode = new ArrayList<String>();
-    private ArrayList<Users> usersArrayList = new ArrayList<Users>();
+    private final ArrayList<String> usersScannedIdenticalCode = new ArrayList<String>();
+    private final ArrayList<Users> usersArrayList = new ArrayList<Users>();
 
     //needs username as that is the key to getting data from database
 

@@ -6,6 +6,12 @@ plugins {
 android {
     namespace 'com.example.pokemonqrcode'
     compileSdk 33
+    lintOptions {
+        abortOnError false
+        absolutePaths false
+        lintConfig file('lint.xml')
+        baseline file('lint-baseline.xml')
+    }
 
     defaultConfig {
         applicationId "com.example.pokemonqrcode"

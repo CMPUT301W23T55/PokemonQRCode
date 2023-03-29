@@ -98,7 +98,7 @@ public class SelectCodeActivity extends AppCompatActivity{
                 codeImage = findViewById(R.id.itemImage);
                 codeImage.setText(pCode.getPicture());
                 codeScore = findViewById(R.id.select_code_score);
-                codeScore.setText(Integer.toString(pCode.getScore()) + " Pts");
+                codeScore.setText(pCode.getScore() + " Pts");
                 commentField = findViewById(R.id.comments);
                 commentField.setText(pCode.getComments());
 
@@ -156,7 +156,7 @@ public class SelectCodeActivity extends AppCompatActivity{
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.d("Working","Data not added!" + e.toString());
+                                Log.d("Working","Data not added!" + e);
                             }
                         });
 
