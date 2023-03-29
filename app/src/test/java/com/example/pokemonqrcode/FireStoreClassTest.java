@@ -1,11 +1,14 @@
 package com.example.pokemonqrcode;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.FirebaseFirestore;
 import org.junit.Test;
 
-public class FireStoreClassTest {
-    FireStoreClass f = new FireStoreClass("Kyle");
+
+public class FireStoreClassTest{
+
     @Test
     public void testAdd(){
+        //FirebaseFirestore db = FirebaseFirestore.getInstance();
         //FireStoreClass f = new FireStoreClass("Kyle");
 
         //PlayerCode pc = new PlayerCode("123456","Charizard", 122,
@@ -16,6 +19,7 @@ public class FireStoreClassTest {
         //ArrayList<PlayerCode> codes = f.getPlayerCodes();
         //assertEquals(codes.size(),1);
     }
+
 }
 //how to get comments
 /*
