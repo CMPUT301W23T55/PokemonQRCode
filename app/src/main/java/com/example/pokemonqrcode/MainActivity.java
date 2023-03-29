@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     FloatingActionButton cameraButton;
     Bitmap currentImage;
-    Button profileButton, logOutBtn;
+    Button profileButton, logOutBtn,findUserBtn;
 
 
     String currentLocationSetting; //yes or no
@@ -110,7 +110,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     @Override
     public void onStart() {
         super.onStart();
-        if (Globals.username == null){
+        if (!(Globals.username == null)){
+            this.f = new FireStoreClass(Globals.username);
+            this.f.refreshCodes(new FireStoreIntegerResults() {
+                @Override
+                public void onResultGetInt() {
+
+                }
+            });
         }
     }
 
@@ -133,23 +140,20 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
-
-        if (!(Globals.username == null)){
-            this.f = new FireStoreClass(Globals.username);
-            this.f.refreshCodes(new FireStoreIntegerResults() {
-                @Override
-                public void onResultGetInt() {
-
-                }
-            });
-        }
         logOutBtn = findViewById(R.id.logoutBtn);
-
+        findUserBtn = findViewById(R.id.find_users);
         profileButton = findViewById(R.id.profile_btn);
         cameraButton = findViewById(R.id.open_camera_button);
         cameraButton.setOnClickListener(v->
         {
             scanCode();
+        });
+
+        findUserBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                find_user();
+            }
         });
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +181,12 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             }
         });
 
+    }
+
+    private void find_user() {
+        Intent intent = new Intent(this, SearchUserActivity.class);
+        intent.putExtra("key",Globals.username);
+        startActivity(intent);
     }
 
     /**

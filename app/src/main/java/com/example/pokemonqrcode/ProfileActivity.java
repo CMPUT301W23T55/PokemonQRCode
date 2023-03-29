@@ -58,6 +58,10 @@ public class ProfileActivity extends AppCompatActivity {
     String firebaseUsername;
 
 
+    /*
+    is called everytime we get back to the activity
+     */
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -71,6 +75,11 @@ public class ProfileActivity extends AppCompatActivity {
                 adapterPlayerCode.addAll(playerCodes);
             }
         });
+
+        /*
+        refreshes to get latest codes and get totals,
+         */
+
 
         f.refreshCodes(new FireStoreIntegerResults() {
             @Override
@@ -180,6 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
                 //finish();
             }
         });
+
 
 
 

@@ -63,7 +63,6 @@ public class OtherPlayersCaughtFragment extends DialogFragment {
         super.onViewCreated(view, savedInstance);
         assert getArguments() != null;
         ArrayList<String> players = getArguments().getStringArrayList("key");
-        Log.d("--------------------------", Integer.toString(players.size()));
         playerList = view.findViewById(R.id.other_players_caught_list);
         closeBtn = view.findViewById(R.id.close_others_button);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, players);
