@@ -1,20 +1,16 @@
 package com.example.pokemonqrcode;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 public class FireStoreClassTest {
-    /*
+    FireStoreClass f = new FireStoreClass("Kyle");
     @Test
     public void testAdd(){
-        FireStoreClass f = new FireStoreClass("Kyle");
+        //FireStoreClass f = new FireStoreClass("Kyle");
 
-        PlayerCode pc = new PlayerCode("123456","Charizard", 122,
-                "Picture of Charizard");
-        f.addAQRCode(pc);
+        //PlayerCode pc = new PlayerCode("123456","Charizard", 122,
+        //       "Picture of Charizard");
+        //f.addAQRCode(pc);
 
         //not sure what happened here but its giving an error so ive commented it out for now
         //ArrayList<PlayerCode> codes = f.getPlayerCodes();
@@ -22,9 +18,8 @@ public class FireStoreClassTest {
     }
 }
 //how to get comments
-
+/*
             ArrayList<PlayerCode> pcs = f.getPlayerCodes();
             ArrayList<String> j = pcs.get(0).getComments();
             String i = j.get(0);
  */
- }
