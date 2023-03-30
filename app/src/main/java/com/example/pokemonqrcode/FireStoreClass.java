@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 
 import org.w3c.dom.Document;
 
@@ -35,7 +36,7 @@ public class FireStoreClass implements Serializable {
     final private String userName;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
-    private int totalScore, count;
+    private int totalScore, count, highest;
     private PlayerCode pCode;
 
     private ArrayList<String> usersScannedIdenticalCode = new ArrayList<String>();
@@ -67,7 +68,6 @@ public class FireStoreClass implements Serializable {
         String picture = pC.getPicture();
         String comments = pC.getComments();
 
-
         data.put("Name",name);
         data.put("Score",score);
         data.put("Date", date);
@@ -83,6 +83,23 @@ public class FireStoreClass implements Serializable {
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
                 .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
+
+        // get user data, update highest if highest < pc score
+        DocumentReference userRef = db.collection("Users").document(this.userName);
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot ds) {
+                Users user = ds.toObject(Users.class);
+                assert user != null;
+                if (score > user.getHighest()) {
+                    // update db
+                    user.setHighest(score);
+                    userRef.set(user)
+                            .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
+                            .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
+                }
+            }
+        });
     }
 
     /**
