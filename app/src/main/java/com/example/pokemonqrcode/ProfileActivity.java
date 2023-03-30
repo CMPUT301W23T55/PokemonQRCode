@@ -47,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     //initialize views
-    Button returnHomeBtn;
+    Button returnHomeBtn,infoBtn;
 
     Spinner spinner;
     ArrayList<PlayerCode> playerCodes = new ArrayList<>();
