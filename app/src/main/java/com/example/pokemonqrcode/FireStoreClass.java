@@ -96,7 +96,7 @@ public class FireStoreClass implements Serializable {
                 if (score > user.getHighest()) {
                     // update db
                     user.setHighest(score);
-                    userRef.set(user)
+                    userRef.update("Highest",score)
                             .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
                             .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
                 }
@@ -171,7 +171,7 @@ public class FireStoreClass implements Serializable {
 
     /**
      * This method will query the database until it finds a record associated with the passed hashcode
-     * @param hashcode to find the correct Playercode in the database
+     * @param hashcode to find the correct PlayerCode in the database
      * @param fireStorePlayerCodeResults this waits until the database query runs and then gets the result(Player code)
      */
     public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
@@ -310,7 +310,7 @@ public class FireStoreClass implements Serializable {
                         for (DocumentSnapshot d:list) {
                             Log.d("SearchUserActivity", String.valueOf(d.getData()));
                             Users user = d.toObject(Users.class);
-                            Log.d("SearchUserActivity", " => " + user.getTotal_Codes());
+                            Log.d("SearchUserActivity", " Query was successful");
                             if(!(user.getUsername().equals(userName))) {
                                 usersArrayList.add(user);
                             }

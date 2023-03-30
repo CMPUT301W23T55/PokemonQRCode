@@ -13,35 +13,35 @@ public class Users {
     private int Highest = 0;
 
     public int getHighest() {
-        return Highest;
+        return this.Highest;
     }
 
     public String getUsername() {
-        return Username;
+        return this.Username;
     }
 
     public void setUsername(String username) {
-        Username = username;
+        this.Username = username;
     }
 
     public int getTotal_Codes() {
-        return Total_Codes;
+        return this.Total_Codes;
     }
 
     public void setTotal_Codes(int total_Codes) {
-        Total_Codes = total_Codes;
+        this.Total_Codes = total_Codes;
     }
 
     public int getTotal_Score() {
-        return Total_Score;
+        return this.Total_Score;
     }
 
     public void setTotal_Score(int total_Score) {
-        Total_Score = total_Score;
+        this.Total_Score = total_Score;
     }
 
     public String getEmail() {
-        return Email;
+        return this.Email;
     }
 
     public void setEmail(String email) {
@@ -49,11 +49,11 @@ public class Users {
     }
 
     public String getPassword() {
-        return Password;
+        return this.Password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.Password = password;
     }
     public void setHighest(int Highest) {
         this.Highest = Highest;
