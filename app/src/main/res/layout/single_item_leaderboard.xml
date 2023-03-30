@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="25dp"
+    android:elevation="4dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="217dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="7dp"
+            android:text="Username:"
+            android:textColor="#000"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/user_name_text"
+            android:layout_width="111dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/user_name"
+            android:textAlignment="textStart"
+            android:layout_marginStart="120dp"
+            android:text="username"
+            android:textColor="#000"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/total_score"
+            android:layout_width="217dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_name"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="7dp"
+            android:text="Total Score:"
+            android:textColor="#000"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/total_score_text"
+            android:layout_width="111dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/total_score"
+            android:layout_below="@+id/user_name"
+            android:textAlignment="textStart"
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="5dp"
+            android:text="TS"
+            android:textColor="#000"
+            android:textSize="20sp" />
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

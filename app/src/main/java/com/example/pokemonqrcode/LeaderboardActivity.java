@@ -2,6 +2,7 @@ package com.example.pokemonqrcode;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -74,7 +75,7 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
         LeaderboardData.clear();
         // set LeaderboardArray
         FirebaseFirestore Database = FirebaseFirestore.getInstance();
-        CollectionReference UsersRef = Database.collection("Users/");
+        CollectionReference UsersRef = Database.collection("Users");
         UsersRef.orderBy(SortStyle, Query.Direction.DESCENDING)
                 .limit(50)
                 .get()
