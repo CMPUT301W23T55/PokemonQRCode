@@ -5,6 +5,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,18 +22,45 @@ import com.google.firebase.firestore.auth.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchUserActivity extends AppCompatActivity {
+public class SearchUserActivity extends AppCompatActivity implements RecyclerViewInterface{
     Button homeBtn;
     SearchAdapter mySearchAdapter;
     ArrayList<Users> usersList;
     RecyclerView recView;
-    FirebaseFirestore db;
     private SearchView searchView;
+
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_user);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            this.username = extras.getString("key");
+            //The key argument here must match that used in the other activity
+        }
+
+        homeBtn = findViewById(R.id.return_home);
+        recView = (RecyclerView) findViewById(R.id.rec_view);
+        recView.setLayoutManager(new LinearLayoutManager(SearchUserActivity.this));
+        usersList = new ArrayList<>();
+        mySearchAdapter = new SearchAdapter(usersList, this);
+        recView.setAdapter(mySearchAdapter);
+
+        FireStoreClass f = new FireStoreClass(username);
+        f.getSearchList(new FireStoreResults() {
+            @Override
+            public void onResultGet() {
+                usersList.clear();
+                usersList = f.getUsersArrayList();
+                mySearchAdapter.notifyDataSetChanged();
+                filterList("");
+            }
+        });
+//        Toast.makeText(this, Integer.toString(usersList.size()), Toast.LENGTH_SHORT).show();
+
 
         // find views by id
         searchView = findViewById(R.id.search_view);
@@ -50,13 +78,6 @@ public class SearchUserActivity extends AppCompatActivity {
             }
         });
 
-        homeBtn = findViewById(R.id.return_home);
-        recView =(RecyclerView) findViewById(R.id.rec_view);
-        recView.setLayoutManager(new LinearLayoutManager(this));
-        usersList = new ArrayList<>();
-        mySearchAdapter = new SearchAdapter(usersList);
-        recView.setAdapter(mySearchAdapter);
-
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,61 +85,33 @@ public class SearchUserActivity extends AppCompatActivity {
             }
         });
 
-        db = FirebaseFirestore.getInstance();
-        CollectionReference col = db.collection("Users");
-
-        db.collection("Users").get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                                for (DocumentSnapshot d:list) {
-                                    Log.d("SearchUserActivity", String.valueOf(d.getData()));
-                                    Users user = d.toObject(Users.class);
-                                    Log.d("SearchUserActivity", " => " + user.getTotal_Codes());
-                                    usersList.add(user);
-                                }
-                                mySearchAdapter.notifyDataSetChanged();
-                            }
-                        });
-
-
-
-//        loadUsers();
-
     }
+
 
     private void filterList(String text) {
         List<Users> filteredList = new ArrayList<>();
-        for (Users user: usersList) {
-            if(user.getUsername().toLowerCase().contains((text.toLowerCase()))) {
+        for (Users user : usersList) {
+            if ((user.getUsername()).toLowerCase().contains((text.toLowerCase()))) {
                 filteredList.add(user);
             }
         }
 
         if (filteredList.isEmpty()) {
-            Toast.makeText(this,"No data found",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
 
-        }
-        else {
+        } else {
             mySearchAdapter.setFilteredList(filteredList);
         }
     }
 
-//    private void loadUsers() {
-//        FirebaseFirestore.getInstance()
-//                .collection("Users/Araf/QRCodes")
-//                .get()
-//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                        List<DocumentSnapshot> dsList = queryDocumentSnapshots.getDocuments();
-//                        for (DocumentSnapshot ds:dsList){
-//                            Users user = ds.toObject(Users.class);
-//
-//                        }
-//                    }
-//                });
-//    }
+    @Override
+    public void onItemClick(int pos) {
+        String username = usersList.get(pos).getUsername();
+        Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
 
+        Intent intent = new Intent(SearchUserActivity.this, ProfileActivity.class);
+        intent.putExtra("key",username);
+        intent.putExtra("access",false);
+        startActivity(intent);
+    }
 }

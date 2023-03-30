@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Create an instance of the Firestore database
@@ -33,11 +34,12 @@ public class FireStoreClass implements Serializable {
 
     final private String userName;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
+    private final ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
     private int totalScore, count;
     private PlayerCode pCode;
 
-    private ArrayList<String> usersScannedIdenticalCode = new ArrayList<String>();
+    private final ArrayList<String> usersScannedIdenticalCode = new ArrayList<String>();
+    private final ArrayList<Users> usersArrayList = new ArrayList<Users>();
 
     //needs username as that is the key to getting data from database
 
@@ -79,7 +81,7 @@ public class FireStoreClass implements Serializable {
         innerCollectionRef
                 .document(String.valueOf(hashcode))
                 .set(data)
-                .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully"))
+                .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
                 .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
     }
 
@@ -124,9 +126,9 @@ public class FireStoreClass implements Serializable {
 
     /**
      * This function will refresh the total score and total count of the scanned codes associated with the user
-     * @param fireStoreIntegerResults this waits until the database query runs and then gets the result(total score, and #codes)
+     * @param fireStoreResults this waits until the database query runs and then gets the result(total score, and #codes)
      */
-    public void refreshCodes(FireStoreIntegerResults fireStoreIntegerResults){
+    public void refreshCodes(FireStoreResults fireStoreResults){
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef
                 .get()
@@ -141,7 +143,7 @@ public class FireStoreClass implements Serializable {
                                 count++;
                                 Log.d("Working", document.getId() + " is in the database");
                             }
-                            fireStoreIntegerResults.onResultGetInt();
+                            fireStoreResults.onResultGet();
                             setUserAttributes();
                         }
                     }
@@ -178,7 +180,7 @@ public class FireStoreClass implements Serializable {
 
     /**
      * Gets the codes associated to an account
-     * @param fireStoreLIstResults
+     * @param fireStoreLIstResults An interface used to deal with firestore's asynchronous behaviour
      */
     public void getCodesList(FireStoreLIstResults fireStoreLIstResults){
         CollectionReference docReference = db.collection("Users/"+this.userName+"/QRCodes");
@@ -198,11 +200,15 @@ public class FireStoreClass implements Serializable {
                 });
     }
 
+    /**
+     * This method will update the users total score and total codes field in
+     * the firestore database when they add or remove a code
+     */
     private void setUserAttributes(){
         HashMap<String, Object> data = new HashMap<>();
 
-        data.put("Total Score",this.totalScore);
-        data.put("Total Codes",this.count);
+        data.put("Total_Score",this.totalScore);
+        data.put("Total_Codes",this.count);
 
 
         CollectionReference innerCollectionRef = db.collection("Users");
@@ -213,10 +219,18 @@ public class FireStoreClass implements Serializable {
                 .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
     }
 
+    /**
+     * This method returns the summed score of all the scanned codes
+     * @return the sum of all the scanned codes
+     */
     public int getTotalScore(){
         return this.totalScore;
     }
 
+    /**
+     * This method returns the amount of scanned codes of the selected user
+     * @return the number of total scanned codes
+     */
     public int getTotalCount(){
         return this.count;
     }
@@ -225,7 +239,12 @@ public class FireStoreClass implements Serializable {
         return usersScannedIdenticalCode;
     }
 
-    public void getUsersScannedSameCode(String tempHashcode, FireStoreIntegerResults fireStoreIntegerResults){
+    /**
+     * This method creates a list of users that have scanned the same code as the user selected
+     * @param tempHashcode the Hashcode of the scanned code
+     * @param fireStoreResults An interface used to handle firestore's asynchronous behaviour
+     */
+    public void getUsersScannedSameCode(String tempHashcode, FireStoreResults fireStoreResults){
         CollectionReference docReference = db.collection("Users");
 
         docReference.get()
@@ -248,12 +267,46 @@ public class FireStoreClass implements Serializable {
                                                 Log.d("Working", tempName + " has been added to the list");
                                             }
                                             usersScannedIdenticalCode.remove(userName);
-                                            fireStoreIntegerResults.onResultGetInt();
+                                            fireStoreResults.onResultGet();
                                         }
                                     });
                         }
                     }
                 });
+    }
+
+    /**
+     * This method creates a list of every user that has an account
+     * @param fireStoreResults An interface used to deal with firestore's asynchronous behaviour
+     */
+    public void getSearchList(FireStoreResults fireStoreResults){
+        db = FirebaseFirestore.getInstance();
+        CollectionReference col = db.collection("Users");
+
+        col.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                        for (DocumentSnapshot d:list) {
+                            Log.d("SearchUserActivity", String.valueOf(d.getData()));
+                            Users user = d.toObject(Users.class);
+                            Log.d("SearchUserActivity", " => " + user.getTotal_Codes());
+                            if(!(user.getUsername().equals(userName))) {
+                                usersArrayList.add(user);
+                            }
+                        }
+                        fireStoreResults.onResultGet();
+                    }
+                });
+    }
+
+    /**
+     * This method returns an array of all the users that have an account
+     * @return the list of users
+     */
+    public ArrayList<Users> getUsersArrayList(){
+        return this.usersArrayList;
     }
 
 }
