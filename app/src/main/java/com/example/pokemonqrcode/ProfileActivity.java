@@ -47,15 +47,21 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     //initialize views
+
     Button returnHomeBtn,infoBtn;
 
-    Spinner spinner;
-    ArrayList<PlayerCode> playerCodes = new ArrayList<>();
-    TextView totalCode,userName;
-    TextView totalScoreView, totalCodeView;
+    private Button returnHomeBtn;
+
+
+    private Spinner spinner;
+    private ArrayList<PlayerCode> playerCodes = new ArrayList<>();
+    private TextView totalCode,userName;
+    private TextView totalScoreView, totalCodeView;
     private ArrayAdapter<PlayerCode> adapterPlayerCode;
 
-    String firebaseUsername;
+    private String firebaseUsername;
+
+    private Boolean access;
 
 
     /*
@@ -81,9 +87,9 @@ public class ProfileActivity extends AppCompatActivity {
          */
 
 
-        f.refreshCodes(new FireStoreIntegerResults() {
+        f.refreshCodes(new FireStoreResults() {
             @Override
-            public void onResultGetInt() {
+            public void onResultGet() {
                 totalScoreView.setText(Integer.toString(f.getTotalScore()));
                 totalCodeView.setText(Integer.toString(f.getTotalCount()));
             }
@@ -107,6 +113,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (extras != null) {
             this.firebaseUsername = extras.getString("key");
             //The key argument here must match that used in the other activity
+            this.access = extras.getBoolean("access");
         }
         setContentView(R.layout.activity_profile);
         FireStoreClass f = new FireStoreClass(this.firebaseUsername);
@@ -138,12 +145,12 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String value = (String) adapterView.getItemAtPosition(i);
-                if(value.equals("Score Ascending")) {
+                if(value.equals("Score: High -> Low")) {
                     adapterPlayerCode.clear();
                     playerCodes.sort(PlayerCode.PlayerScoreComparator);
                     adapterPlayerCode.addAll(playerCodes);
                 }
-                if(value.equals("Score Descending")) {
+                if(value.equals("Score: Low -> High")) {
                     adapterPlayerCode.clear();
                     playerCodes.sort(PlayerCode.PlayerScoreComparator);
                     Collections.reverse(playerCodes);
@@ -182,6 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
                         Intent intent = new Intent(ProfileActivity.this, SelectCodeActivity.class );
                         intent.putExtra("HashCode",HashCode);
                         intent.putExtra("UserName",firebaseUsername);
+                        intent.putExtra("access", access);
                         startActivity(intent);
 
                     }

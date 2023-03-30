@@ -116,9 +116,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         super.onStart();
         if (!(Globals.username == null)){
             this.f = new FireStoreClass(Globals.username);
-            this.f.refreshCodes(new FireStoreIntegerResults() {
+            this.f.refreshCodes(new FireStoreResults() {
                 @Override
-                public void onResultGetInt() {
+                public void onResultGet() {
 
                 }
             });
@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     private void viewProfile(){
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("key",Globals.username);
+        intent.putExtra("access", true);
         startActivity(intent);
     }
 
@@ -235,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             }
 
             CodeFoundFragment codeFoundFragment = new CodeFoundFragment();
-            codeFoundFragment.show(getSupportFragmentManager(), "Code Found");;
+            codeFoundFragment.show(getSupportFragmentManager(), "Code Found");
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -265,8 +266,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 TextView codeImage = (TextView) v.findViewById(R.id.code_image);
                 TextView codeName = (TextView) v.findViewById(R.id.code_name);
                 TextView codeScore = (TextView) v.findViewById(R.id.code_score);
-                codeImage.setText(pCode.getPicture().toString());
-                codeName.setText(pCode.getName().toString());
+                codeImage.setText(pCode.getPicture());
+                codeName.setText(pCode.getName());
                 codeScore.setText(Integer.toString(pCode.getScore()));
                 builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                     @Override
