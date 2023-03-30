@@ -35,6 +35,7 @@ public class OthersCaughtFragmentTest {
         Activity activity = rule.getActivity();
     }
 
+    // find a way to pass in the username so that the firestore thing doesnt initialize to null!!!!!!!!
     @Test
     public void testOthersCaughtFragment() {
         solo.assertCurrentActivity("Wrong activity", ProfileActivity.class);

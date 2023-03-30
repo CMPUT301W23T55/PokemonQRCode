@@ -15,7 +15,7 @@ import java.lang.*;
 public class ScannedCode {
 
     private ScanIntentResult code;
-    private byte[] hashedCode;
+    private final byte[] hashedCode;
     private String hashAsString;
     private int score;
     private String name;
@@ -24,7 +24,7 @@ public class ScannedCode {
     //this takes the result from the scanCode() method in MainActivity
     public ScannedCode(ScanIntentResult code) throws NoSuchAlgorithmException {
         this.code = code;
-        this.hashedCode = this.hashScannedCode(code.getContents());
+        this.hashedCode = hashScannedCode(code.getContents());
         this.hashAsString = toHexString(hashedCode);
         this.calculateScore();
         this.createName();
@@ -157,7 +157,7 @@ public class ScannedCode {
      */
 
     public void createImage() {
-        String headOptions[] = {"(\\_/)\n" +
+        String[] headOptions = {"(\\_/)\n" +
                                 "( 'x' )",
                                 "/\\__/\\\n" +
                                 "(=^.^=)",
@@ -166,12 +166,12 @@ public class ScannedCode {
                                 "/\\___/\\ \n" +
                                 "((ovo))"};
 
-        String bodyOptions[] = {"\n( vvv )",
+        String[] bodyOptions = {"\n( vvv )",
                                 "\n| \\ \\|",
                                 "\n( uu )",
                                 "\n():::()"};
 
-        String legOptions[] = {"\nc(\")(\")",
+        String[] legOptions = {"\nc(\")(\")",
                                 "\n (\")(\")_/",
                                 "\n\\_(')(')",
                                 "\nc(\")_(\")"};
