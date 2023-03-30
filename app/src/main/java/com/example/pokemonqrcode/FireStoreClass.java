@@ -325,7 +325,6 @@ public class FireStoreClass implements Serializable {
     public void getSearchList(FireStoreResults fireStoreResults){
         db = FirebaseFirestore.getInstance();
         CollectionReference col = db.collection("Users");
-
         col.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override

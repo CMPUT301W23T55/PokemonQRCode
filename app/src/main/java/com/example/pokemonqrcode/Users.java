@@ -1,9 +1,10 @@
 package com.example.pokemonqrcode;
 
+import java.util.Comparator;
 import java.util.Date;
 
 public class Users {
-//    private String Name;
+    //    private String Name;
     private String Username;
     private int Total_Codes;
     private int Total_Score;
@@ -56,9 +57,35 @@ public class Users {
     public void setPassword(String password) {
         this.Password = password;
     }
+
     public void setHighest(int Highest) {
         this.Highest = Highest;
     }
+
+
+    public static Comparator<Users> UserSingleScoreComparator = new Comparator<Users>() {
+        @Override
+        public int compare(Users user, Users t1) {
+            return user.getHighest() - t1.getHighest();
+        }
+    };
+
+    public static Comparator<Users> UserTotalScoreComparator = new Comparator<Users>() {
+        @Override
+        public int compare(Users user, Users t1) {
+            return user.getTotal_Score() - t1.getTotal_Score();
+        }
+    };
+    public static Comparator<Users> UserTotalCodesComparator = new Comparator<Users>() {
+        @Override
+        public int compare(Users user, Users t1) {
+            return user.getTotal_Score() - t1.getTotal_Score();
+        }
+    };
+
+}
+
+
 
 
 
@@ -98,6 +125,3 @@ public class Users {
 //    public void setPicture(String picture) {
 //        Picture = picture;
 //    }
-
-
-}

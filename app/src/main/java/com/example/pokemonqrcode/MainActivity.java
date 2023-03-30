@@ -146,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
+
+
+
         logOutBtn = findViewById(R.id.logoutBtn);
         findUserBtn = findViewById(R.id.find_users);
         leaderboardBtn = findViewById(R.id.leaderboards);
