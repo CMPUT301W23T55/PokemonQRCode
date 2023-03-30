@@ -36,6 +36,7 @@ public class Users {
         return this.Total_Score;
     }
 
+
     public void setTotal_Score(int total_Score) {
         this.Total_Score = total_Score;
     }

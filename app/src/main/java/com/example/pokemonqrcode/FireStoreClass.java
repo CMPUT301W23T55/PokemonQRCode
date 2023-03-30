@@ -97,6 +97,7 @@ public class FireStoreClass implements Serializable {
                     // update db
                     user.setHighest(score);
                     userRef.update("Highest",score)
+
                             .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
                             .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
                 }
@@ -115,6 +116,29 @@ public class FireStoreClass implements Serializable {
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
+
+
+        // update highest by iterating through code list
+        // modified from firebase docs : https://firebase.google.com/docs/firestore/query-data/get-data#java_10
+        innerCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    int  Highest = 0;
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        int Score = document.get("Score", int.class);
+                        if (Highest <= Score) {
+                            Highest = Score;
+                        }
+                    }
+                    // update db
+                    DocumentReference userRef = db.collection("Users").document(Globals.username);
+                    userRef.update("Highest", Highest);
+                } else {
+                    Log.d("Err", "Error getting documents: ", task.getException());
+                }
+            }
+        });
     }
 
     /**
