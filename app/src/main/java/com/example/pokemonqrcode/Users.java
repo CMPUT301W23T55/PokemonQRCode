@@ -10,6 +10,12 @@ public class Users {
     private String Email;
     private String Password;
 
+    private int Highest = 0;
+
+    public int getHighest() {
+        return Highest;
+    }
+
     public String getUsername() {
         return Username;
     }
@@ -48,6 +54,9 @@ public class Users {
 
     public void setPassword(String password) {
         Password = password;
+    }
+    public void setHighest(int Highest) {
+        this.Highest = Highest;
     }
 
 
