@@ -81,6 +81,7 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
         void onDataPass(Bitmap bitmap);
         void onDataPass(String setting);
         void onDataPass(ScanIntentResult result);
+
     }
     private CodeFoundDialogListener listener;
 
@@ -153,8 +154,8 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
     public void passData(Bitmap bitmap) {
         listener.onDataPass(bitmap);
     }
+
     public void passData(String setting) { listener.onDataPass(setting);}
     public void passData(ScanIntentResult result) { listener.onDataPass(result);}
-
 
 }

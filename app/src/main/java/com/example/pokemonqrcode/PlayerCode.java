@@ -104,9 +104,11 @@ public class PlayerCode {
     public Bitmap getPhoto() {
         return photo;
     }
+
     public Location getLocation() {
         return location;
     }
+
     public void setScore(int score) {
         this.Score = score;
     }
