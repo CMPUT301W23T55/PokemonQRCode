@@ -26,7 +26,7 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#BDBDBD"
-        app:icon="@mipmap/home_screen"
+        app:icon="@mipmap/delete_btn"
         app:iconTint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
