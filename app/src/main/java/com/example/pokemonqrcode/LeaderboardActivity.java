@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,11 +31,9 @@ import java.util.Map;
 
 public class LeaderboardActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private RecyclerView leaderboardRecycler;
     private LeaderboardAdapter leaderboardAdapter;
     String username;
     ArrayList<Map<String, Object>> leaderboardData;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,7 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
         sortSpinner.setAdapter(adapter);
         // recycler view
         leaderboardData = new ArrayList<>();
-        leaderboardRecycler = (RecyclerView) findViewById(R.id.rec_view);
+        RecyclerView leaderboardRecycler = (RecyclerView) findViewById(R.id.rec_view);
         leaderboardRecycler.setLayoutManager(new LinearLayoutManager(this));
         leaderboardAdapter = new LeaderboardAdapter(leaderboardData,this);
         leaderboardRecycler.setAdapter(leaderboardAdapter);
@@ -68,7 +67,6 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
         sortSpinner.setOnItemSelectedListener(this);
         // return to MainActivity
         homeBtn.setOnClickListener(view -> finish());
-
     }
 
     private void setStyle(String SortStyle) {
@@ -80,6 +78,7 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
                 .limit(50)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
