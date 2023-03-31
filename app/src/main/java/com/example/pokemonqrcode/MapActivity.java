@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * MapActivity is an activity which displays a map, containing markers for code locations
@@ -87,16 +88,29 @@ public class MapActivity extends AppCompatActivity {
         mapController.setZoom(9.5);
         mapController.setCenter(start);
 
-        // want to create some dummy points, to make sure the map can actually show them
-        ArrayList<OverlayItem> points = new ArrayList<>();
-        points.add(new OverlayItem("Test","Test description",start));
-
         // get codes from db
         FireStoreClass f = new FireStoreClass(username);
         ArrayList<Users> user_list = f.getUsersArrayList();
 
-        // want to find all codes on all user accounts
+        ArrayList<PlayerCode> allCodes = new ArrayList<>();
 
+        for (Users user : user_list) {
+            FireStoreClass fireStoreClass = new FireStoreClass(user.getUsername());
+            fireStoreClass.getCodesList(new FireStoreLIstResults() {
+                @Override
+                public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
+                    allCodes.addAll(playerCodeList);
+                }
+            });
+        }
+
+        // get distinct codes
+        // https://stackoverflow.com/a/33735562
+        List<PlayerCode> distinctCodes = allCodes.stream().distinct().collect(Collectors.toList());
+        ArrayList<OverlayItem> points = new ArrayList<>();
+        for (PlayerCode code : distinctCodes) {
+            points.add(new OverlayItem(String.valueOf(code.getScore()),code.getName(),code.getGeolocation()));
+        }
 
         makeMapMarker(points);
     }
@@ -144,6 +158,8 @@ public class MapActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,perms.toArray(new String[0]),REQUEST_PERMS);
         }
     }
+
+
 
     /**
      * Function that takes the map and a point, and creates a map marker for the point
