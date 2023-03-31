@@ -62,27 +62,6 @@ public class Users {
         this.Highest = Highest;
     }
 
-
-    public static Comparator<Users> UserSingleScoreComparator = new Comparator<Users>() {
-        @Override
-        public int compare(Users user, Users t1) {
-            return user.getHighest() - t1.getHighest();
-        }
-    };
-
-    public static Comparator<Users> UserTotalScoreComparator = new Comparator<Users>() {
-        @Override
-        public int compare(Users user, Users t1) {
-            return user.getTotal_Score() - t1.getTotal_Score();
-        }
-    };
-    public static Comparator<Users> UserTotalCodesComparator = new Comparator<Users>() {
-        @Override
-        public int compare(Users user, Users t1) {
-            return user.getTotal_Score() - t1.getTotal_Score();
-        }
-    };
-
 }
 
 

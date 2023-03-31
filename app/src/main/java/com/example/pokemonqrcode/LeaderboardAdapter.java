@@ -31,7 +31,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.single_row, parent, false);
+                .inflate(R.layout.single_item_leaderboard, parent, false);
         return new ViewHolder(view);
     }
 
@@ -40,9 +40,9 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     public void onBindViewHolder(@NonNull LeaderboardAdapter.ViewHolder holder, int position) {
         Map<String, Object> User = UserArray.get(position);
         holder.name.setText(Objects.requireNonNull(User.get("Username")).toString());
-        holder.rank.setText(String.valueOf(position+1));
-        holder.total_score.setText(Objects.requireNonNull(User.get("Total_Score")).toString());
-        holder.total_codes.setText(Objects.requireNonNull(User.get("Total_Codes")).toString());
+        holder.rank.setText(String.valueOf(position+1) + ".");
+        holder.total_codes.setText("-" + Objects.requireNonNull(User.get("Total_Codes")).toString() + " Codes");
+        holder.total_score.setText("-" + Objects.requireNonNull(User.get("Total_Score")).toString() + " Pts");
 
         // set top 3 color
         int white, gold, silver, bronze;
@@ -73,14 +73,15 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView name,total_score,total_codes,rank;
+        public TextView name,highest_score,total_score,total_codes,rank;
         public RelativeLayout bg;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.user_name);
-            total_codes=itemView.findViewById(R.id.picture3);
-            total_score=itemView.findViewById(R.id.picture2);
-            rank = itemView.findViewById(R.id.picture);
+            //highest_score=itemView.findViewById(R.id.user_highest_score);
+            total_score=itemView.findViewById(R.id.user_total_score);
+            total_codes=itemView.findViewById(R.id.user_total_codes);
+            rank = itemView.findViewById(R.id.user_rank);
             bg = itemView.findViewById(R.id.box);
         }
     }
