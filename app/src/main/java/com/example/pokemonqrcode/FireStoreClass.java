@@ -1,5 +1,6 @@
 package com.example.pokemonqrcode;
 
+import android.location.Location;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Create an instance of the Firestore database
@@ -66,6 +68,7 @@ public class FireStoreClass implements Serializable {
         String hashcode = pC.getHashCode();
         String picture = pC.getPicture();
         String comments = pC.getComments();
+        Location location = pC.getLocation();
 
 
         data.put("Name",name);
@@ -74,6 +77,7 @@ public class FireStoreClass implements Serializable {
         data.put("HashCode",hashcode);
         data.put("Picture",picture);
         data.put("Comments",comments);
+        data.put("Location", location);
 
         this.codes.add(pC);
 

@@ -1,5 +1,7 @@
 package com.example.pokemonqrcode;
+
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -7,15 +9,20 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+
+
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import android.os.SystemClock;
@@ -55,18 +62,23 @@ import java.util.Locale;
  */
 public class MainActivity extends AppCompatActivity implements CodeFoundFragment.CodeFoundDialogListener {
 
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private final String SAVE_LOCATION = "Yes";
+    private final String IGNORE_LOCATION = "No";
+
     FloatingActionButton cameraButton;
     Bitmap currentImage;
-    Button profileButton, logOutBtn,findUserBtn;
+    Button profileButton, logOutBtn, findUserBtn;
 
 
     String currentLocationSetting; //yes or no
-    List<Address> currentLocation = new ArrayList<Address>();
-    FusedLocationProviderClient fusedLocationProviderClient;
+    Location currentLocation;
+
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     FireStoreClass f;
-
-
 
     @Override
     public void onDataPass(Bitmap bitmap, String setting) {
@@ -79,44 +91,20 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         currentImage = bitmap;
     }
 
-    private void getCurrentLocation() {
-
-        if(currentLocationSetting.equals("yes")) {
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                fusedLocationProviderClient.getLastLocation()
-                        .addOnSuccessListener(new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                if (location != null){
-                                    Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
-                                    try {
-                                        currentLocation = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-
-            }
-
-        }
-        /*
-        else{
-            currentLocation.set((Address)0, 0, 0);
-        }
-
-         */
+    @Override
+    public void onDataPass(String setting) {
+        currentLocationSetting = setting;
     }
 
+    private void getCurrentLocation() {
+
+
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (!(Globals.username == null)){
+        if (!(Globals.username == null)) {
             this.f = new FireStoreClass(Globals.username);
             this.f.refreshCodes(new FireStoreResults() {
                 @Override
@@ -128,6 +116,26 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     }
 
 
+    private void updateLocation() {
+        // Check if we have permission to access the user's location
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request permission if we don't have it
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+            return;
+        }
+
+        // Get the last known location from the LocationManager
+        Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (lastLocation != null) {
+            double latitude = lastLocation.getLatitude();
+            double longitude = lastLocation.getLongitude();
+            currentLocation = lastLocation;
+            Toast.makeText(this, "Latitude: " + latitude + ", Longitude: " + longitude, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Could not get location", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -135,10 +143,11 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         SharedPreferences preferences = getSharedPreferences("valid", MODE_PRIVATE);
         String remember = preferences.getString("remember", "");
 
-        if (remember.equals("true")){
+        if (remember.equals("true")) {
             SharedPreferences preferences1 = getSharedPreferences("name", MODE_PRIVATE);
             Globals.username = preferences1.getString("username", "");
             Toast.makeText(this, "Successfully logged in as " + Globals.username, Toast.LENGTH_SHORT).show();
@@ -146,6 +155,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         logOutBtn = findViewById(R.id.logoutBtn);
         findUserBtn = findViewById(R.id.find_users);
         profileButton = findViewById(R.id.profile_btn);
@@ -154,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         {
             scanCode();
         });
+
+
 
         findUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,9 +250,11 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 }, 100);
             }
 
+
+
             CodeFoundFragment codeFoundFragment = new CodeFoundFragment();
             codeFoundFragment.show(getSupportFragmentManager(), "Code Found");
-
+            
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             LayoutInflater inflater = getLayoutInflater();
@@ -252,6 +268,11 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
                 pCode.setPhoto(currentImage);
+                if(currentLocationSetting.equals(SAVE_LOCATION)) {
+                    updateLocation();
+                }
+                pCode.setLocation(currentLocation);
+
                 //builder.setMessage(pCode.getPicture());
                 //builder.setMessage(pCode.getName());
                 /*
@@ -295,4 +316,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
         }
     });
+
+
+
+
+
 }
