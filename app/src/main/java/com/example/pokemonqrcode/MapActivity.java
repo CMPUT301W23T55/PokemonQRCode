@@ -61,6 +61,16 @@ public class MapActivity extends AppCompatActivity {
         // get the arguments passed by the intent
         String last_act = getIntent().getStringExtra("activityName");
 
+        // create the header
+        CustomHeader head = findViewById(R.id.header_map_activity);
+        head.initializeHead("Map", "Back");
+        // set listener for back button in the header
+        // TODO: button needs to be clicked multiple times to work, need to fix that
+        head.back_button.setOnClickListener(view -> {
+            Log.d("Back button","Back button clicked");
+            finish();
+        });
+
         // get the map view
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
