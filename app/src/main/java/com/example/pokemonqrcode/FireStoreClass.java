@@ -80,7 +80,7 @@ public class FireStoreClass implements Serializable {
         data.put("Picture",picture);
         data.put("Comments",comments);
         data.put("Location", location);
-        data.put("Photo", photo);
+        //data.put("Photo", photo);
 
         this.codes.add(pC);
 
