@@ -44,7 +44,9 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         holder.total_score.setText(Objects.requireNonNull(User.get("Total_Score")).toString());
         holder.total_codes.setText(Objects.requireNonNull(User.get("Total_Codes")).toString());
 
-        int gold, silver, bronze;
+        // set top 3 color
+        int white, gold, silver, bronze;
+        white = ContextCompat.getColor(context, R.color.white);
         gold = ContextCompat.getColor(context, R.color.gold);
         silver = ContextCompat.getColor(context, R.color.silver);
         bronze = ContextCompat.getColor(context, R.color.bronze);
@@ -60,6 +62,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
                 holder.bg.setBackgroundColor(bronze);
                 break;
             default:
+                holder.bg.setBackgroundColor(white);
                 break;
         }
     }
