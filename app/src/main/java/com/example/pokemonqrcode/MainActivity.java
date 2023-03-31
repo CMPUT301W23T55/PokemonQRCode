@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     private final String IGNORE_LOCATION = "No";
 
     FloatingActionButton cameraButton;
-    Button profileButton, logOutBtn, findUserBtn;
+
 
     Bitmap currentImage;
 
@@ -98,13 +98,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         currentImage = bitmap;
     }
 
-   
 
-
-    @Override
-    public void onDataPass(Bitmap bitmap) {
-        currentImage = bitmap;
-    }
+    
 
     @Override
     public void onDataPass(String setting) {
