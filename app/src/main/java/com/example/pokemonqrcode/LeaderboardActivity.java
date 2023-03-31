@@ -73,30 +73,15 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
     }
 
     private void setStyle(String SortStyle) {
-        leaderboardData.clear();
-        // set leaderboardData
-        FirebaseFirestore Database = FirebaseFirestore.getInstance();
-        CollectionReference UsersRef = Database.collection("Users");
-        UsersRef.orderBy(SortStyle, Query.Direction.DESCENDING)
-                .limit(50)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @SuppressLint("NotifyDataSetChanged")
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Map<String, Object> data = document.getData();
-                                Log.d("Working", document.getId() + " => " + data);
-                                // append user instance
-                                leaderboardData.add(data);
-                            }
-                            leaderboardAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("Err", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
+        FireStoreClass f = new FireStoreClass(Globals.username);
+        f.getLeaderboards(SortStyle, new FireStoreResults() {
+            @Override
+            public void onResultGet() {
+                leaderboardData.clear();
+                leaderboardData.addAll(f.getLeaderboardData());
+                leaderboardAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

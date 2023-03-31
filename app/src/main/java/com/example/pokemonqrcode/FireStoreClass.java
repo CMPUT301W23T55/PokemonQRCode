@@ -1,5 +1,6 @@
 package com.example.pokemonqrcode;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,10 +15,12 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 
+import org.checkerframework.checker.units.qual.A;
 import org.w3c.dom.Document;
 
 import java.io.Serializable;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Create an instance of the Firestore database
@@ -37,6 +41,7 @@ public class FireStoreClass implements Serializable {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private final ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
+    private final ArrayList<Map<String, Object>> leaderboardData = new ArrayList<Map<String, Object>>();
 
     private int totalScore, count, highest;
     private PlayerCode pCode;
@@ -147,7 +152,6 @@ public class FireStoreClass implements Serializable {
      * @param pc the pc that the comment is associated with
      */
     public void deleteComment(String comment, PlayerCode pc) {
-        db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
         docRef.update("Comments", FieldValue.arrayRemove(comment))
                 .addOnCompleteListener(unused -> Log.d("Working", "Comment successfully deleted"))
@@ -323,7 +327,6 @@ public class FireStoreClass implements Serializable {
      * @param fireStoreResults An interface used to deal with firestore's asynchronous behaviour
      */
     public void getSearchList(FireStoreResults fireStoreResults){
-        db = FirebaseFirestore.getInstance();
         CollectionReference col = db.collection("Users");
         col.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -351,6 +354,33 @@ public class FireStoreClass implements Serializable {
         return this.usersArrayList;
     }
 
+    public void getLeaderboards(String sortStyle, FireStoreResults fireStoreResults) {
+        leaderboardData.clear();
+        CollectionReference UsersRef = db.collection("Users");
+        UsersRef.orderBy(sortStyle, Query.Direction.DESCENDING)
+                .limit(50)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Map<String, Object> data = document.getData();
+                                Log.d("Working", document.getId() + " => " + data);
+                                // append user instance
+                                leaderboardData.add(data);
+                            }
+                            fireStoreResults.onResultGet();
+                        } else {
+                            Log.d("Err", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+    public ArrayList<Map<String, Object>> getLeaderboardData(){
+        return this.leaderboardData;
+    }
 }
 
 // Query query = collectionRef.orderBy("amount", descending: true).limit(1);
