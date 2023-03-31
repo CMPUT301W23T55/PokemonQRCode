@@ -10,6 +10,12 @@ public class Users {
     private String Email;
     private String Password;
 
+    private int Highest = 0;
+
+    public int getHighest() {
+        return Highest;
+    }
+
     public String getUsername() {
         return Username;
     }
@@ -22,16 +28,16 @@ public class Users {
         return Total_Codes;
     }
 
-    public void setTotal_Codes(int total_Codes) {
-        Total_Codes = total_Codes;
+    public void setTotal_Codes(int Total_Codes) {
+        Total_Codes = this.Total_Codes;
     }
 
     public int getTotal_Score() {
         return Total_Score;
     }
 
-    public void setTotal_Score(int total_Score) {
-        Total_Score = total_Score;
+    public void setTotal_Score(int Total_Score) {
+        this.Total_Score = Total_Score;
     }
 
     public String getEmail() {
@@ -48,6 +54,9 @@ public class Users {
 
     public void setPassword(String password) {
         Password = password;
+    }
+    public void setHighest(int Highest) {
+        this.Highest = Highest;
     }
 
 

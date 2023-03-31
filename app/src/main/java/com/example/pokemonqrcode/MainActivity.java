@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     FloatingActionButton cameraButton;
     Bitmap currentImage;
-    Button profileButton, logOutBtn,findUserBtn;
+    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn;
 
 
     String currentLocationSetting; //yes or no
@@ -73,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         currentImage = bitmap;
         currentLocationSetting = setting;
     }
+
+    @Override
+    public void onDataPass(Bitmap bitmap) {
+        currentImage = bitmap;
+    }
+
     private void getCurrentLocation() {
 
         if(currentLocationSetting.equals("yes")) {
@@ -142,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         }
         logOutBtn = findViewById(R.id.logoutBtn);
         findUserBtn = findViewById(R.id.find_users);
+        leaderboardBtn = findViewById(R.id.leaderboards);
         profileButton = findViewById(R.id.profile_btn);
         cameraButton = findViewById(R.id.open_camera_button);
         cameraButton.setOnClickListener(v->
@@ -149,6 +156,12 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             scanCode();
         });
 
+        leaderboardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewLeaderboard();
+            }
+        });
         findUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -192,10 +205,19 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     /**
      * viewProfile shows all scanned qr codes of the user in a new Activity
      */
-    private void viewProfile(){
+    private void viewProfile() {
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("key",Globals.username);
         intent.putExtra("access", true);
+        startActivity(intent);
+    }
+
+    /*
+     * Navigate to leaderboard page
+     */
+    private void viewLeaderboard() {
+        Intent intent = new Intent(this, LeaderboardActivity.class);
+        intent.putExtra("key",Globals.username);
         startActivity(intent);
     }
 
@@ -245,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 ScannedCode code = new ScannedCode(result);
                 PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                                     code.getScore(), code.getPicture());
+                pCode.setPhoto(currentImage);
                 //builder.setMessage(pCode.getPicture());
                 //builder.setMessage(pCode.getName());
                 /*
