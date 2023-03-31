@@ -2,6 +2,8 @@ package com.example.pokemonqrcode;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -18,23 +20,32 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
 public class LeaderboardActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    String Username;
-    ArrayList<Map<String, Object>> LeaderboardData = new ArrayList<>();
+    private RecyclerView leaderboardRecycler;
+    private LeaderboardAdapter leaderboardAdapter;
+    String username;
+    ArrayList<Map<String, Object>> leaderboardData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
+
+        // retrieve username
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            this.username = extras.getString("key");
+        }
 
         Button homeBtn = findViewById(R.id.return_home);
         // https://developer.android.com/develop/ui/views/components/spinner#java
@@ -46,33 +57,23 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         sortSpinner.setAdapter(adapter);
+        // recycler view
+        leaderboardData = new ArrayList<>();
+        leaderboardRecycler = (RecyclerView) findViewById(R.id.rec_view);
+        leaderboardRecycler.setLayoutManager(new LinearLayoutManager(this));
+        leaderboardAdapter = new LeaderboardAdapter(leaderboardData,this);
+        leaderboardRecycler.setAdapter(leaderboardAdapter);
 
-        // retrieve db id
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            this.Username = extras.getString("key");
-        }
-
-        // set LeaderboardData (default: Highest)
-        setStyle("Highest");
-
+        // set LeaderboardData sort style (default: Highest)
         sortSpinner.setOnItemSelectedListener(this);
         // return to MainActivity
-        homeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-    }
+        homeBtn.setOnClickListener(view -> finish());
 
-    private void appendData(Map<String, Object> data) {
-        LeaderboardData.add(data);
     }
 
     private void setStyle(String SortStyle) {
-        LeaderboardData.clear();
-        // set LeaderboardArray
+        leaderboardData.clear();
+        // set leaderboardData
         FirebaseFirestore Database = FirebaseFirestore.getInstance();
         CollectionReference UsersRef = Database.collection("Users/");
         UsersRef.orderBy(SortStyle, Query.Direction.DESCENDING)
@@ -86,8 +87,9 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
                                 Map<String, Object> data = document.getData();
                                 Log.d("Working", document.getId() + " => " + data);
                                 // append user instance
-                                appendData(data);
+                                leaderboardData.add(data);
                             }
+                            leaderboardAdapter.notifyDataSetChanged();
                         } else {
                             Log.d("Err", "Error getting documents: ", task.getException());
                         }
@@ -114,7 +116,5 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
+    public void onNothingSelected(AdapterView<?> adapterView) { }
 }
