@@ -47,7 +47,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.IOException;
@@ -67,18 +69,23 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     private final String IGNORE_LOCATION = "No";
 
     FloatingActionButton cameraButton;
-    Bitmap currentImage;
     Button profileButton, logOutBtn, findUserBtn;
 
-
+    Bitmap currentImage;
     String currentLocationSetting; //yes or no
     Location currentLocation;
+    ScanIntentResult currentScan;
+
 
 
     private LocationManager locationManager;
     private LocationListener locationListener;
 
     FireStoreClass f;
+
+    interface ResultPasser {
+
+    }
 
     @Override
     public void onDataPass(Bitmap bitmap, String setting) {
@@ -95,11 +102,11 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     public void onDataPass(String setting) {
         currentLocationSetting = setting;
     }
-
-    private void getCurrentLocation() {
-
-
+    @Override
+    public void onDataPass(ScanIntentResult result) {
+        showScannedCode(result);
     }
+
 
     @Override
     public void onStart() {
@@ -131,9 +138,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             double latitude = lastLocation.getLatitude();
             double longitude = lastLocation.getLongitude();
             currentLocation = lastLocation;
-            Toast.makeText(this, "Latitude: " + latitude + ", Longitude: " + longitude, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Could not get location", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -242,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     {
         //we can use getContents to get the reading of the code to calculate the score
         if(result.getContents() !=null) {
-
+            currentScan = result;
             //i dont think we need this class, do it with normal alert dialog
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{
@@ -251,30 +255,34 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             }
 
 
-
             CodeFoundFragment codeFoundFragment = new CodeFoundFragment();
             codeFoundFragment.show(getSupportFragmentManager(), "Code Found");
-            
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            LayoutInflater inflater = getLayoutInflater();
-            View v = inflater.inflate(R.layout.code_captured, null);
-            builder.setView(v);
 
 
-            //builder.setTitle("Result");
-            try {
-                ScannedCode code = new ScannedCode(result);
-                PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
-                                    code.getScore(), code.getPicture());
-                pCode.setPhoto(currentImage);
-                if(currentLocationSetting.equals(SAVE_LOCATION)) {
-                    updateLocation();
-                }
+        }
+    });
+
+    public void showScannedCode(ScanIntentResult result) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View v = inflater.inflate(R.layout.code_captured, null);
+        builder.setView(v);
+
+
+        //builder.setTitle("Result");
+        try {
+            ScannedCode code = new ScannedCode(result);
+            PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
+                    code.getScore(), code.getPicture());
+            pCode.setPhoto(currentImage);
+            if(currentLocationSetting.equals(SAVE_LOCATION)) {
+                updateLocation();
                 pCode.setLocation(currentLocation);
+            }
 
-                //builder.setMessage(pCode.getPicture());
-                //builder.setMessage(pCode.getName());
+
+            //builder.setMessage(pCode.getPicture());
+            //builder.setMessage(pCode.getName());
                 /*
                 String test = "a";
                 getCurrentLocation();
@@ -286,38 +294,39 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 builder.setMessage(test);
 
                  */
-                TextView codeImage = (TextView) v.findViewById(R.id.code_image);
-                TextView codeName = (TextView) v.findViewById(R.id.code_name);
-                TextView codeScore = (TextView) v.findViewById(R.id.code_score);
-                codeImage.setText(pCode.getPicture());
-                codeName.setText(pCode.getName());
-                codeScore.setText(Integer.toString(pCode.getScore()));
-                builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+            TextView codeImage = (TextView) v.findViewById(R.id.code_image);
+            TextView codeName = (TextView) v.findViewById(R.id.code_name);
+            TextView codeScore = (TextView) v.findViewById(R.id.code_score);
+            codeImage.setText(pCode.getPicture());
+            codeName.setText(pCode.getName());
+            codeScore.setText(Integer.toString(pCode.getScore()));
+            builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
 
-                builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Add the player code to the database in here
-                        f.addAQRCode(pCode);
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
-                // e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
-
-
+            builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Add the player code to the database in here
+                    f.addAQRCode(pCode);
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+            // e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
-    });
 
 
+    }
+
+    public ScanIntentResult getCurrentScan() {
+        return currentScan;
+    }
 
 
 

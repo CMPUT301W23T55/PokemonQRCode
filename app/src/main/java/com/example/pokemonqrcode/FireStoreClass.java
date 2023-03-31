@@ -1,5 +1,6 @@
 package com.example.pokemonqrcode;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -69,6 +70,7 @@ public class FireStoreClass implements Serializable {
         String picture = pC.getPicture();
         String comments = pC.getComments();
         Location location = pC.getLocation();
+        Bitmap photo = pC.getPhoto();
 
 
         data.put("Name",name);
@@ -78,6 +80,7 @@ public class FireStoreClass implements Serializable {
         data.put("Picture",picture);
         data.put("Comments",comments);
         data.put("Location", location);
+        data.put("Photo", photo);
 
         this.codes.add(pC);
 
