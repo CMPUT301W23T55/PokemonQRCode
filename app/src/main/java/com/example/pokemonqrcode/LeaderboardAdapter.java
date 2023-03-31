@@ -1,8 +1,6 @@
 package com.example.pokemonqrcode;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +32,6 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
                 .inflate(R.layout.single_item_leaderboard, parent, false);
         return new ViewHolder(view);
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull LeaderboardAdapter.ViewHolder holder, int position) {

@@ -33,6 +33,7 @@ import java.util.Map;
 public class LeaderboardActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private LeaderboardAdapter leaderboardAdapter;
+    private RecyclerView leaderboardRecycler;
     String username;
     ArrayList<Map<String, Object>> leaderboardData;
 
@@ -60,6 +61,7 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
         // recycler view
         leaderboardData = new ArrayList<>();
         RecyclerView leaderboardRecycler = (RecyclerView) findViewById(R.id.rec_view_leaderboard);
+        //leaderboardRecycler = (RecyclerView) findViewById(R.id.rec_view);
         leaderboardRecycler.setLayoutManager(new LinearLayoutManager(this));
         leaderboardAdapter = new LeaderboardAdapter(leaderboardData,this);
         leaderboardRecycler.setAdapter(leaderboardAdapter);
@@ -100,7 +102,6 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
         String text = adapterView.getItemAtPosition(pos).toString();
-        Toast.makeText(adapterView.getContext(), text, Toast.LENGTH_SHORT).show();
         // switch sort styles
         switch(text) {
             case "Total Score":
@@ -113,6 +114,7 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
                 setStyle("Highest");
                 break;
         }
+        //leaderboardRecycler.scrollToPosition(0);
     }
 
     @Override
