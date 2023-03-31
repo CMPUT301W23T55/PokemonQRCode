@@ -53,6 +53,7 @@
             android:theme="@style/zxing_CaptureTheme" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".MapActivity"/>
     </application>
 
 </manifest>

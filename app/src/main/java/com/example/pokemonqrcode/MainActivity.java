@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     FloatingActionButton cameraButton;
     Bitmap currentImage;
-    Button profileButton, logOutBtn,findUserBtn;
+    Button profileButton, logOutBtn, findUserBtn, mapButton;
 
 
     String currentLocationSetting; //yes or no
@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         logOutBtn = findViewById(R.id.logoutBtn);
         findUserBtn = findViewById(R.id.find_users);
         profileButton = findViewById(R.id.profile_btn);
+        mapButton = findViewById(R.id.location_btn);
         cameraButton = findViewById(R.id.open_camera_button);
         cameraButton.setOnClickListener(v->
         {
@@ -180,6 +181,15 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 startActivity(newIntent);
             }
         });
+
+        // listener for the location / map button
+        mapButton.setOnClickListener(view -> {
+            Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
+            newIntent.putExtra("key",Globals.username);
+            startActivity(newIntent);
+        });
+
+
 
     }
 
