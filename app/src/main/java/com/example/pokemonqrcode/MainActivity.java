@@ -86,8 +86,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     FireStoreClass f;
 
-    private FirebaseStorage cloudStorage = FirebaseStorage.getInstance();
-
     interface ResultPasser {
 
     }
@@ -300,16 +298,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                     code.getScore(), code.getPicture());
             pCode.setPhoto(currentImage);
 
-            // get downscaled, compressed (jpeg) image stream as byte array
-            Bitmap currentImageScaled = Bitmap.createScaledBitmap(currentImage, 100, 100, true);
-            ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
-            currentImageScaled.compress(Bitmap.CompressFormat.JPEG, 80, imageStream);
-            byte[] imageData = imageStream.toByteArray();
-            // upload to db
-            StorageReference pathRef = cloudStorage.getReference("QRCodes/" + pCode.getHashCode() + ".jpeg");
-            pathRef.putBytes(imageData);
-
-
             if(currentLocationSetting.equals(SAVE_LOCATION)) {
                 updateLocation();
                 pCode.setLocation(currentLocation);
@@ -332,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    pCode.setImgExists(pCode.getPhoto() != null);
                     // Add the player code to the database in here
                     f.addAQRCode(pCode);
                     dialog.dismiss();
@@ -342,8 +331,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     public ScanIntentResult getCurrentScan() {
