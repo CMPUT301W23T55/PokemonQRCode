@@ -356,6 +356,20 @@ public class FireStoreClass implements Serializable {
         return this.usersArrayList;
     }
 
+    public ArrayList<ScannedCode> getScannedCodesArrayList() {
+        db = FirebaseFirestore.getInstance();
+        CollectionReference col = db.collection("Codes");
+
+        col.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                    }
+                });
+        return null;
+    }
+
 }
 
 // Query query = collectionRef.orderBy("amount", descending: true).limit(1);
