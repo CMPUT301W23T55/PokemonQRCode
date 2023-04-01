@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     String currentLocationSetting; //yes or no
     Location currentLocation;
     ScanIntentResult currentScan;
-    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn;
+    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn, mapButton;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -220,7 +220,17 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         // listener for the location / map button
         mapButton.setOnClickListener(view -> {
             Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
+            updateLocation();
+            double[] loc;
+            if (currentLocation != null) {
+                loc = new double[]{currentLocation.getLatitude(), currentLocation.getLongitude()};
+            } else {
+                // default location if user did not give permission
+                loc = new double[]{50,50};
+            }
+
             newIntent.putExtra("key",Globals.username);
+            newIntent.putExtra("location",loc);
             startActivity(newIntent);
         });
 

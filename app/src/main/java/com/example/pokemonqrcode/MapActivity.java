@@ -1,9 +1,12 @@
 package com.example.pokemonqrcode;
 
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -14,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -39,9 +43,13 @@ import java.util.stream.Collectors;
  */
 public class MapActivity extends AppCompatActivity {
 
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
     private MapView map = null;
     private final int REQUEST_PERMS = 1;
     Context context;
+
+    Location currentLocation;
+    private LocationManager locationManager;
 
     private String username;
 
@@ -58,18 +66,16 @@ public class MapActivity extends AppCompatActivity {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
         setContentView(R.layout.activity_map);
 
-        // get the arguments passed by the intent
-        String last_act = getIntent().getStringExtra("activityName");
-
         // create the header
         CustomHeader head = findViewById(R.id.header_map_activity);
         head.initializeHead("Map", "Back");
         // set listener for back button in the header
         // TODO: button needs to be clicked multiple times to work, need to fix that
         head.back_button.setOnClickListener(view -> {
-            Log.d("Back button","Back button clicked");
+            Log.d("Back button", "Back button clicked");
             finish();
         });
+
 
         // get the map view
         map = findViewById(R.id.map);
@@ -79,13 +85,16 @@ public class MapActivity extends AppCompatActivity {
         List<String> permsList = Collections.singletonList(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         String[] permsArray = permsList.toArray(new String[0]);
 
-        // random-ish lat and lon, for the map
-        double lat = 53;
-        double lon = -100;
 
-        // this is just a test point, preferably we would get the geolocation of the user
-        // or ask the user to enter their location
-        GeoPoint start = new GeoPoint(lat,lon);
+        // get the location of the user
+        double[] location = getIntent().getDoubleArrayExtra("location");
+        if (location == null) {
+            // this checks if the location is known
+            // if not, default to some lat and lon
+            location = new double[]{0, 0};
+        }
+        GeoPoint start = new GeoPoint(location[0],location[1]);
+
 
         // creating an overlay for the map
         MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getBaseContext()), map);
@@ -102,25 +111,28 @@ public class MapActivity extends AppCompatActivity {
         FireStoreClass f = new FireStoreClass(username);
         ArrayList<Users> user_list = f.getUsersArrayList();
 
+
+
         ArrayList<PlayerCode> allCodes = new ArrayList<>();
 
         for (Users user : user_list) {
             FireStoreClass fireStoreClass = new FireStoreClass(user.getUsername());
-            fireStoreClass.getCodesList(new FireStoreLIstResults() {
-                @Override
-                public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
-                    allCodes.addAll(playerCodeList);
-                }
-            });
+            fireStoreClass.getCodesList(allCodes::addAll);
         }
 
         // get distinct codes
         // https://stackoverflow.com/a/33735562
         List<PlayerCode> distinctCodes = allCodes.stream().distinct().collect(Collectors.toList());
         ArrayList<OverlayItem> points = new ArrayList<>();
-        for (PlayerCode code : distinctCodes) {
-            points.add(new OverlayItem(String.valueOf(code.getScore()),code.getName(),code.getGeolocation()));
+        for (PlayerCode code : allCodes) {
+            OverlayItem marker = new OverlayItem(String.valueOf(code.getScore()), code.getName(), (IGeoPoint) code.getLocation());
+            if (!points.contains(marker)) {
+                points.add(marker);
+            }
+
         }
+
+        points.add(new OverlayItem("Test","Test",start));
 
         makeMapMarker(points);
     }
@@ -179,7 +191,7 @@ public class MapActivity extends AppCompatActivity {
      * @param points list of items to be added to an overlay, then displayed as map markers
      */
     private void makeMapMarker(ArrayList<OverlayItem> points) {
-        // TODO: deal with deprecated classes from Open Maps
+        // deprecated but still works
         ItemizedOverlayWithFocus<OverlayItem> overlay = new ItemizedOverlayWithFocus<>(points,
                 new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
                     @Override
@@ -226,4 +238,6 @@ public class MapActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel",null)
                 .show();
     }
+
+
 }
