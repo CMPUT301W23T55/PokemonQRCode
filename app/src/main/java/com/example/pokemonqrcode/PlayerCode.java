@@ -28,16 +28,16 @@ public class PlayerCode {
     private Date Date;
     private String Picture;
     private Bitmap photo;
-    private List<Address> location;
+    private Location location;
     private String Comments;
 
 
-    public PlayerCode(ScannedCode code, Bitmap photo, List<Address> location) {
+    public PlayerCode(ScannedCode code, Bitmap photo) {
         this.Name = code.getName();
         this.Score = code.getScore();
         this.Picture = code.getPicture();
         this.photo = photo;
-        this.location = location;
+
     }
 
     /*
@@ -103,28 +103,13 @@ public class PlayerCode {
 
     public Date getDate() {return this.Date;}
 
-    public IGeoPoint getGeolocation() {
-        return new IGeoPoint() {
-            @Override
-            public int getLatitudeE6() {
-                return 0;
-            }
+    public Bitmap getPhoto() {
+        return photo;
+    }
 
-            @Override
-            public int getLongitudeE6() {
-                return 0;
-            }
+    public Location getLocation() {
+        return location;
 
-            @Override
-            public double getLatitude() {
-                return 0;
-            }
-
-            @Override
-            public double getLongitude() {
-                return 0;
-            }
-        };
     }
 
     public void setScore(int score) {
@@ -135,13 +120,17 @@ public class PlayerCode {
     }
     public void setPicture(String picture) {this.Picture = picture;}
     public void setDate(Date date) {this.Date = date;}
-
+    public void setPhoto(Bitmap photo) {this.photo = photo;}
 
     public String getComments(){
         return this.Comments;
     }
 
-//    public void addComment(String comment){
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    //    public void addComment(String comment){
 //        Comments.add(comment);
 //    }
 

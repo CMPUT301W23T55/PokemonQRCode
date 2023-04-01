@@ -23,7 +23,7 @@
         android:layout_marginStart="1dp"
         android:backgroundTint="@color/white"
         android:insetLeft="20dp"
-        app:icon="@drawable/home_screen"
+        app:icon="@mipmap/home_screen"
         app:iconTint="#000000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +36,7 @@
         android:backgroundTint="@color/white"
         android:insetLeft="20dp"
         android:textAlignment="viewEnd"
-        app:icon="@drawable/more_info"
+        app:icon="@mipmap/home_screen"
         app:iconTint="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
