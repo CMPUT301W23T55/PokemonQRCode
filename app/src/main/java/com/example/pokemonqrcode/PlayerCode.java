@@ -30,6 +30,7 @@ public class PlayerCode {
     private Bitmap photo;
     private Location location;
     private String Comments;
+    private boolean imgExists;
 
 
     public PlayerCode(ScannedCode code, Bitmap photo) {
@@ -111,6 +112,7 @@ public class PlayerCode {
         return location;
 
     }
+    public boolean getImgExists() { return imgExists;}
 
     public void setScore(int score) {
         this.Score = score;
@@ -121,6 +123,7 @@ public class PlayerCode {
     public void setPicture(String picture) {this.Picture = picture;}
     public void setDate(Date date) {this.Date = date;}
     public void setPhoto(Bitmap photo) {this.photo = photo;}
+    public void setImgExists(boolean imgExists) {this.imgExists = imgExists;}
 
     public String getComments(){
         return this.Comments;
@@ -162,6 +165,11 @@ public class PlayerCode {
             return 1;
         }
     };
+
+    public IGeoPoint getGeolocation() {
+        IGeoPoint l = null;
+        return l;
+    }
 }
 
 

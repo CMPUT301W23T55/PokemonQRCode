@@ -47,11 +47,14 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     String currentLocationSetting; //yes or no
     Location currentLocation;
     ScanIntentResult currentScan;
-    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn;
+    Button profileButton,mapButton,leaderboardBtn,logOutBtn,findUserBtn;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -307,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                     code.getScore(), code.getPicture());
             pCode.setPhoto(currentImage);
+
             if(currentLocationSetting.equals(SAVE_LOCATION)) {
                 updateLocation();
                 pCode.setLocation(currentLocation);
@@ -329,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    pCode.setImgExists(pCode.getPhoto() != null);
                     // Add the player code to the database in here
                     f.addAQRCode(pCode);
                     dialog.dismiss();
@@ -339,8 +344,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     public ScanIntentResult getCurrentScan() {

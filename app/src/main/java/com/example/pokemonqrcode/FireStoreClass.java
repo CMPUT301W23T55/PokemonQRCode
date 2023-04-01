@@ -3,6 +3,7 @@ package com.example.pokemonqrcode;
 import android.annotation.SuppressLint;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 
 import android.util.Log;
@@ -23,10 +24,16 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.checkerframework.checker.units.qual.A;
 import org.w3c.dom.Document;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +64,8 @@ public class FireStoreClass implements Serializable {
     private final ArrayList<String> usersScannedIdenticalCode = new ArrayList<String>();
     private final ArrayList<Users> usersArrayList = new ArrayList<Users>();
 
+    private FirebaseStorage cloudStorage = FirebaseStorage.getInstance();
+
     //needs username as that is the key to getting data from database
 
     /**
@@ -84,7 +93,9 @@ public class FireStoreClass implements Serializable {
         String comments = pC.getComments();
         Location location = pC.getLocation();
         Bitmap photo = pC.getPhoto();
+        boolean imgExists = pC.getImgExists();
 
+        data.put("imgExists", imgExists);
         data.put("Name",name);
         data.put("Score",score);
         data.put("Date", date);
@@ -92,7 +103,6 @@ public class FireStoreClass implements Serializable {
         data.put("Picture",picture);
         data.put("Comments",comments);
         data.put("Location", location);
-        //data.put("Photo", photo);
 
         this.codes.add(pC);
 
@@ -120,6 +130,18 @@ public class FireStoreClass implements Serializable {
                 }
             }
         });
+
+        // no image to add
+        if (photo == null) { return; }
+
+        // get downscaled, compressed (jpeg) image stream as byte array
+        Bitmap photoScaled = Bitmap.createScaledBitmap(photo, 100, 100, true);
+        ByteArrayOutputStream imgStream = new ByteArrayOutputStream();
+        photoScaled.compress(Bitmap.CompressFormat.JPEG, 80, imgStream);
+        byte[] imageData = imgStream.toByteArray();
+        // upload to Cloud
+        StorageReference pathRef = cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode));
+        pathRef.putBytes(imageData);
     }
 
     /**
@@ -226,13 +248,34 @@ public class FireStoreClass implements Serializable {
                             String docHashCode= (String) document.get("HashCode");
                             if (docHashCode.equals(hashcode)) {
                                 pCode = document.toObject(PlayerCode.class);
-
-//                                }
-
                             }
 //                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
                         }
-                        fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                        // return pCode if image doesn't exist
+                        if (!pCode.getImgExists()) {
+                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                            return;
+                        }
+                        // get image and set pCode attribute
+                        try {
+                            // temp file to store image
+                            File tmpImg = File.createTempFile("tmp", ".jpeg");
+                            cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
+                                    .getFile(tmpImg)
+                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
+                                            pCode.setPhoto(pcPhoto);
+                                            // ret pCode with image
+                                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                                        }
+                                    });
+
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
                     }
                 });
     }

@@ -121,9 +121,6 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
                         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                         image.setImageBitmap(bitmap);
                         listener.onDataPass(bitmap);
-
-
-
                     }
                 });
 
@@ -133,6 +130,7 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
 
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 activityResultLaunch.launch(intent);
+
 
             }
         });
