@@ -39,6 +39,14 @@ public class MainActivityTest {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
     }
     //how do i test the camera with junit :(
+    @Test
+    public void checkSearchButton() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnView(solo.getView(R.id.find_users));
+        solo.assertCurrentActivity("Wrong Activity", SearchUserActivity.class);
 
+        solo.clickOnView(solo.getView(R.id.return_home));
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+    }
 
 }

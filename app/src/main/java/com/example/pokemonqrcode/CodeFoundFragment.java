@@ -35,6 +35,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.zxing.client.android.Intents;
+import com.journeyapps.barcodescanner.ScanIntentResult;
 
 /**
  * This is the fragment that appears after the camera detects a QR code from the MainActivity
@@ -42,6 +44,8 @@ import com.google.android.gms.location.LocationServices;
  * the code with a geolocation
  */
 public class CodeFoundFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
+
+    private ScanIntentResult result;
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -75,6 +79,9 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
     interface CodeFoundDialogListener {
         void onDataPass(Bitmap bitmap, String setting);
         void onDataPass(Bitmap bitmap);
+        void onDataPass(String setting);
+        void onDataPass(ScanIntentResult result);
+
     }
     private CodeFoundDialogListener listener;
 
@@ -83,6 +90,9 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         listener = (CodeFoundDialogListener) context;
+        MainActivity activity = (MainActivity) getActivity();
+        result = activity.getCurrentScan();
+
 
     }
 
@@ -132,8 +142,8 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
                 .setView(view)
                 //.setTitle("Code found!")
                 .setPositiveButton("Capture", (dialog, which) -> {
-                        listener.onDataPass(((BitmapDrawable)image.getDrawable()).getBitmap(), locationSpinner.getSelectedItem().toString());
-
+                        listener.onDataPass((locationSpinner.getSelectedItem().toString()));
+                        listener.onDataPass(result);
                 })
                 .create();
 
@@ -144,5 +154,8 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
     public void passData(Bitmap bitmap) {
         listener.onDataPass(bitmap);
     }
+
+    public void passData(String setting) { listener.onDataPass(setting);}
+    public void passData(ScanIntentResult result) { listener.onDataPass(result);}
 
 }

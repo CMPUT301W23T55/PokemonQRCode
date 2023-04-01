@@ -1,6 +1,10 @@
 package com.example.pokemonqrcode;
 
 import android.annotation.SuppressLint;
+
+import android.graphics.Bitmap;
+import android.location.Location;
+
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +32,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import java.util.Map;
+
+import java.util.Locale;
+
 
 /**
  * Create an instance of the Firestore database
@@ -74,6 +82,8 @@ public class FireStoreClass implements Serializable {
         String hashcode = pC.getHashCode();
         String picture = pC.getPicture();
         String comments = pC.getComments();
+        Location location = pC.getLocation();
+        Bitmap photo = pC.getPhoto();
 
         data.put("Name",name);
         data.put("Score",score);
@@ -81,6 +91,8 @@ public class FireStoreClass implements Serializable {
         data.put("HashCode",hashcode);
         data.put("Picture",picture);
         data.put("Comments",comments);
+        data.put("Location", location);
+        //data.put("Photo", photo);
 
         this.codes.add(pC);
 
@@ -354,6 +366,7 @@ public class FireStoreClass implements Serializable {
         return this.usersArrayList;
     }
 
+
     public void getLeaderboards(String sortStyle, FireStoreResults fireStoreResults) {
         leaderboardData.clear();
         CollectionReference UsersRef = db.collection("Users");
@@ -381,6 +394,22 @@ public class FireStoreClass implements Serializable {
     public ArrayList<Map<String, Object>> getLeaderboardData(){
         return this.leaderboardData;
     }
+
+    public ArrayList<ScannedCode> getScannedCodesArrayList() {
+        db = FirebaseFirestore.getInstance();
+        CollectionReference col = db.collection("Codes");
+
+        col.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                    }
+                });
+        return null;
+    }
+
+
 }
 
 // Query query = collectionRef.orderBy("amount", descending: true).limit(1);
