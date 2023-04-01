@@ -1,5 +1,6 @@
 package com.example.pokemonqrcode;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,11 +34,12 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull LeaderboardAdapter.ViewHolder holder, int position) {
         Map<String, Object> User = UserArray.get(position);
         holder.name.setText(Objects.requireNonNull(User.get("Username")).toString());
-        holder.rank.setText(String.valueOf(position+1) + ".");
+        holder.rank.setText(String.valueOf(User.get("rank")) + ".");
         holder.total_codes.setText("-" + Objects.requireNonNull(User.get("Total_Codes")).toString() + " Codes");
         holder.total_score.setText("-" + Objects.requireNonNull(User.get("Total_Score")).toString() + " Pts");
 
@@ -48,14 +50,14 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         silver = ContextCompat.getColor(context, R.color.silver);
         bronze = ContextCompat.getColor(context, R.color.bronze);
 
-        switch (position) {
-            case 0:
+        switch ((int) User.get("rank")) {
+            case 1:
                 holder.bg.setBackgroundColor(gold);
                 break;
-            case 1:
+            case 2:
                 holder.bg.setBackgroundColor(silver);
                 break;
-            case 2:
+            case 3:
                 holder.bg.setBackgroundColor(bronze);
                 break;
             default:

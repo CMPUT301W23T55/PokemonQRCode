@@ -75,13 +75,33 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
     private void setStyle(String SortStyle) {
         FireStoreClass f = new FireStoreClass(Globals.username);
         f.getLeaderboards(SortStyle, new FireStoreResults() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResultGet() {
                 leaderboardData.clear();
                 leaderboardData.addAll(f.getLeaderboardData());
+                handleTies(SortStyle);
                 leaderboardAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void handleTies(String SortStyle) {
+        // set rank for first elem
+        int prevRank = 1, prevScore = ((Long) leaderboardData.get(0).get(SortStyle)).intValue();
+        leaderboardData.get(0).put("rank", prevRank);
+        // iter through the remaining list
+        for (int i = 1; i<leaderboardData.size(); i++) {
+            Map<String, Object> usr = leaderboardData.get(i);
+
+            if (((Long) usr.get(SortStyle)).intValue() == prevScore) {
+                usr.put("rank", prevRank);
+            } else {
+                prevRank++;
+                usr.put("rank", prevRank);
+                prevScore = ((Long) usr.get(SortStyle)).intValue();
+            }
+        }
     }
 
     @Override

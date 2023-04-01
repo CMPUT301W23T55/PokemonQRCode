@@ -165,6 +165,11 @@ public class PlayerCode {
             return 1;
         }
     };
+
+    public IGeoPoint getGeolocation() {
+        IGeoPoint l = null;
+        return l;
+    }
 }
 
 

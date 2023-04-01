@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     String currentLocationSetting; //yes or no
     Location currentLocation;
     ScanIntentResult currentScan;
-    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn;
+    Button profileButton,mapButton,leaderboardBtn,logOutBtn,findUserBtn;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
