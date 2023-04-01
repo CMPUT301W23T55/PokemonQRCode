@@ -1,34 +1,37 @@
 package com.example.pokemonqrcode;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is an activity for searching users by username
+ * @see FireStoreClass,ProfileActivity
+ * @author Jawad, Carter
+ */
 public class SearchUserActivity extends AppCompatActivity implements RecyclerViewInterface{
+
+    /*
+    Initialize views
+     */
     Button homeBtn;
     SearchAdapter mySearchAdapter;
-    ArrayList<Users> usersList;
     RecyclerView recView;
+    /*
+    Initialize variables
+     */
     private SearchView searchView;
-
+    ArrayList<Users> usersList;
     private String username;
 
     @Override
@@ -41,7 +44,9 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
             this.username = extras.getString("key");
             //The key argument here must match that used in the other activity
         }
-
+        /*
+        Initialize the views
+         */
         homeBtn = findViewById(R.id.return_home);
         recView = (RecyclerView) findViewById(R.id.rec_view);
         recView.setLayoutManager(new LinearLayoutManager(SearchUserActivity.this));
@@ -65,6 +70,9 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
         // find views by id
         searchView = findViewById(R.id.search_view);
         searchView.clearFocus();
+        /*
+        To query based on username
+         */
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -78,6 +86,9 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
             }
         });
 
+        /*
+        Returns to MainActivity/Home screen
+         */
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,7 +98,9 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
 
     }
 
-
+    /*
+    The main logic to filter users based on keywords entered for searching
+     */
     private void filterList(String text) {
         List<Users> filteredList = new ArrayList<>();
         for (Users user : usersList) {
@@ -103,6 +116,7 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
             mySearchAdapter.setFilteredList(filteredList);
         }
     }
+
 
     @Override
     public void onItemClick(int pos) {
