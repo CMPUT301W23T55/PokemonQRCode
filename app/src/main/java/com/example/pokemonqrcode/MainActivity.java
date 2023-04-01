@@ -43,6 +43,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -125,6 +127,18 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 }
             });
         }
+        TextView imageview = findViewById(R.id.item_image);
+        TextView imageText = findViewById(R.id.item_image_text);
+        TextView imageScore = findViewById(R.id.item_image_score);
+        this.f.getHighest(new FireStoreResults() {
+            @Override
+            public void onResultGet() {
+                PlayerCode p = f.getHighestCode();
+                imageview.setText(p.getPicture());
+                imageText.setText(p.getName());
+                imageScore.setText(Integer.toString(p.getScore()));
+            }
+        });
     }
 
 
@@ -146,8 +160,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
-
-
 
         logOutBtn = findViewById(R.id.logoutBtn);
         findUserBtn = findViewById(R.id.find_users);
