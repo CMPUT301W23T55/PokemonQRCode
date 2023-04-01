@@ -27,9 +27,13 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
     Button homeBtn;
     SearchAdapter mySearchAdapter;
     RecyclerView recView;
+<<<<<<< HEAD
     /*
     Initialize variables
      */
+=======
+    private List<Users> filteredList = new ArrayList<>();
+>>>>>>> 72fae0f0a2e1aec6df55378bcd9e85be9e58d3dd
     private SearchView searchView;
     ArrayList<Users> usersList;
     private String username;
@@ -102,7 +106,7 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
     The main logic to filter users based on keywords entered for searching
      */
     private void filterList(String text) {
-        List<Users> filteredList = new ArrayList<>();
+        filteredList.clear();
         for (Users user : usersList) {
             if ((user.getUsername()).toLowerCase().contains((text.toLowerCase()))) {
                 filteredList.add(user);
@@ -120,7 +124,7 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
 
     @Override
     public void onItemClick(int pos) {
-        String username = usersList.get(pos).getUsername();
+        String username = filteredList.get(pos).getUsername();
         Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(SearchUserActivity.this, ProfileActivity.class);

@@ -12,6 +12,10 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class ProfileActivityTest {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72fae0f0a2e1aec6df55378bcd9e85be9e58d3dd
     private Solo solo;
 
     @Rule

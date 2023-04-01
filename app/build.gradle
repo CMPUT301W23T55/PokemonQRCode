@@ -46,7 +46,14 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-firestore:24.4.5'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+<<<<<<< HEAD
     implementation 'androidx.test:monitor:1.6.1'
+=======
+
+    // open street maps api
+    implementation 'org.osmdroid:osmdroid-android:6.1.14'
+
+>>>>>>> 72fae0f0a2e1aec6df55378bcd9e85be9e58d3dd
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
     testImplementation 'org.testng:testng:6.9.6'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'

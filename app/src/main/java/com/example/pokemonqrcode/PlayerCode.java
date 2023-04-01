@@ -8,6 +8,8 @@ import android.location.Location;
 
 import androidx.annotation.NonNull;
 
+import org.osmdroid.api.IGeoPoint;
+
 import java.util.ArrayList;
 
 import java.util.Comparator;
@@ -26,16 +28,16 @@ public class PlayerCode {
     private Date Date;
     private String Picture;
     private Bitmap photo;
-    private List<Address> location;
+    private Location location;
     private String Comments;
 
 
-    public PlayerCode(ScannedCode code, Bitmap photo, List<Address> location) {
+    public PlayerCode(ScannedCode code, Bitmap photo) {
         this.Name = code.getName();
         this.Score = code.getScore();
         this.Picture = code.getPicture();
         this.photo = photo;
-        this.location = location;
+
     }
 
     /*
@@ -101,6 +103,15 @@ public class PlayerCode {
 
     public Date getDate() {return this.Date;}
 
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public Location getLocation() {
+        return location;
+
+    }
+
     public void setScore(int score) {
         this.Score = score;
     }
@@ -109,13 +120,17 @@ public class PlayerCode {
     }
     public void setPicture(String picture) {this.Picture = picture;}
     public void setDate(Date date) {this.Date = date;}
-
+    public void setPhoto(Bitmap photo) {this.photo = photo;}
 
     public String getComments(){
         return this.Comments;
     }
 
-//    public void addComment(String comment){
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    //    public void addComment(String comment){
 //        Comments.add(comment);
 //    }
 
