@@ -194,4 +194,3 @@ public class SelectCodeActivity extends AppCompatActivity{
         other_caught.show(fragmentManager, "other_caught_fragment");
     }
 }
-

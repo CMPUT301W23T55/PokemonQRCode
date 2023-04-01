@@ -8,6 +8,8 @@ import android.location.Location;
 
 import androidx.annotation.NonNull;
 
+import org.osmdroid.api.IGeoPoint;
+
 import java.util.ArrayList;
 
 import java.util.Comparator;
@@ -108,6 +110,7 @@ public class PlayerCode {
 
     public Location getLocation() {
         return location;
+
     }
     public boolean getImgExists() { return imgExists;}
 
