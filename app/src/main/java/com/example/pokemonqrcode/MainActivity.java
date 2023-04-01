@@ -164,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             startActivity(newIntent);
         }
 
+
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         logOutBtn = findViewById(R.id.logoutBtn);
