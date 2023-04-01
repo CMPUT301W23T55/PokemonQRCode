@@ -47,11 +47,14 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -82,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     private LocationListener locationListener;
 
     FireStoreClass f;
+
+    private FirebaseStorage cloudStorage = FirebaseStorage.getInstance();
 
     interface ResultPasser {
 
@@ -294,6 +299,17 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                     code.getScore(), code.getPicture());
             pCode.setPhoto(currentImage);
+
+            // get downscaled, compressed (jpeg) image stream as byte array
+            Bitmap currentImageScaled = Bitmap.createScaledBitmap(currentImage, 100, 100, true);
+            ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
+            currentImageScaled.compress(Bitmap.CompressFormat.JPEG, 80, imageStream);
+            byte[] imageData = imageStream.toByteArray();
+            // upload to db
+            StorageReference pathRef = cloudStorage.getReference("QRCodes/" + pCode.getHashCode() + ".jpeg");
+            pathRef.putBytes(imageData);
+
+
             if(currentLocationSetting.equals(SAVE_LOCATION)) {
                 updateLocation();
                 pCode.setLocation(currentLocation);
