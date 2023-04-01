@@ -6,19 +6,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.ViewHolder> {
 
-    private ArrayList<Map<String, Object>> UserArray;
-    private Context context;
+    final private ArrayList<Map<String, Object>> UserArray;
+    final private Context context;
+
+    private String displayStyle;
 
     public LeaderboardAdapter(ArrayList<Map<String, Object>> UserArray, Context context) {
         this.UserArray = UserArray;
@@ -37,9 +37,23 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     public void onBindViewHolder(@NonNull LeaderboardAdapter.ViewHolder holder, int position) {
         Map<String, Object> User = UserArray.get(position);
         holder.name.setText(Objects.requireNonNull(User.get("Username")).toString());
-        holder.rank.setText(String.valueOf(position+1) + ".");
-        holder.total_codes.setText("-" + Objects.requireNonNull(User.get("Total_Codes")).toString() + " Codes");
-        holder.total_score.setText("-" + Objects.requireNonNull(User.get("Total_Score")).toString() + " Pts");
+        holder.rank.setText(position+1 + ".");
+        switch (displayStyle) {
+            case "Total Codes":
+                holder.score.setText((Objects.requireNonNull(User.get("Total_Codes"))) + " codes");
+                holder.score_title.setText("Total Codes");
+                break;
+            case "Total Score":
+                holder.score.setText(Objects.requireNonNull(User.get("Total_Score")) + " pts");
+                holder.score_title.setText("Total Score");
+                break;
+            case "Highest Score":
+                holder.score.setText(Objects.requireNonNull(User.get("Highest")) + " pts");
+                holder.score_title.setText("Highest Code");
+                break;
+            default:
+                break;
+        }
 
         // set top 3 color
         int white, gold, silver, bronze;
@@ -70,16 +84,19 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView name,highest_score,total_score,total_codes,rank;
+        public TextView name,score,score_title,rank;
         public RelativeLayout bg;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            score_title = itemView.findViewById(R.id.score);
             name=itemView.findViewById(R.id.user_name);
-            //highest_score=itemView.findViewById(R.id.user_highest_score);
-            total_score=itemView.findViewById(R.id.user_total_score);
-            total_codes=itemView.findViewById(R.id.user_total_codes);
+            score=itemView.findViewById(R.id.user_score);
             rank = itemView.findViewById(R.id.user_rank);
             bg = itemView.findViewById(R.id.box);
         }
+    }
+    public void setDisplayStyle(String displayStyle){
+        this.displayStyle = displayStyle;
+
     }
 }
