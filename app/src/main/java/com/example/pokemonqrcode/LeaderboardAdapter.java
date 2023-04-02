@@ -1,5 +1,6 @@
 package com.example.pokemonqrcode;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,10 +34,12 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull LeaderboardAdapter.ViewHolder holder, int position) {
         Map<String, Object> User = UserArray.get(position);
         holder.name.setText(Objects.requireNonNull(User.get("Username")).toString());
+
         holder.rank.setText(position+1 + ".");
         switch (displayStyle) {
             case "Total Codes":
@@ -48,12 +51,17 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
                 holder.score_title.setText("Total Score");
                 break;
             case "Highest Score":
-                holder.score.setText(Objects.requireNonNull(User.get("Highest")) + " pts");
+                holder.score.setText((User.get("Highest")) + " pts");
                 holder.score_title.setText("Highest Code");
                 break;
             default:
                 break;
         }
+
+//        holder.rank.setText(String.valueOf(User.get("rank")) + ".");
+//        holder.total_codes.setText("-" + Objects.requireNonNull(User.get("Total_Codes")).toString() + " Codes");
+//        holder.total_score.setText("-" + Objects.requireNonNull(User.get("Total_Score")).toString() + " Pts");
+
 
         // set top 3 color
         int white, gold, silver, bronze;
@@ -100,3 +108,19 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
     }
 }
+/*
+        switch ((int) User.get("rank")) {
+            case 1:
+                holder.bg.setBackgroundColor(gold);
+                break;
+            case 2:
+                holder.bg.setBackgroundColor(silver);
+                break;
+            case 3:
+                holder.bg.setBackgroundColor(bronze);
+                break;
+            default:
+                holder.bg.setBackgroundColor(white);
+                break;
+        }
+ */

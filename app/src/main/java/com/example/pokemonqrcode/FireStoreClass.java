@@ -1,7 +1,15 @@
 package com.example.pokemonqrcode;
 
+import android.annotation.SuppressLint;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+
 import android.util.Log;
 import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -9,12 +17,29 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import org.checkerframework.checker.units.qual.A;
+import org.w3c.dom.Document;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import java.util.Map;
+
+import java.util.Locale;
+
 
 /**
  * Create an instance of the Firestore database
@@ -34,6 +59,8 @@ public class FireStoreClass implements Serializable {
 
     private final ArrayList<String> usersScannedIdenticalCode = new ArrayList<>();
     private final ArrayList<Users> usersArrayList = new ArrayList<>();
+
+    final private FirebaseStorage cloudStorage = FirebaseStorage.getInstance();
 
     //needs username as that is the key to getting data from database
 
@@ -60,13 +87,18 @@ public class FireStoreClass implements Serializable {
         String hashcode = pC.getHashCode();
         String picture = pC.getPicture();
         String comments = pC.getComments();
+        Location location = pC.getLocation();
+        Bitmap photo = pC.getPhoto();
+        boolean imgExists = pC.getImgExists();
 
+        data.put("imgExists", imgExists);
         data.put("Name",name);
         data.put("Score",score);
         data.put("Date", date);
         data.put("HashCode",hashcode);
         data.put("Picture",picture);
         data.put("Comments",comments);
+        data.put("Location", location);
 
         this.codes.add(pC);
 
@@ -91,6 +123,18 @@ public class FireStoreClass implements Serializable {
                         .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
             }
         });
+
+        // no image to add
+        if (photo == null) { return; }
+
+        // get downscaled, compressed (jpeg) image stream as byte array
+        Bitmap photoScaled = Bitmap.createScaledBitmap(photo, 100, 100, true);
+        ByteArrayOutputStream imgStream = new ByteArrayOutputStream();
+        photoScaled.compress(Bitmap.CompressFormat.JPEG, 80, imgStream);
+        byte[] imageData = imgStream.toByteArray();
+        // upload to Cloud
+        StorageReference pathRef = cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode));
+        pathRef.putBytes(imageData);
     }
 
     /**
@@ -182,22 +226,47 @@ public class FireStoreClass implements Serializable {
     public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
 
-                    for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
-
-                        String docHashCode= (String) document.get("HashCode");
-                        if (docHashCode.equals(hashcode)) {
-                            pCode = document.toObject(PlayerCode.class);
-
-//                                }
+                            String docHashCode= (String) document.get("HashCode");
+                            if (docHashCode.equals(hashcode)) {
+                                pCode = document.toObject(PlayerCode.class);
+                            }
 
                         }
-//                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
+                        // return pCode if image doesn't exist
+                        if (!pCode.getImgExists()) {
+                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                            return;
+                        }
+                        // get image and set pCode attribute
+                        try {
+                            // temp file to store image
+                            File tmpImg = File.createTempFile("tmp", ".jpeg");
+                            cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
+                                    .getFile(tmpImg)
+                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
+                                            pCode.setPhoto(pcPhoto);
+                                            // ret pCode with image
+                                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                                        }
+                                    });
+                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
                     }
-                    fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
                 });
     }
+
 
     /**
      * Gets the codes associated to an account
@@ -316,6 +385,7 @@ public class FireStoreClass implements Serializable {
         return this.usersArrayList;
     }
 
+
     public void getLeaderboards(String sortStyle, FireStoreResults fireStoreResults) {
         leaderboardData.clear();
         CollectionReference UsersRef = db.collection("Users");
@@ -340,6 +410,7 @@ public class FireStoreClass implements Serializable {
         return this.leaderboardData;
     }
 
+
     public void getHighest(FireStoreResults fireStoreResults){
         CollectionReference UsersRef = db.collection("Users/"+this.userName+"/QRCodes");
         UsersRef.orderBy("Score", Query.Direction.DESCENDING)
@@ -357,6 +428,20 @@ public class FireStoreClass implements Serializable {
     public PlayerCode getHighestCode(){
         return this.highestCode;
     }
+
+    public ArrayList<ScannedCode> getScannedCodesArrayList() {
+        CollectionReference col = db.collection("Codes");
+
+        col.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                    }
+                });
+        return null;
+    }
+
 }
 
 // Query query = collectionRef.orderBy("amount", descending: true).limit(1);

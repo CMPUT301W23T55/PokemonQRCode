@@ -65,13 +65,14 @@ public class FireStoreAuthentication {
      */
     public void createUser(String username, String password, String email){
         HashMap<String, Object> data = new HashMap<>();
+        int highest = 0;
 
         data.put("Username",username);
         data.put("Password",password);
         data.put("Email", email);
-        data.put("Total_Score", null);
-        data.put("Total_Codes", null);
-        data.put("Highest", null);
+        data.put("Total_Score", 0);
+        data.put("Total_Codes", 0);
+        data.put("Highest", highest);
 
         CollectionReference innerCollectionRef = db.collection("Users");
         innerCollectionRef
