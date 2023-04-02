@@ -292,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             codeFoundFragment.show(getSupportFragmentManager(), "Code Found");
 
 
+
         }
     });
 
