@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:insetLeft="20dp"
-        app:icon="@drawable/return_btn"
+        app:icon="@mipmap/return_btn"
         app:iconTint="@color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
