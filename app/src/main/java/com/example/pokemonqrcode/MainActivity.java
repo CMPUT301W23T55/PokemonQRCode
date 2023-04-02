@@ -87,24 +87,15 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     FireStoreClass f;
 
-    interface ResultPasser {
-
-    }
-
     @Override
     public void onDataPass(Bitmap bitmap, String setting) {
         currentImage = bitmap;
         currentLocationSetting = setting;
     }
-
     @Override
     public void onDataPass(Bitmap bitmap) {
         currentImage = bitmap;
     }
-
-
-    
-
     @Override
     public void onDataPass(String setting) {
         currentLocationSetting = setting;
@@ -129,7 +120,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         }
     }
 
-
+    /**
+     * First, checks to see if location permissions have been enabled by the user, if they aren't
+     * asks the user to enable permissions
+     * Then, updates the current location of the user which is to be stored in the database for this
+     * specific code
+     *
+     * This method is only called when the user enables geolocation on their most recent code scan
+     */
     private void updateLocation() {
         // Check if we have permission to access the user's location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -249,8 +247,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         startActivity(intent);
     }
 
-    /*
-     * Navigate to leaderboard page
+    /**
+     * nagivates to the leaderboard activity
      */
     private void viewLeaderboard() {
         Intent intent = new Intent(this, LeaderboardActivity.class);
@@ -297,6 +295,12 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         }
     });
 
+    /**
+     * This method generates the AlertDialog that shows the name, score, and picture for
+     * the code that has been scanned
+     * @param result
+     * The result/contents of the barcode scan
+     */
     public void showScannedCode(ScanIntentResult result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = getLayoutInflater();

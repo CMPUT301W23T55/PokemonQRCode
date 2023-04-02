@@ -452,6 +452,10 @@ public class FireStoreClass implements Serializable {
         return null;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
 
 }
 
