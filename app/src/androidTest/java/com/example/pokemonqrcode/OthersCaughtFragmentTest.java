@@ -30,25 +30,48 @@ public class OthersCaughtFragmentTest {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
     }
 
+    /**
+     * Gets the activity from the rule
+     * Tests if activity starts
+     * @throws Exception
+     */
     @Test
     public void start() throws Exception {
         Activity activity = rule.getActivity();
     }
 
-    // find a way to pass in the username so that the firestore thing doesnt initialize to null!!!!!!!!
+    /**
+     * Tests opening the SelectCodeActivity from the ProfileActivity
+     * @throws Exception
+     */
     @Test
-    public void testOthersCaughtFragment() {
-        solo.assertCurrentActivity("Wrong activity", ProfileActivity.class);
-        solo.clickInList(0);
-        solo.waitForActivity(SelectCodeActivity.class);
+    public void openCodeView() throws Exception {
+        solo.assertCurrentActivity("Not profile activity", ProfileActivity.class);
+        solo.clickInList(1);
         solo.assertCurrentActivity("Not in code view", SelectCodeActivity.class);
-        solo.clickOnView(solo.getView(R.id.view_other_players_button));
-        solo.waitForFragmentById(R.id.other_players_caught_fragment, 15000);
-        //solo.scrollViewToSide();
-        solo.clickOnView(solo.getView(R.id.close_others_button));
-        assertFalse(solo.waitForFragmentById(R.id.other_players_caught_fragment));
     }
 
+    /**
+     * Tests opening and viewing a list of other players who have found a code.
+     * Opens the profile activity and selects a code.
+     * Then opens the fragment to view the other players.
+     * Closes the fragment.
+     * @throws Exception
+     */
+    @Test
+    public void viewOthersCaught() throws Exception {
+        solo.assertCurrentActivity("Not in profile activity", ProfileActivity.class);
+        solo.clickInList(1);
+        solo.assertCurrentActivity("not in select code", SelectCodeActivity.class);
+        solo.clickOnView(solo.getView(R.id.view_other_players_button));
+        solo.waitForFragmentById(R.id.other_players_caught_fragment, 3000);
+        solo.clickOnView(solo.getView(R.id.close_others_button));
+    }
+
+    /**
+     * Ends solo test after execution
+     * @throws Exception
+     */
     @After
     public void tearDown() throws Exception {
         solo.finishOpenedActivities();

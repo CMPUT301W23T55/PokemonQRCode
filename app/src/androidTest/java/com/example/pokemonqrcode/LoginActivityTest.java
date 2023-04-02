@@ -67,6 +67,7 @@ public class LoginActivityTest {
 
     /**
      * Test that checks for proper behaviour from the register fragment
+     *
      */
     @Test
     public void checkRegisterFrag() {

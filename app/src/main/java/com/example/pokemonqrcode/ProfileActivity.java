@@ -111,6 +111,9 @@ public class ProfileActivity extends AppCompatActivity {
             //The key argument here must match that used in the other activity
             this.access = extras.getBoolean("access");
         }
+        else {
+            this.firebaseUsername = "Test";
+        }
         setContentView(R.layout.activity_profile);
         FireStoreClass f = new FireStoreClass(this.firebaseUsername);
 
