@@ -105,8 +105,7 @@ public class SelectCodeActivity extends AppCompatActivity{
                 commentField.setText(pCode.getComments());
                 //so it is regenerating the playerCode from the firestore which
                 //doesnt have the image on it, need to work w/ someone to fix that
-                codePhoto = findViewById(R.id.select_code_photo);
-                codePhoto.setImageBitmap(pCode.getPhoto());
+                retrieveImage(db, pCode.getHashCode());
 
             }
         });
@@ -192,5 +191,11 @@ public class SelectCodeActivity extends AppCompatActivity{
         OtherPlayersCaughtFragment other_caught = new OtherPlayersCaughtFragment();//.newInstance("other_caught_fragment");
         other_caught.setArguments(bundle);
         other_caught.show(fragmentManager, "other_caught_fragment");
+    }
+
+    private void retrieveImage(FirebaseFirestore db, String hash) {
+        CollectionReference collectionRef = db.collection("Users/"+fireStoreClass.getUserName()+"/QRCodes");
+
+
     }
 }
