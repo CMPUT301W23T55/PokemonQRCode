@@ -144,21 +144,23 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String value = (String) adapterView.getItemAtPosition(i);
-                if(value.equals("Score: High -> Low")) {
-                    adapterPlayerCode.clear();
-                    playerCodes.sort(PlayerCode.PlayerScoreComparator);
-                    adapterPlayerCode.addAll(playerCodes);
-                }
-                if(value.equals("Score: Low -> High")) {
-                    adapterPlayerCode.clear();
-                    playerCodes.sort(PlayerCode.PlayerScoreComparator);
-                    Collections.reverse(playerCodes);
-                    adapterPlayerCode.addAll(playerCodes);
-                }
-                if(value.equals("Date")) {
-                    adapterPlayerCode.clear();
-                    playerCodes.sort(PlayerCode.PlayerDateComparator);
-                    adapterPlayerCode.addAll(playerCodes);
+                switch(value) {
+                    case "Date":
+                        adapterPlayerCode.clear();
+                        playerCodes.sort(PlayerCode.PlayerDateComparator);
+                        adapterPlayerCode.addAll(playerCodes);
+                        break;
+                    case "Score: Low -> High":
+                        adapterPlayerCode.clear();
+                        playerCodes.sort(PlayerCode.PlayerScoreComparator);
+                        Collections.reverse(playerCodes);
+                        adapterPlayerCode.addAll(playerCodes);
+                        break;
+                    default:
+                        adapterPlayerCode.clear();
+                        playerCodes.sort(PlayerCode.PlayerScoreComparator);
+                        adapterPlayerCode.addAll(playerCodes);
+                        break;
                 }
             }
 

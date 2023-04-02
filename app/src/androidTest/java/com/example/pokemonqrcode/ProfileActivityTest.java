@@ -1,21 +1,29 @@
 package com.example.pokemonqrcode;
 
+<<<<<<< HEAD
 import android.app.Instrumentation;
 import android.view.View;
 import android.widget.Spinner;
 import android.widget.TextView;
+=======
+import android.app.Activity;
+>>>>>>> main
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
 import com.robotium.solo.Solo;
 
+<<<<<<< HEAD
 import org.junit.After;
+=======
+>>>>>>> main
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class ProfileActivityTest {
+<<<<<<< HEAD
     private Solo solo;
 
     @Rule
@@ -70,4 +78,23 @@ public class ProfileActivityTest {
     public void tearDown() throws Exception {
         solo.finishOpenedActivities();
     }
+=======
+
+    private Solo solo;
+
+    @Rule
+    public ActivityTestRule<MainActivity> rule =
+            new ActivityTestRule<>(MainActivity.class, true, true);
+
+    @Before
+    public void setUp() throws Exception{
+        solo = new Solo(InstrumentationRegistry.getInstrumentation(),rule.getActivity());
+    }
+    @Test
+    public void start(){
+        Activity activity = rule.getActivity();
+    }
+
+
+>>>>>>> main
 }

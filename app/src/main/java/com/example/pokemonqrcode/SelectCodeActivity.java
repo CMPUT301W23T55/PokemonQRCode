@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,7 @@ public class SelectCodeActivity extends AppCompatActivity{
     TextView codeName;
     TextView codeImage;
     TextView codeScore;
+    ImageView codePhoto;
 
 
 
@@ -101,6 +103,10 @@ public class SelectCodeActivity extends AppCompatActivity{
                 codeScore.setText(pCode.getScore() + " Pts");
                 commentField = findViewById(R.id.comments);
                 commentField.setText(pCode.getComments());
+                //so it is regenerating the playerCode from the firestore which
+                //doesnt have the image on it, need to work w/ someone to fix that
+                codePhoto = findViewById(R.id.select_code_photo);
+                codePhoto.setImageBitmap(pCode.getPhoto());
 
             }
         });
@@ -188,4 +194,3 @@ public class SelectCodeActivity extends AppCompatActivity{
         other_caught.show(fragmentManager, "other_caught_fragment");
     }
 }
-

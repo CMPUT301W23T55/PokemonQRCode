@@ -1,5 +1,11 @@
 package com.example.pokemonqrcode;
 
+import android.annotation.SuppressLint;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,16 +20,30 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import org.checkerframework.checker.units.qual.A;
 import org.w3c.dom.Document;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import java.util.Map;
+
+import java.util.Locale;
+
 
 /**
  * Create an instance of the Firestore database
@@ -34,12 +54,17 @@ public class FireStoreClass implements Serializable {
 
     final private String userName;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     private final ArrayList<PlayerCode> codes = new ArrayList<PlayerCode>();
-    private int totalScore, count;
+    private final ArrayList<Map<String, Object>> leaderboardData = new ArrayList<Map<String, Object>>();
+
+    private int totalScore, count, highest;
     private PlayerCode pCode;
 
     private final ArrayList<String> usersScannedIdenticalCode = new ArrayList<String>();
     private final ArrayList<Users> usersArrayList = new ArrayList<Users>();
+
+    private FirebaseStorage cloudStorage = FirebaseStorage.getInstance();
 
     //needs username as that is the key to getting data from database
 
@@ -66,14 +91,18 @@ public class FireStoreClass implements Serializable {
         String hashcode = pC.getHashCode();
         String picture = pC.getPicture();
         String comments = pC.getComments();
+        Location location = pC.getLocation();
+        Bitmap photo = pC.getPhoto();
+        boolean imgExists = pC.getImgExists();
 
-
+        data.put("imgExists", imgExists);
         data.put("Name",name);
         data.put("Score",score);
         data.put("Date", date);
         data.put("HashCode",hashcode);
         data.put("Picture",picture);
         data.put("Comments",comments);
+        data.put("Location", location);
 
         this.codes.add(pC);
 
@@ -83,6 +112,36 @@ public class FireStoreClass implements Serializable {
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
                 .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
+
+        // get user data, update highest if highest < pc score
+        DocumentReference userRef = db.collection("Users").document(this.userName);
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot ds) {
+                Users user = ds.toObject(Users.class);
+                assert user != null;
+                if (score > user.getHighest()) {
+                    // update db
+                    user.setHighest(score);
+                    userRef.update("Highest",score)
+
+                            .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
+                            .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
+                }
+            }
+        });
+
+        // no image to add
+        if (photo == null) { return; }
+
+        // get downscaled, compressed (jpeg) image stream as byte array
+        Bitmap photoScaled = Bitmap.createScaledBitmap(photo, 100, 100, true);
+        ByteArrayOutputStream imgStream = new ByteArrayOutputStream();
+        photoScaled.compress(Bitmap.CompressFormat.JPEG, 80, imgStream);
+        byte[] imageData = imgStream.toByteArray();
+        // upload to Cloud
+        StorageReference pathRef = cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode));
+        pathRef.putBytes(imageData);
     }
 
     /**
@@ -96,6 +155,29 @@ public class FireStoreClass implements Serializable {
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
+
+
+        // update highest by iterating through code list
+        // modified from firebase docs : https://firebase.google.com/docs/firestore/query-data/get-data#java_10
+        innerCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    int  Highest = 0;
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        int Score = document.get("Score", int.class);
+                        if (Highest <= Score) {
+                            Highest = Score;
+                        }
+                    }
+                    // update db
+                    DocumentReference userRef = db.collection("Users").document(Globals.username);
+                    userRef.update("Highest", Highest);
+                } else {
+                    Log.d("Err", "Error getting documents: ", task.getException());
+                }
+            }
+        });
     }
 
     /**
@@ -104,7 +186,6 @@ public class FireStoreClass implements Serializable {
      * @param pc the pc that the comment is associated with
      */
     public void deleteComment(String comment, PlayerCode pc) {
-        db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
         docRef.update("Comments", FieldValue.arrayRemove(comment))
                 .addOnCompleteListener(unused -> Log.d("Working", "Comment successfully deleted"))
@@ -152,7 +233,7 @@ public class FireStoreClass implements Serializable {
 
     /**
      * This method will query the database until it finds a record associated with the passed hashcode
-     * @param hashcode to find the correct Playercode in the database
+     * @param hashcode to find the correct PlayerCode in the database
      * @param fireStorePlayerCodeResults this waits until the database query runs and then gets the result(Player code)
      */
     public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
@@ -167,13 +248,34 @@ public class FireStoreClass implements Serializable {
                             String docHashCode= (String) document.get("HashCode");
                             if (docHashCode.equals(hashcode)) {
                                 pCode = document.toObject(PlayerCode.class);
-
-//                                }
-
                             }
 //                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
                         }
-                        fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                        // return pCode if image doesn't exist
+                        if (!pCode.getImgExists()) {
+                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                            return;
+                        }
+                        // get image and set pCode attribute
+                        try {
+                            // temp file to store image
+                            File tmpImg = File.createTempFile("tmp", ".jpeg");
+                            cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
+                                    .getFile(tmpImg)
+                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
+                                            pCode.setPhoto(pcPhoto);
+                                            // ret pCode with image
+                                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                                        }
+                                    });
+
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
                     }
                 });
     }
@@ -280,9 +382,7 @@ public class FireStoreClass implements Serializable {
      * @param fireStoreResults An interface used to deal with firestore's asynchronous behaviour
      */
     public void getSearchList(FireStoreResults fireStoreResults){
-        db = FirebaseFirestore.getInstance();
         CollectionReference col = db.collection("Users");
-
         col.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -291,7 +391,7 @@ public class FireStoreClass implements Serializable {
                         for (DocumentSnapshot d:list) {
                             Log.d("SearchUserActivity", String.valueOf(d.getData()));
                             Users user = d.toObject(Users.class);
-                            Log.d("SearchUserActivity", " => " + user.getTotal_Codes());
+                            Log.d("SearchUserActivity", " Query was successful");
                             if(!(user.getUsername().equals(userName))) {
                                 usersArrayList.add(user);
                             }
@@ -308,6 +408,50 @@ public class FireStoreClass implements Serializable {
     public ArrayList<Users> getUsersArrayList(){
         return this.usersArrayList;
     }
+
+
+    public void getLeaderboards(String sortStyle, FireStoreResults fireStoreResults) {
+        leaderboardData.clear();
+        CollectionReference UsersRef = db.collection("Users");
+        UsersRef.orderBy(sortStyle, Query.Direction.DESCENDING)
+                .limit(50)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Map<String, Object> data = document.getData();
+                                Log.d("Working", document.getId() + " => " + data);
+                                // append user instance
+                                leaderboardData.add(data);
+                            }
+                            fireStoreResults.onResultGet();
+                        } else {
+                            Log.d("Err", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+    public ArrayList<Map<String, Object>> getLeaderboardData(){
+        return this.leaderboardData;
+    }
+
+    public ArrayList<ScannedCode> getScannedCodesArrayList() {
+        db = FirebaseFirestore.getInstance();
+        CollectionReference col = db.collection("Codes");
+
+        col.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                    }
+                });
+        return null;
+    }
+
 
 }
 
