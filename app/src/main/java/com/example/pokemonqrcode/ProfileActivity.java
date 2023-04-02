@@ -112,7 +112,9 @@ public class ProfileActivity extends AppCompatActivity {
             this.access = extras.getBoolean("access");
         }
         else {
+            // These are set as a default for testing
             this.firebaseUsername = "Test";
+            this.access = true;
         }
         setContentView(R.layout.activity_profile);
         FireStoreClass f = new FireStoreClass(this.firebaseUsername);
