@@ -176,8 +176,9 @@ public class SelectCodeActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Log.d("SelectCodeActivity", String.valueOf(commentField.getText().toString()));
-                fireStoreClass.addComment(commentField.getText().toString(), plCode);
-                plCode.setComments(commentField.getText().toString());
+                String comment = commentField.getText().toString()+"\n-"+fireStoreUserName;
+                fireStoreClass.addComment(comment, plCode);
+                plCode.setComments(comment);
 
             }
         });
