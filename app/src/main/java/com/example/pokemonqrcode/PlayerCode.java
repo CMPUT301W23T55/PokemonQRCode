@@ -168,10 +168,10 @@ public class PlayerCode {
         }
     };
 
-    public IGeoPoint getGeolocation() {
-        IGeoPoint l = null;
-        return l;
-    }
+//    public IGeoPoint getGeolocation() {
+//        IGeoPoint l = null;
+//        return l;
+//    }
 }
 
 
