@@ -1,6 +1,15 @@
 package com.example.pokemonqrcode;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.pressKey;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+
 import android.app.Activity;
+import android.view.KeyEvent;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -12,6 +21,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+/**
+ * This class tests SearchUserActivity using intent testing
+ * @author jawad
+ */
 public class SearchUserActivityTest {
 
     private Solo solo;
@@ -43,32 +56,42 @@ public class SearchUserActivityTest {
     }
 
     /**
-     *
+     * tests searching users by username
      */
     @Test
-//    public void searchUser() {
-//        solo.assertCurrentActivity("Wrong Activity",MainActivity.class);
-//        solo.clickOnView(solo.getView(R.id.find_users));
-//        solo.assertCurrentActivity("Wrong Activity", SearchUserActivity.class);
-//        solo.clickOnView(solo.getView(R.id.search_view));
-//        solo.enterText((EditText) solo.getView(R.id.search_view),"Jawad");
-////        int resID = Resources.getSystem().getIdentifier("search_src_text",
-////                "id", "android");
-////        Log.d("herrrrrrrrrr", "searchUser: "+resID);
-////        SearchUserActivity activity = (SearchUserActivity) solo.getCurrentActivity();
-////        ArrayList<Users> filterList = (ArrayList<Users>) activity.filteredList;
-////        SearchView searchView = (SearchView) solo.getView("search_view");
-////        Looper.prepare();
-////        searchView.setQuery("Jawad",true);
-////        solo.getView(R.id.rec_view);
-//////        solo.enterText((EditText) solo.getView(R.id.search_view));
-//////        solo.enterText(Resources.getSystem().getIdentifier("search_view",
-//////                "id", "android"), "Jawad");
-////        Log.d("herrrrrrrrrr", "searchUser: "+filterList.size());
-////        assertEquals(filterList.size(),1);
-////        Looper.loop();
-//
-//    }
+    public void testUserSearch() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnView(solo.getView(R.id.find_users));
+        solo.assertCurrentActivity("Wrong Activity", SearchUserActivity.class);
+        onView(withId(R.id.search_view)).perform(click());  //open the searchView
+        onView(withId(androidx.appcompat.R.id.search_src_text)).perform(typeText("Jawad"));// the text was input
+        onView(withId(R.id.search_view)).perform(pressKey(KeyEvent.KEYCODE_ENTER));  // starting the object  search
+    }
+
+    /*
+    tests for the visibility of activity during launch
+     */
+    @Test
+    public void testIsViewVisibleOnLaunch(){
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnView(solo.getView(R.id.find_users));
+        solo.assertCurrentActivity("Wrong Activity", SearchUserActivity.class);
+        onView(withId(R.id.rec_view)).check(matches(isDisplayed()));
+    }
+
+    /*
+    tests cardview when clicked
+     */
+    @Test
+    public void testSelectCardView() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnView(solo.getView(R.id.find_users));
+        solo.assertCurrentActivity("Wrong Activity", SearchUserActivity.class);
+        onView(withId(R.id.rec_view)).perform(click());
+        solo.assertCurrentActivity("Wrong Activity", ProfileActivity.class);
+    }
+
+
     @After
     public void tearDown() throws Exception{
         solo.finishOpenedActivities();

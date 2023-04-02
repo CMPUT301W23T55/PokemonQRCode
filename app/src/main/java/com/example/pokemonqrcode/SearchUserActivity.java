@@ -27,13 +27,10 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
     Button homeBtn;
     SearchAdapter mySearchAdapter;
     RecyclerView recView;
-<<<<<<< HEAD
     /*
     Initialize variables
      */
-=======
     private List<Users> filteredList = new ArrayList<>();
->>>>>>> 72fae0f0a2e1aec6df55378bcd9e85be9e58d3dd
     private SearchView searchView;
     ArrayList<Users> usersList;
     private String username;

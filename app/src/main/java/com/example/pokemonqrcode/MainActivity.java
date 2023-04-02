@@ -1,11 +1,5 @@
 package com.example.pokemonqrcode;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -14,56 +8,28 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-
-
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-
-import android.os.SystemClock;
-import android.provider.MediaStore;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import android.util.Pair;
-import android.widget.TextView;
-import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-<<<<<<< HEAD
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-=======
-import com.google.zxing.client.android.Intents;
->>>>>>> 72fae0f0a2e1aec6df55378bcd9e85be9e58d3dd
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * the MainActivity of the app, contains buttons to open the camera to scan a code,
@@ -84,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     String currentLocationSetting; //yes or no
     Location currentLocation;
     ScanIntentResult currentScan;
-    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn;
+    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn,mapButton;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -226,8 +192,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             }
         });
 
-<<<<<<< HEAD
-=======
+
         // listener for the location / map button
         mapButton.setOnClickListener(view -> {
             Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
@@ -236,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         });
 
 
->>>>>>> 72fae0f0a2e1aec6df55378bcd9e85be9e58d3dd
+
 
     }
 

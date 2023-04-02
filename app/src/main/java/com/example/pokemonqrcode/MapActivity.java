@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * MapActivity is an activity which displays a map, containing markers for code locations
@@ -116,13 +115,13 @@ public class MapActivity extends AppCompatActivity {
 
         // get distinct codes
         // https://stackoverflow.com/a/33735562
-        List<PlayerCode> distinctCodes = allCodes.stream().distinct().collect(Collectors.toList());
-        ArrayList<OverlayItem> points = new ArrayList<>();
-        for (PlayerCode code : distinctCodes) {
-            points.add(new OverlayItem(String.valueOf(code.getScore()),code.getName(),code.getGeolocation()));
-        }
+//        List<PlayerCode> distinctCodes = allCodes.stream().distinct().collect(Collectors.toList());
+//        ArrayList<OverlayItem> points = new ArrayList<>();
+//        for (PlayerCode code : distinctCodes) {
+//            points.add(new OverlayItem(String.valueOf(code.getScore()),code.getName(),code.getGeolocation()));
+//        }
 
-        makeMapMarker(points);
+//        makeMapMarker(points);
     }
 
     @Override
