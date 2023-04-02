@@ -84,6 +84,10 @@ public class SelectCodeActivityTest {
         solo.clickOnView(solo.getView(R.id.close_others_button));
     }
 
+    /**
+     * Tests the comment functionality of the select code activity
+     * @throws Exception
+     */
     @Test
     public void commentTest() throws Exception {
         solo.assertCurrentActivity("Not in ProfileActivity", ProfileActivity.class);
@@ -96,6 +100,10 @@ public class SelectCodeActivityTest {
         solo.waitForText("Comment saved!");
     }
 
+    /**
+     * Tests the delete functionality of the select code activity
+     * @throws Exception
+     */
     @Test
     public void testDelete() throws Exception {
         solo.assertCurrentActivity("Not in ProfileActivity", ProfileActivity.class);

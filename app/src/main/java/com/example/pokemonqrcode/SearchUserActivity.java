@@ -90,11 +90,7 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
 
 
     private void filterList(String text) {
-<<<<<<< HEAD
-        List<Users> filteredList = new ArrayList<>();
-=======
         filteredList.clear();
->>>>>>> main
         for (Users user : usersList) {
             if ((user.getUsername()).toLowerCase().contains((text.toLowerCase()))) {
                 filteredList.add(user);
@@ -111,11 +107,7 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
 
     @Override
     public void onItemClick(int pos) {
-<<<<<<< HEAD
-        String username = usersList.get(pos).getUsername();
-=======
         String username = filteredList.get(pos).getUsername();
->>>>>>> main
         Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(SearchUserActivity.this, ProfileActivity.class);
