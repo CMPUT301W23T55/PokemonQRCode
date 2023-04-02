@@ -47,11 +47,14 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -84,24 +87,15 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     FireStoreClass f;
 
-    interface ResultPasser {
-
-    }
-
     @Override
     public void onDataPass(Bitmap bitmap, String setting) {
         currentImage = bitmap;
         currentLocationSetting = setting;
     }
-
     @Override
     public void onDataPass(Bitmap bitmap) {
         currentImage = bitmap;
     }
-
-
-    
-
     @Override
     public void onDataPass(String setting) {
         currentLocationSetting = setting;
@@ -126,7 +120,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         }
     }
 
-
+    /**
+     * First, checks to see if location permissions have been enabled by the user, if they aren't
+     * asks the user to enable permissions
+     * Then, updates the current location of the user which is to be stored in the database for this
+     * specific code
+     *
+     * This method is only called when the user enables geolocation on their most recent code scan
+     */
     private void updateLocation() {
         // Check if we have permission to access the user's location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -246,8 +247,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         startActivity(intent);
     }
 
-    /*
-     * Navigate to leaderboard page
+    /**
+     * nagivates to the leaderboard activity
      */
     private void viewLeaderboard() {
         Intent intent = new Intent(this, LeaderboardActivity.class);
@@ -291,9 +292,16 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             codeFoundFragment.show(getSupportFragmentManager(), "Code Found");
 
 
+
         }
     });
 
+    /**
+     * This method generates the AlertDialog that shows the name, score, and picture for
+     * the code that has been scanned
+     * @param result
+     * The result/contents of the barcode scan
+     */
     public void showScannedCode(ScanIntentResult result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = getLayoutInflater();
@@ -307,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                     code.getScore(), code.getPicture());
             pCode.setPhoto(currentImage);
+
             if(currentLocationSetting.equals(SAVE_LOCATION)) {
                 updateLocation();
                 pCode.setLocation(currentLocation);
@@ -329,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    pCode.setImgExists(pCode.getPhoto() != null);
                     // Add the player code to the database in here
                     f.addAQRCode(pCode);
                     dialog.dismiss();
@@ -339,8 +349,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     public ScanIntentResult getCurrentScan() {
