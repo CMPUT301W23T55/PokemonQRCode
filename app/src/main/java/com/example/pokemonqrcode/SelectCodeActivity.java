@@ -140,7 +140,7 @@ public class SelectCodeActivity extends AppCompatActivity{
                 }
             });
         } else {
-            del_btn.setVisibility(4);
+            del_btn.setVisibility(View.INVISIBLE);
         }
 
         save_com_btn = findViewById(R.id.save_comment_btn);

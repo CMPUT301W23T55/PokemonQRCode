@@ -61,12 +61,12 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
         f.getLeaderboards(SortStyle, () -> {
             leaderboardData.clear();
             leaderboardData.addAll(f.getLeaderboardData());
-            //handleTies(SortStyle);
+            handleTies(SortStyle);
             leaderboardAdapter.notifyDataSetChanged();
         });
     }
 
-    /*
+
     private void handleTies(String SortStyle) {
         // set rank for first elem
         int prevRank = 1, prevScore = ((Long) leaderboardData.get(0).get(SortStyle)).intValue();
@@ -84,7 +84,7 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
             }
         }
     }
-     */
+
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {

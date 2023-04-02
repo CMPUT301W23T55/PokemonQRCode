@@ -70,14 +70,14 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         silver = ContextCompat.getColor(context, R.color.silver);
         bronze = ContextCompat.getColor(context, R.color.bronze);
 
-        switch (position) {
-            case 0:
+        switch ((int) User.get("rank")) {
+            case 1:
                 holder.bg.setBackgroundColor(gold);
                 break;
-            case 1:
+            case 2:
                 holder.bg.setBackgroundColor(silver);
                 break;
-            case 2:
+            case 3:
                 holder.bg.setBackgroundColor(bronze);
                 break;
             default:
@@ -117,6 +117,23 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
                 holder.bg.setBackgroundColor(silver);
                 break;
             case 3:
+                holder.bg.setBackgroundColor(bronze);
+                break;
+            default:
+                holder.bg.setBackgroundColor(white);
+                break;
+        }
+ */
+
+/*
+        switch (position) {
+            case 0:
+                holder.bg.setBackgroundColor(gold);
+                break;
+            case 1:
+                holder.bg.setBackgroundColor(silver);
+                break;
+            case 2:
                 holder.bg.setBackgroundColor(bronze);
                 break;
             default:
