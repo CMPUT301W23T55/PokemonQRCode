@@ -2,19 +2,13 @@ package com.example.pokemonqrcode;
 
 
 import android.graphics.Bitmap;
-import android.location.Address;
 import android.location.Location;
-
 
 import androidx.annotation.NonNull;
 
-import org.osmdroid.api.IGeoPoint;
-
 import java.util.ArrayList;
-
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
 /**
  * This class is what shows up on the player profile
@@ -29,7 +23,9 @@ public class PlayerCode {
     private String Picture;
     private Bitmap photo;
     private Location location;
-    private String Comments;
+
+    private ArrayList<String> Comments = new ArrayList<String>();
+    //private String Comments;
     private boolean imgExists;
 
 
@@ -66,16 +62,18 @@ public class PlayerCode {
         this.Score = score;
         this.Picture = image;
         this.Date = date;
+
+
     }
 
     public PlayerCode(String hash, String name, int score, String image,
-                      Date date, String comments) {
+                      Date date, String comment) {
         this.HashCode = hash;
         this.Name = name;
         this.Score = score;
         this.Picture = image;
         this.Date = date;
-        this.Comments = comments;
+        this.Comments.add(comment);
     }
 
     public PlayerCode() {
@@ -114,6 +112,10 @@ public class PlayerCode {
     }
     public boolean getImgExists() { return imgExists;}
 
+    public ArrayList<String> getComments(){
+        return this.Comments;
+    }
+
     public void setScore(int score) {
         this.Score = score;
     }
@@ -123,11 +125,11 @@ public class PlayerCode {
     public void setPicture(String picture) {this.Picture = picture;}
     public void setDate(Date date) {this.Date = date;}
     public void setPhoto(Bitmap photo) {this.photo = photo;}
+
+    public void setComments(String comment) {this.Comments.add(comment);}
+
     public void setImgExists(boolean imgExists) {this.imgExists = imgExists;}
 
-    public String getComments(){
-        return this.Comments;
-    }
 
     public void setLocation(Location location) {
         this.location = location;
@@ -166,10 +168,10 @@ public class PlayerCode {
         }
     };
 
-    public IGeoPoint getGeolocation() {
-        IGeoPoint l = null;
-        return l;
-    }
+//    public IGeoPoint getGeolocation() {
+//        IGeoPoint l = null;
+//        return l;
+//    }
 }
 
 

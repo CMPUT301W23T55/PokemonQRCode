@@ -86,7 +86,7 @@ public class FireStoreClass implements Serializable {
         Date date = pC.getDate();
         String hashcode = pC.getHashCode();
         String picture = pC.getPicture();
-        String comments = pC.getComments();
+        ArrayList<String> comments = pC.getComments();
         Location location = pC.getLocation();
         Bitmap photo = pC.getPhoto();
         boolean imgExists = pC.getImgExists();
