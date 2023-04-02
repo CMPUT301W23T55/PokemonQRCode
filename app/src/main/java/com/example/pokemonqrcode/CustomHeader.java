@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,9 +16,9 @@ import android.widget.TextView;
  */
 public class CustomHeader extends RelativeLayout {
 
-    ImageButton back_button;
-    TextView back_to_activity;
-    TextView head_title;
+    Button back_button;
+    //TextView back_to_activity;
+    //TextView head_title;
 
     public CustomHeader(Context context) {
         super(context);
@@ -42,8 +43,8 @@ public class CustomHeader extends RelativeLayout {
         inflater.inflate(R.layout.custom_header,this);
 
         this.back_button = findViewById(R.id.back_button_head);
-        this.back_to_activity = findViewById(R.id.back_button_label);
-        this.head_title = findViewById(R.id.head_title);
+        //this.back_to_activity = findViewById(R.id.back_button_label);
+        //this.head_title = findViewById(R.id.head_title);
 
     }
 
@@ -54,13 +55,10 @@ public class CustomHeader extends RelativeLayout {
      */
     public void initializeHead(String title, String backText) {
         inflateHead();
-        setTitleText(title);
-        setBackText(backText);
+        //setTitleText(title);
+        //setBackText(backText);
     }
 
-    public void setBackText(String text) {
-        back_to_activity.setText(text);
-    }
-    public void setTitleText(String text) { head_title.setText(text); }
+
 
 }
