@@ -5,6 +5,6 @@ package com.example.pokemonqrcode;
  * asynchronous behaviour)
  */
 public interface FireStorePlayerCodeResults {
-    public void onResultGetPlayerCode(PlayerCode pCode);
+    void onResultGetPlayerCode(PlayerCode pCode);
 
 }

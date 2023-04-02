@@ -6,6 +6,12 @@ plugins {
 android {
     namespace 'com.example.pokemonqrcode'
     compileSdk 33
+    lintOptions {
+        abortOnError false
+        absolutePaths false
+        lintConfig file('lint.xml')
+        baseline file('lint-baseline.xml')
+    }
 
     defaultConfig {
         applicationId "com.example.pokemonqrcode"
@@ -27,6 +33,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    apply plugin: 'com.google.gms.google-services'
 }
 
 dependencies {
@@ -34,8 +44,13 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-firestore:24.4.4'
+    implementation 'com.google.firebase:firebase-firestore:24.4.5'
+    implementation 'com.google.firebase:firebase-storage:20.1.0'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    // open street maps api
+    implementation 'org.osmdroid:osmdroid-android:6.1.14'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
     testImplementation 'org.testng:testng:6.9.6'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
@@ -45,4 +60,6 @@ dependencies {
     androidTestImplementation "androidx.test:runner:1.5.2"
     androidTestImplementation "androidx.test:rules:1.5.0"
     androidTestImplementation "com.jayway.android.robotium:robotium-solo:5.3.1"
+
+    androidTestImplementation 'androidx.test:core:1.5.0'
 }

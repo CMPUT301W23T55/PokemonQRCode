@@ -14,10 +14,12 @@ import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.myViewHolder>
 {
+    private final RecyclerViewInterface recyclerViewInterface;
     ArrayList<Users> userList;
 
-    public SearchAdapter(ArrayList<Users> userList) {
+    public SearchAdapter(ArrayList<Users> userList, RecyclerViewInterface recyclerViewInterface) {
         this.userList = userList;
+        this.recyclerViewInterface = recyclerViewInterface;
     }
 
     public void setFilteredList(List<Users> filteredList) {
@@ -62,6 +64,18 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.myViewHold
             total_code=itemView.findViewById(R.id.picture3);
             total_score=itemView.findViewById(R.id.picture2);
 //            picture=itemView.findViewById(R.id.picture);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (recyclerViewInterface != null){
+                        int pos = getAdapterPosition();
+
+                        if(pos != RecyclerView.NO_POSITION){
+                            recyclerViewInterface.onItemClick(pos);
+                        }
+                    }
+                }
+            });
 
         }
     }

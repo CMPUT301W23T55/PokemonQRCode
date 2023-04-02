@@ -17,9 +17,10 @@
     </string-array>
     <string name="total_codes">Total Codes:</string>
     <string name="total_score">Total Score:</string>
+    <string name="return_home">return home</string>
     <string-array name="sort_by">
-        <item>Score Ascending</item>
-        <item>Score Descending</item>
+        <item>Score: High -> Low</item>
+        <item>Score: Low -> High</item>
         <item>Date</item>
     </string-array>
 </resources>
