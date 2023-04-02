@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     String currentLocationSetting; //yes or no
     Location currentLocation;
     ScanIntentResult currentScan;
-    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn;
+    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn, mapButton;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -219,12 +219,12 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             }
         });
 
-        // listener for the location / map button
-        mapButton.setOnClickListener(view -> {
-            Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
-            newIntent.putExtra("key",Globals.username);
-            startActivity(newIntent);
-        });
+//        // listener for the location / map button
+//        mapButton.setOnClickListener(view -> {
+//            Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
+//            newIntent.putExtra("key",Globals.username);
+//            startActivity(newIntent);
+//        });
 
 
 
