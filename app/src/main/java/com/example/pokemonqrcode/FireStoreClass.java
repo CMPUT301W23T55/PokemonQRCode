@@ -442,6 +442,11 @@ public class FireStoreClass implements Serializable {
         return null;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+
 }
 
 // Query query = collectionRef.orderBy("amount", descending: true).limit(1);
