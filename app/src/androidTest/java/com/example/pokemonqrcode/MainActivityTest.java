@@ -48,5 +48,23 @@ public class MainActivityTest {
         solo.clickOnView(solo.getView(R.id.return_home));
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
     }
+    @Test
+    public void checkMapButton() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnView(solo.getView(R.id.location_btn));
+        solo.assertCurrentActivity("Wrong Activity", MapActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.back_button_head));
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+    }
+    @Test
+    public void checkLeaderboardButton() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnView(solo.getView(R.id.leaderboards));
+        solo.assertCurrentActivity("Wrong Activity", LeaderboardActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.return_home));
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+    }
 
 }
