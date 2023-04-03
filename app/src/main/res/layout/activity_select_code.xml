@@ -19,7 +19,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.899" />
+        app:layout_constraintVertical_bias="0.906" />
 
     <Button
         android:id="@+id/delete_btn"
@@ -30,10 +30,10 @@
         app:iconTint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.401"
+        app:layout_constraintHorizontal_bias="0.044"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comments"
-        app:layout_constraintVertical_bias="0.71" />
+        app:layout_constraintVertical_bias="0.741" />
 
     <Button
         android:id="@+id/save_comment_btn"
@@ -43,10 +43,10 @@
         android:text="Save Comment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.737"
+        app:layout_constraintHorizontal_bias="0.915"
         app:layout_constraintStart_toEndOf="@+id/delete_btn"
         app:layout_constraintTop_toBottomOf="@+id/comments"
-        app:layout_constraintVertical_bias="0.71" />
+        app:layout_constraintVertical_bias="0.555" />
 
     <Button
         android:id="@+id/return_to_profile_btn"
@@ -70,7 +70,7 @@
         android:clickable="true"
         android:focusable="true"
         android:insetRight="0dp"
-        app:icon="@drawable/profile_icon"
+        app:icon="@drawable/other_users"
         app:iconTint="#000000"
         app:layout_constraintBottom_toTopOf="@+id/comments"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,9 +87,10 @@
         android:textSize="48sp"
         app:layout_constraintBottom_toTopOf="@+id/comments"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.326" />
+        app:layout_constraintVertical_bias="0.28" />
 
     <TextView
         android:id="@+id/select_code_name"
@@ -107,7 +108,7 @@
         android:id="@+id/select_code_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="372dp"
+        android:layout_marginTop="344dp"
         android:text=""
         android:textAlignment="center"
         android:textSize="32sp"
@@ -120,7 +121,7 @@
         android:id="@+id/select_code_photo"
         android:layout_width="115dp"
         android:layout_height="115dp"
-        android:layout_marginBottom="184dp"
+        android:layout_marginBottom="172dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -133,9 +134,11 @@
         android:id="@+id/see_comments_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
         android:text="See all comments"
         app:layout_constraintBottom_toTopOf="@+id/comments"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
