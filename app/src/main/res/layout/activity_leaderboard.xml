@@ -13,6 +13,7 @@
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
         android:backgroundTint="@color/white"
         android:contentDescription="@string/return_home"
         app:icon="@mipmap/home_screen"
