@@ -23,13 +23,13 @@ public class Users {
 
     }
 //
-//    public Users(String username, int total_Codes, int total_Score, String email, String password) {
-//        Username = username;
-//        Total_Codes = total_Codes;
-//        Total_Score = total_Score;
-//        Email = email;
-//        Password = password;
-//    }
+    public Users(String username, int total_Codes, int total_Score, String email, String password) {
+        Username = username;
+        Total_Codes = total_Codes;
+        Total_Score = total_Score;
+        Email = email;
+        Password = password;
+    }
 
     /*
         Following are the getters of the attributes of an object

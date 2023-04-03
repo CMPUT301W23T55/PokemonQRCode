@@ -71,6 +71,7 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
         // find views by id
         searchView = findViewById(R.id.search_view);
         searchView.clearFocus();
+
         /*
         To query based on username
          */

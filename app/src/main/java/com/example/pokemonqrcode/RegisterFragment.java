@@ -1,19 +1,15 @@
 package com.example.pokemonqrcode;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 // Adapted from https://guides.codepath.com/android/using-dialogfragment#things-to-note
 // Accessed Mar 11 2023
@@ -50,6 +46,7 @@ public class RegisterFragment extends DialogFragment {
      * @param savedInstanceState
      * @return View of the fragment
      */
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.register_fragment, container);
