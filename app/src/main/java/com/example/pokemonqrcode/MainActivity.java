@@ -96,6 +96,10 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                     imageview.setText(p.getPicture());
                     imageText.setText(p.getName());
                     imageScore.setText(Integer.toString(p.getScore()));
+                } else {
+                    imageview.setText("");
+                    imageText.setText("");
+                    imageScore.setText("");
                 }
             }
         });

@@ -248,35 +248,3 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 }
-
-/*
-                db.collection("Users/"+Globals.username+"/QRCodes")
-                        .whereEqualTo(FieldPath.documentId(),HashCode)
-                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-@Override
-public void onComplete(@NonNull Task<QuerySnapshot> task) {
-        Intent intent = new Intent(ProfileActivity.this, SelectCodeActivity.class );
-        intent.putExtra("HashCode",HashCode);
-        startActivity(intent);
-        }
-        });
-
-
-
-        final CollectionReference docReference = db.collection("Users/"+Globals.username+"/QRCodes");
-
-        docReference.get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                                for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
-                                    PlayerCode plCode = document.toObject(PlayerCode.class);
-                                    playerCodes.add(plCode);
-//                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
-                                }
-                                adapter.clear();
-                                adapter.addAll(playerCodes);
-                            }
-                        });
- */

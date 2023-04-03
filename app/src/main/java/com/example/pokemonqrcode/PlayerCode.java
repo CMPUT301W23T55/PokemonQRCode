@@ -6,6 +6,7 @@ import android.location.Location;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.Date;
  * Create custom ListView adapter similar to GasStation in Assignment1
  */
 
-public class PlayerCode {
+public class PlayerCode implements Serializable {
     private String HashCode;
     private int Score;
     private String Name;
@@ -126,22 +127,19 @@ public class PlayerCode {
     public void setDate(Date date) {this.Date = date;}
     public void setPhoto(Bitmap photo) {this.photo = photo;}
 
-    public void setComments(String comment) {this.Comments.add(comment);}
-
     public void setImgExists(boolean imgExists) {this.imgExists = imgExists;}
 
 
     public void setLocation(Location location) {
         this.location = location;
     }
+    public void addComment(String comment){
+        this.Comments.add(comment);
+    }
 
-    //    public void addComment(String comment){
-//        Comments.add(comment);
-//    }
-
-//    public void deleteComment(String comment){
-//        this.Comments.remove(comment);
-//    }
+    public void deleteComment(String comment){
+        this.Comments.remove(comment);
+    }
 
     @NonNull
     @Override

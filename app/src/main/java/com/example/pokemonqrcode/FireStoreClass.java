@@ -62,6 +62,8 @@ public class FireStoreClass implements Serializable {
 
     final private FirebaseStorage cloudStorage = FirebaseStorage.getInstance();
 
+    private ArrayList<String> comments = new ArrayList<String>();
+
     //needs username as that is the key to getting data from database
 
     /**
@@ -173,10 +175,10 @@ public class FireStoreClass implements Serializable {
     /**
      * this method will delete a selected comment from the PlayerCode in the database
      * @param comment the comment that will be removed
-     * @param pc the pc that the comment is associated with
+     * @param hashcode the hashcode that the comment is associated with
      */
-    public void deleteComment(String comment, PlayerCode pc) {
-        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
+    public void deleteComment(String comment, String hashcode) {
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
         docRef.update("Comments", FieldValue.arrayRemove(comment))
                 .addOnCompleteListener(unused -> Log.d("Working", "Comment successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
@@ -186,10 +188,10 @@ public class FireStoreClass implements Serializable {
     /**
      * this method will add a comment to a PlayerCode
      * @param comment the comment that should be added
-     * @param pc the PlayerCode that the comment is associated with
+     * @param hashcode the hashcode that the comment is associated with
      */
-    public void addComment(String comment, PlayerCode pc){
-        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
+    public void addComment(String comment, String hashcode){
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
         docRef.update("Comments", FieldValue.arrayUnion(comment))
                 .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
@@ -226,44 +228,38 @@ public class FireStoreClass implements Serializable {
     public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
 
-                            String docHashCode= (String) document.get("HashCode");
-                            if (docHashCode.equals(hashcode)) {
-                                pCode = document.toObject(PlayerCode.class);
-                            }
-
-                        }
-                        // return pCode if image doesn't exist
-                        if (!pCode.getImgExists()) {
-                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-                            return;
-                        }
-                        // get image and set pCode attribute
-                        try {
-                            // temp file to store image
-                            File tmpImg = File.createTempFile("tmp", ".jpeg");
-                            cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
-                                    .getFile(tmpImg)
-                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                            Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
-                                            pCode.setPhoto(pcPhoto);
-                                            // ret pCode with image
-                                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-                                        }
-                                    });
-                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        String docHashCode= (String) document.get("HashCode");
+                        if (docHashCode.equals(hashcode)) {
+                            pCode = document.toObject(PlayerCode.class);
                         }
 
                     }
+                    // return pCode if image doesn't exist
+                    if (!pCode.getImgExists()) {
+                        fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                        return;
+                    }
+                    // get image and set pCode attribute
+                    try {
+                        // temp file to store image
+                        File tmpImg = File.createTempFile("tmp", ".jpeg");
+                        cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
+                                .getFile(tmpImg)
+                                .addOnSuccessListener(taskSnapshot -> {
+                                    Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
+                                    pCode.setPhoto(pcPhoto);
+                                    // ret pCode with image
+                                    fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                                });
+                        fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
                 });
     }
 
@@ -433,17 +429,33 @@ public class FireStoreClass implements Serializable {
         CollectionReference col = db.collection("Codes");
 
         col.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                .addOnSuccessListener(queryDocumentSnapshots -> {
 
-                    }
                 });
         return null;
     }
 
     public String getUserName() {
         return userName;
+    }
+
+    public void setComments(String hashcode, FireStoreResults fireStoreResults){
+        this.comments.clear();
+        CollectionReference docReference = db.collection("Users/"+this.userName+"/QRCodes");
+
+        docReference.document(hashcode).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        comments.addAll((ArrayList)documentSnapshot.get("Comments"));
+                        fireStoreResults.onResultGet();
+                    }
+
+                });
+
+    }
+    public ArrayList<String> getComments(){
+        return this.comments;
     }
 
 
