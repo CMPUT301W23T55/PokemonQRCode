@@ -3,6 +3,7 @@ package com.example.pokemonqrcode;
 
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.location.LocationManager;
 
 import androidx.annotation.NonNull;
 
@@ -28,6 +29,8 @@ public class PlayerCode implements Serializable {
     private ArrayList<String> Comments = new ArrayList<String>();
     //private String Comments;
     private boolean imgExists;
+
+    LocationManager locationManager;
 
 
     public PlayerCode(ScannedCode code, Bitmap photo) {
@@ -108,6 +111,12 @@ public class PlayerCode implements Serializable {
     }
 
     public Location getLocation() {
+        if (this.location == null) {
+            Location location1 = new Location("");
+            location1.setLongitude(0.0d);
+            location1.setLongitude(0.0d);
+            return location1;
+        }
         return location;
 
     }
@@ -130,8 +139,8 @@ public class PlayerCode implements Serializable {
     public void setImgExists(boolean imgExists) {this.imgExists = imgExists;}
 
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocation(Location Location) {
+        this.location = Location;
     }
     public void addComment(String comment){
         this.Comments.add(comment);
