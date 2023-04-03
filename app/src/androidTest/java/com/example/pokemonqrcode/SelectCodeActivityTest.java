@@ -99,6 +99,16 @@ public class SelectCodeActivityTest {
         solo.clickOnView(solo.getView(R.id.save_comment_btn));
         solo.waitForText("Comment saved!");
     }
+    @Test
+    public void openSeeComments() throws Exception {
+        solo.assertCurrentActivity("Not in ProfileActivity", ProfileActivity.class);
+        solo.clickInList(1);
+        solo.assertCurrentActivity("Not in SelectCode activity", SelectCodeActivity.class);
+        solo.clickOnView(solo.getView(R.id.see_comments_btn));
+        solo.assertCurrentActivity("Not in SeeComments activity", SeeCommentsActivity.class);
+        solo.clickOnView(solo.getView(R.id.return_btn));
+        solo.assertCurrentActivity("Not in SelectCode activity", SelectCodeActivity.class);
+    }
 
     /**
      * Tests the delete functionality of the select code activity
@@ -112,4 +122,5 @@ public class SelectCodeActivityTest {
         solo.clickOnView(solo.getView(R.id.delete_btn));
         onView(withText("Delete?")).inRoot(isDialog()).check(matches(isDisplayed()));
     }
+
 }
