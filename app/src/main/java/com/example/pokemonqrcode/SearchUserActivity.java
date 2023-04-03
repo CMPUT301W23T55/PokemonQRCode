@@ -112,6 +112,7 @@ public class SearchUserActivity extends AppCompatActivity implements RecyclerVie
         }
 
         if (filteredList.isEmpty()) {
+            mySearchAdapter.setFilteredList(filteredList);
             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
 
         } else {
