@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     Button profileButton, leaderboardBtn, logOutBtn,findUserBtn,mapButton;
 
-    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn, mapButton;
+    
 
 
     private LocationManager locationManager;
