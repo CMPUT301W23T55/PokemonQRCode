@@ -385,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                             imageview.setText(p.getPicture());
                             imageText.setText(p.getName());
                             imageScore.setText(Integer.toString(p.getScore()));
-                            imageRank.setText("Your relative rank is: "+ rank);
+                            imageRank.setText("Rank: "+ rank);
 
 
                             }

@@ -517,6 +517,7 @@ public class FireStoreClass implements Serializable {
                                         int temp = document.get("Score",int.class);
                                         if (temp > score){
                                             relativeRank++;
+                                            break;
 //                                            break; depends on iff we assume that the same user can have multiple codes greater then user
                                         }
                                     }
