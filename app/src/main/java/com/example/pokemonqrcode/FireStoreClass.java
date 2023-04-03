@@ -54,7 +54,7 @@ public class FireStoreClass implements Serializable {
     private final ArrayList<PlayerCode> codes = new ArrayList<>();
     private final ArrayList<Map<String, Object>> leaderboardData = new ArrayList<>();
 
-    private int totalScore, count;
+    private int totalScore, count, relativeRank;
     private PlayerCode pCode, highestCode;
 
     private final ArrayList<String> usersScannedIdenticalCode = new ArrayList<>();
@@ -62,7 +62,7 @@ public class FireStoreClass implements Serializable {
 
     final private FirebaseStorage cloudStorage = FirebaseStorage.getInstance();
 
-    private ArrayList<String> comments = new ArrayList<String>();
+    private final ArrayList<String> comments = new ArrayList<String>();
 
     //needs username as that is the key to getting data from database
 
@@ -385,7 +385,11 @@ public class FireStoreClass implements Serializable {
         return this.usersArrayList;
     }
 
-
+    /**
+     * gets the lglobal leaderboards
+     * @param sortStyle determines how the leaderboard will sort the codes
+     * @param fireStoreResults Interface used to deal with Firestore's asynchronous behaviour
+     */
     public void getLeaderboards(String sortStyle, FireStoreResults fireStoreResults) {
         leaderboardData.clear();
         CollectionReference UsersRef = db.collection("Users");
@@ -406,11 +410,20 @@ public class FireStoreClass implements Serializable {
                     }
                 });
     }
+
+    /**
+     * returns the leaderboard array
+     * @return leaderboard array
+     */
     public ArrayList<Map<String, Object>> getLeaderboardData(){
         return this.leaderboardData;
     }
 
 
+    /**
+     * sets the users highest scanned code to the variable highestCode
+     * @param fireStoreResults Interface used to deal with Firestore's asynchronous behaviour
+     */
     public void getHighest(FireStoreResults fireStoreResults){
         CollectionReference UsersRef = db.collection("Users/"+this.userName+"/QRCodes");
         UsersRef.orderBy("Score", Query.Direction.DESCENDING)
@@ -425,6 +438,11 @@ public class FireStoreClass implements Serializable {
 
 
     }
+
+    /**
+     * returns user highest Code
+     * @return highest Code
+     */
     public PlayerCode getHighestCode(){
         return this.highestCode;
     }
@@ -443,6 +461,11 @@ public class FireStoreClass implements Serializable {
         return userName;
     }
 
+    /**
+     * Determines the comments that are associated with a specific code
+     * @param hashcode code that has the comments
+     * @param fireStoreResults Interface used to deal with Firestore's asynchronous behaviour
+     */
     public void setComments(String hashcode, FireStoreResults fireStoreResults){
         this.comments.clear();
         CollectionReference docReference = db.collection("Users/"+this.userName+"/QRCodes");
@@ -458,50 +481,59 @@ public class FireStoreClass implements Serializable {
                 });
 
     }
+
+    /**
+     * Returns the comments
+     * @return comments
+     */
     public ArrayList<String> getComments(){
         return this.comments;
     }
 
+    /**
+     * Method determines the rank, and sets the rank variable to the appropriate value
+     * @param score score to be compared with other records
+     * @param fireStoreResults Interface used to deal with Firestore's asynchronous behaviour
+     */
+    public void determineRank(int score, FireStoreResults fireStoreResults){
+        relativeRank = 1;
 
-}
+        CollectionReference docReference = db.collection("Users");
 
-/*
-    public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
-        CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
-        collectionRef.get()
+        docReference.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
 
+                    for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                        String tempName = document.get("Username",String.class);
 
-                        String docHashCode = (String) document.get("HashCode");
-                        if (docHashCode.equals(hashcode)) {
-                            pCode = document.toObject(PlayerCode.class);
-                        }
-                        // return pCode if image doesn't exist
-                        if (!pCode.getImgExists()) {
-                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-                            return;
-                        }
-                        // get image and set pCode attribute
-                        try {
-                            // temp file to store image
-                            File tmpImg = File.createTempFile("tmp", ".jpeg");
-                            cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
-                                    .getFile(tmpImg)
-                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                            Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
-                                            pCode.setPhoto(pcPhoto);
-                                            // ret pCode with image
-                                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                        CollectionReference collectionReference =
+                                db.collection( "Users/"+ tempName +"/QRCodes");
+
+                        collectionReference.get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                        int temp = document.get("Score",int.class);
+                                        if (temp > score){
+                                            relativeRank++;
+//                                            break; depends on iff we assume that the same user can have multiple codes greater then user
                                         }
-                                    });
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
+                                    }
+                                    fireStoreResults.onResultGet();
+                                }
+                            });
                     }
                 });
     }
- */
+
+    /**
+     * This method returns the rank of the user
+     * @return rank
+     */
+    public int getRank(){
+        return this.relativeRank;
+    }
+
+
+}
