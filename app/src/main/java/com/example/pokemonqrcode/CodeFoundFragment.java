@@ -57,24 +57,8 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
 
     }
 
-    //View view = LayoutInflater.from(getContext()).inflate(R.layout.code_found_dialog, null);
-    //ImageView image = view.findViewById(R.id.found_user_image);
-    /*
-    ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == 100) {
-                        Log.d("test", "hello camera");
-                        Intent data = result.getData();
-                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                        image.setImageBitmap(bitmap);
-
-                    }
-                }
-            });
-
+    /**
+     * This interface is used to pass data from the Fragment to the MainActivity
      */
     interface CodeFoundDialogListener {
         void onDataPass(Bitmap bitmap, String setting);
@@ -121,9 +105,6 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
                         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                         image.setImageBitmap(bitmap);
                         listener.onDataPass(bitmap);
-
-
-
                     }
                 });
 
@@ -133,6 +114,7 @@ public class CodeFoundFragment extends DialogFragment implements AdapterView.OnI
 
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 activityResultLaunch.launch(intent);
+
 
             }
         });

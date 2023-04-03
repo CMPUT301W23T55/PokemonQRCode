@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -24,12 +25,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+
 import java.security.NoSuchAlgorithmException;
+
+import java.security.NoSuchAlgorithmException;
+
+
 
 /**
  * the MainActivity of the app, contains buttons to open the camera to scan a code,
@@ -50,31 +65,26 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     String currentLocationSetting; //yes or no
     Location currentLocation;
     ScanIntentResult currentScan;
+
     Button profileButton, leaderboardBtn, logOutBtn,findUserBtn,mapButton;
+
+    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn, mapButton;
+
 
     private LocationManager locationManager;
     private LocationListener locationListener;
 
     FireStoreClass f;
 
-    interface ResultPasser {
-
-    }
-
     @Override
     public void onDataPass(Bitmap bitmap, String setting) {
         currentImage = bitmap;
         currentLocationSetting = setting;
     }
-
     @Override
     public void onDataPass(Bitmap bitmap) {
         currentImage = bitmap;
     }
-
-
-    
-
     @Override
     public void onDataPass(String setting) {
         currentLocationSetting = setting;
@@ -83,8 +93,24 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     public void onDataPass(ScanIntentResult result) {
         showScannedCode(result);
     }
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        TextView imageview = findViewById(R.id.item_image);
+        TextView imageText = findViewById(R.id.item_image_text);
+        TextView imageScore = findViewById(R.id.item_image_score);
+        this.f.getHighest(new FireStoreResults() {
+            @Override
+            public void onResultGet() {
+                PlayerCode p = f.getHighestCode();
+                if (!(p == null)){
+                    imageview.setText(p.getPicture());
+                    imageText.setText(p.getName());
+                    imageScore.setText(Integer.toString(p.getScore()));
+                }
+            }
+        });
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -99,7 +125,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         }
     }
 
-
+    /**
+     * First, checks to see if location permissions have been enabled by the user, if they aren't
+     * asks the user to enable permissions
+     * Then, updates the current location of the user which is to be stored in the database for this
+     * specific code
+     *
+     * This method is only called when the user enables geolocation on their most recent code scan
+     */
     private void updateLocation() {
         // Check if we have permission to access the user's location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -136,7 +169,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
-
 
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -200,6 +232,14 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             startActivity(newIntent);
         });
 
+//        // listener for the location / map button
+//        mapButton.setOnClickListener(view -> {
+//            Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
+//            newIntent.putExtra("key",Globals.username);
+//            startActivity(newIntent);
+//        });
+
+
 
 
 
@@ -221,8 +261,8 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         startActivity(intent);
     }
 
-    /*
-     * Navigate to leaderboard page
+    /**
+     * nagivates to the leaderboard activity
      */
     private void viewLeaderboard() {
         Intent intent = new Intent(this, LeaderboardActivity.class);
@@ -266,9 +306,16 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             codeFoundFragment.show(getSupportFragmentManager(), "Code Found");
 
 
+
         }
     });
 
+    /**
+     * This method generates the AlertDialog that shows the name, score, and picture for
+     * the code that has been scanned
+     * @param result
+     * The result/contents of the barcode scan
+     */
     public void showScannedCode(ScanIntentResult result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = getLayoutInflater();
@@ -282,6 +329,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             PlayerCode pCode = new PlayerCode(code.getHashAsString(), code.getName(),
                     code.getScore(), code.getPicture());
             pCode.setPhoto(currentImage);
+
             if(currentLocationSetting.equals(SAVE_LOCATION)) {
                 updateLocation();
                 pCode.setLocation(currentLocation);
@@ -304,9 +352,11 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             builder.setPositiveButton("Collect", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    pCode.setImgExists(pCode.getPhoto() != null);
                     // Add the player code to the database in here
                     f.addAQRCode(pCode);
                     dialog.dismiss();
+                    onResume();
                 }
             });
             builder.show();
@@ -314,8 +364,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     public ScanIntentResult getCurrentScan() {

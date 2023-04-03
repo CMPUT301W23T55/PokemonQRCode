@@ -1,41 +1,24 @@
 package com.example.pokemonqrcode;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 import java.util.Map;
 
 public class LeaderboardActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private LeaderboardAdapter leaderboardAdapter;
-    private RecyclerView leaderboardRecycler;
     String username;
     ArrayList<Map<String, Object>> leaderboardData;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +33,7 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
 
         Button homeBtn = findViewById(R.id.return_home);
         // https://developer.android.com/develop/ui/views/components/spinner#java
-        Spinner sortSpinner = (Spinner) findViewById(R.id.spinner);
+        Spinner sortSpinner = findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sort_array, android.R.layout.simple_spinner_item);
@@ -60,7 +43,7 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
         sortSpinner.setAdapter(adapter);
         // recycler view
         leaderboardData = new ArrayList<>();
-        RecyclerView leaderboardRecycler = (RecyclerView) findViewById(R.id.rec_view_leaderboard);
+        RecyclerView leaderboardRecycler = findViewById(R.id.rec_view_leaderboard);
         //leaderboardRecycler = (RecyclerView) findViewById(R.id.rec_view);
         leaderboardRecycler.setLayoutManager(new LinearLayoutManager(this));
         leaderboardAdapter = new LeaderboardAdapter(leaderboardData,this);
@@ -74,19 +57,39 @@ public class LeaderboardActivity extends AppCompatActivity implements AdapterVie
 
     private void setStyle(String SortStyle) {
         FireStoreClass f = new FireStoreClass(Globals.username);
-        f.getLeaderboards(SortStyle, new FireStoreResults() {
-            @Override
-            public void onResultGet() {
-                leaderboardData.clear();
-                leaderboardData.addAll(f.getLeaderboardData());
-                leaderboardAdapter.notifyDataSetChanged();
-            }
+
+        f.getLeaderboards(SortStyle, () -> {
+            leaderboardData.clear();
+            leaderboardData.addAll(f.getLeaderboardData());
+            handleTies(SortStyle);
+            leaderboardAdapter.notifyDataSetChanged();
         });
     }
+
+
+    private void handleTies(String SortStyle) {
+        // set rank for first elem
+        int prevRank = 1, prevScore = ((Long) leaderboardData.get(0).get(SortStyle)).intValue();
+        leaderboardData.get(0).put("rank", prevRank);
+        // iter through the remaining list
+        for (int i = 1; i<leaderboardData.size(); i++) {
+            Map<String, Object> usr = leaderboardData.get(i);
+
+            if (((Long) usr.get(SortStyle)).intValue() == prevScore) {
+                usr.put("rank", prevRank);
+            } else {
+                prevRank++;
+                usr.put("rank", prevRank);
+                prevScore = ((Long) usr.get(SortStyle)).intValue();
+            }
+        }
+    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
         String text = adapterView.getItemAtPosition(pos).toString();
+        leaderboardAdapter.setDisplayStyle(text);
         // switch sort styles
         switch(text) {
             case "Total Score":

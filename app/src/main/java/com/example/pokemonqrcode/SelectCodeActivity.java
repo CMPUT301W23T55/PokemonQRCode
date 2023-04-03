@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -52,6 +53,7 @@ public class SelectCodeActivity extends AppCompatActivity {
     private Button save_com_btn;
     private Button return_btn;
     private Button view_other_btn;
+    private Button see_comments_btn;
 
     private Boolean access;
     TextView codeName;
@@ -72,15 +74,15 @@ public class SelectCodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select_code);
         Intent getIntent = getIntent();
 
-        this.HashCode = getIntent().getStringExtra("HashCode");
-        this.fireStoreUserName = getIntent().getStringExtra("UserName");
-        this.access = getIntent().getExtras().getBoolean("access");
+        this.HashCode = getIntent.getStringExtra("HashCode");
+        this.fireStoreUserName = getIntent.getStringExtra("UserName");
+        this.access = getIntent.getExtras().getBoolean("access");
         Log.d("SelectCodeActivity",HashCode);
         commentField = findViewById(R.id.comments);
 
-        if (commentField.getText()==null || commentField.getText().equals("")) {
-            commentField.setText("No Comment");
-        }
+//        if (commentField.getText()==null || commentField.getText().equals("")) {
+//            commentField.setText("No Comment");
+//        }
 
         Log.d("SelectCodeActivity", fireStoreUserName);
 
@@ -102,14 +104,14 @@ public class SelectCodeActivity extends AppCompatActivity {
                 codeScore = findViewById(R.id.select_code_score);
                 codeScore.setText(pCode.getScore() + " Pts");
                 commentField = findViewById(R.id.comments);
-                commentField.setText(pCode.getComments());
-                //so it is regenerating the playerCode from the firestore which
-                //doesnt have the image on it, need to work w/ someone to fix that
+
+                // set image
                 codePhoto = findViewById(R.id.select_code_photo);
                 codePhoto.setImageBitmap(pCode.getPhoto());
 
             }
         });
+
 
         return_btn = findViewById(R.id.return_to_profile_btn);
         return_btn.setOnClickListener(new View.OnClickListener() {
@@ -141,30 +143,44 @@ public class SelectCodeActivity extends AppCompatActivity {
             });
         } else {
             del_btn.setVisibility(View.INVISIBLE);
+
+
+            //del_btn.setVisibility(View.VISIBLE);
+
         }
 
         save_com_btn = findViewById(R.id.save_comment_btn);
 
+//        save_com_btn.setOnClickListener(new View.OnClickListener() {
+//            final CollectionReference docReference = db.collection("Users/"+fireStoreUserName+"/QRCodes");
+//            @Override
+//            public void onClick(View view) {
+//                docReference
+//                        .document(HashCode)
+//                        .update("Comments", commentField.getText().toString())
+//                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void unused) {
+//                                Log.d("Working","Data Added Successfully!");
+//                                Toast.makeText(SelectCodeActivity.this,"Comment saved!", Toast.LENGTH_SHORT).show();
+//                            }
+//                        })
+//                        .addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Log.d("Working","Data not added!" + e);
+//                            }
+//                        });
+//
+//            }
+//        });
+
         save_com_btn.setOnClickListener(new View.OnClickListener() {
-            final CollectionReference docReference = db.collection("Users/"+fireStoreUserName+"/QRCodes");
             @Override
             public void onClick(View view) {
-                docReference
-                        .document(HashCode)
-                        .update("Comments", commentField.getText().toString())
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.d("Working","Data Added Successfully!");
-                                Toast.makeText(SelectCodeActivity.this,"Comment saved!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("Working","Data not added!" + e);
-                            }
-                        });
+                Log.d("SelectCodeActivity", String.valueOf(commentField.getText().toString()));
+                fireStoreClass.addComment(commentField.getText().toString(), plCode);
+                plCode.setComments(commentField.getText().toString());
 
             }
         });
@@ -178,9 +194,24 @@ public class SelectCodeActivity extends AppCompatActivity {
             @Override
             public void onResultGet() {
 
+
+            }
+        });
+
+        see_comments_btn = findViewById(R.id.see_comments_btn);
+        see_comments_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> comments = plCode.getComments();
+                Intent intent = new Intent(SelectCodeActivity.this, SeeCommentsActivity.class );
+                Bundle args = new Bundle();
+                args.putSerializable("ARRAYLIST",(Serializable)comments);
+                intent.putExtra("BUNDLE",args);
+                startActivity(intent);
             }
         });
     }
+
 
     /**
      * Displays fragment containing list of other players who have caught the same code
@@ -193,4 +224,5 @@ public class SelectCodeActivity extends AppCompatActivity {
         other_caught.setArguments(bundle);
         other_caught.show(fragmentManager, "other_caught_fragment");
     }
+
 }
