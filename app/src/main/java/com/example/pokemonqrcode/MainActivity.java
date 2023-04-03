@@ -58,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     FloatingActionButton cameraButton;
 
+    private int rank;
+
+    private boolean isResumed;
+
 
 
     Bitmap currentImage;
@@ -67,9 +71,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     ScanIntentResult currentScan;
 
     Button profileButton, leaderboardBtn, logOutBtn,findUserBtn,mapButton;
-
-    
-
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -96,20 +97,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     @Override
     public void onResume() {
         super.onResume();
-        TextView imageview = findViewById(R.id.item_image);
-        TextView imageText = findViewById(R.id.item_image_text);
-        TextView imageScore = findViewById(R.id.item_image_score);
-        this.f.getHighest(new FireStoreResults() {
-            @Override
-            public void onResultGet() {
-                PlayerCode p = f.getHighestCode();
-                if (!(p == null)){
-                    imageview.setText(p.getPicture());
-                    imageText.setText(p.getName());
-                    imageScore.setText(Integer.toString(p.getScore()));
-                }
-            }
-        });
+        drawTitle();
     }
     @Override
     public void onStart() {
@@ -221,6 +209,15 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
                 Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(newIntent);
+
+                TextView imageview = findViewById(R.id.item_image);
+                TextView imageText = findViewById(R.id.item_image_text);
+                TextView imageScore = findViewById(R.id.item_image_score);
+                TextView imageRank = findViewById(R.id.item_image_rank);
+                imageview.setText("");
+                imageText.setText("");
+                imageScore.setText("");
+                imageRank.setText("");
             }
         });
 
@@ -368,6 +365,39 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     public ScanIntentResult getCurrentScan() {
         return currentScan;
+    }
+
+    private void drawTitle(){
+
+        TextView imageview = findViewById(R.id.item_image);
+        TextView imageText = findViewById(R.id.item_image_text);
+        TextView imageScore = findViewById(R.id.item_image_score);
+        TextView imageRank = findViewById(R.id.item_image_rank);
+        this.f.getHighest(new FireStoreResults() {
+            @Override
+            public void onResultGet() {
+                PlayerCode p = f.getHighestCode();
+                if(!(p==null)){
+                    f.determineRank(p.getScore(), new FireStoreResults() {
+                        @Override
+                        public void onResultGet() {
+                            rank = f.getRank();
+                            imageview.setText(p.getPicture());
+                            imageText.setText(p.getName());
+                            imageScore.setText(Integer.toString(p.getScore()));
+                            imageRank.setText("Your relative rank is: "+ rank);
+
+
+                            }
+                        });
+                    } else {
+                        imageview.setText("");
+                        imageText.setText("");
+                        imageScore.setText("");
+                        imageRank.setText("");
+                }
+            }
+        });
     }
 
 }

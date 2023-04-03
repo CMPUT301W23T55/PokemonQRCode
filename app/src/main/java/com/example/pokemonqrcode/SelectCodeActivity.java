@@ -46,7 +46,6 @@ public class SelectCodeActivity extends AppCompatActivity {
 
     private PlayerCode plCode;
     private String HashCode, fireStoreUserName;
-    private String commentsString;
     private EditText commentField;
     private FireStoreClass fireStoreClass;
     private Button del_btn;
@@ -60,8 +59,16 @@ public class SelectCodeActivity extends AppCompatActivity {
     TextView codeImage;
     TextView codeScore;
     ImageView codePhoto;
+    ArrayList<String> comments = new ArrayList<>();
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        commentField = findViewById(R.id.comments);
+        commentField.setText("");
+
+    }
 
     /**
      * Takes cares of commenting, deleting code, returning to previous activites and other
@@ -73,16 +80,12 @@ public class SelectCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_code);
         Intent getIntent = getIntent();
-
         this.HashCode = getIntent.getStringExtra("HashCode");
         this.fireStoreUserName = getIntent.getStringExtra("UserName");
         this.access = getIntent.getExtras().getBoolean("access");
         Log.d("SelectCodeActivity",HashCode);
         commentField = findViewById(R.id.comments);
 
-//        if (commentField.getText()==null || commentField.getText().equals("")) {
-//            commentField.setText("No Comment");
-//        }
 
         Log.d("SelectCodeActivity", fireStoreUserName);
 
@@ -179,8 +182,9 @@ public class SelectCodeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("SelectCodeActivity", String.valueOf(commentField.getText().toString()));
-                fireStoreClass.addComment(commentField.getText().toString(), plCode);
-                plCode.setComments(commentField.getText().toString());
+                String comment = commentField.getText().toString()+"\n-"+Globals.username;
+                fireStoreClass.addComment(comment, plCode.getHashCode());
+                plCode.addComment(comment);
 
             }
         });
@@ -202,12 +206,20 @@ public class SelectCodeActivity extends AppCompatActivity {
         see_comments_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> comments = plCode.getComments();
-                Intent intent = new Intent(SelectCodeActivity.this, SeeCommentsActivity.class );
-                Bundle args = new Bundle();
-                args.putSerializable("ARRAYLIST",(Serializable)comments);
-                intent.putExtra("BUNDLE",args);
-                startActivity(intent);
+                fireStoreClass.setComments(plCode.getHashCode(), new FireStoreResults() {
+                    @Override
+                    public void onResultGet() {
+                        comments.clear();
+                        comments.addAll(fireStoreClass.getComments());
+                        Intent intent = new Intent(SelectCodeActivity.this, SeeCommentsActivity.class );
+                        Bundle args = new Bundle();
+                        args.putStringArrayList("ARRAYLIST",comments);
+                        args.putString("name",fireStoreUserName);
+                        args.putString("hashcode", plCode.getHashCode());
+                        intent.putExtra("BUNDLE",args);
+                        startActivity(intent);
+                    }
+                });
             }
         });
     }

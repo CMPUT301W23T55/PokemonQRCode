@@ -54,13 +54,15 @@ public class FireStoreClass implements Serializable {
     private final ArrayList<PlayerCode> codes = new ArrayList<>();
     private final ArrayList<Map<String, Object>> leaderboardData = new ArrayList<>();
 
-    private int totalScore, count;
+    private int totalScore, count, relativeRank;
     private PlayerCode pCode, highestCode;
 
     private final ArrayList<String> usersScannedIdenticalCode = new ArrayList<>();
     private final ArrayList<Users> usersArrayList = new ArrayList<>();
 
     final private FirebaseStorage cloudStorage = FirebaseStorage.getInstance();
+
+    private final ArrayList<String> comments = new ArrayList<String>();
 
     //needs username as that is the key to getting data from database
 
@@ -173,10 +175,10 @@ public class FireStoreClass implements Serializable {
     /**
      * this method will delete a selected comment from the PlayerCode in the database
      * @param comment the comment that will be removed
-     * @param pc the pc that the comment is associated with
+     * @param hashcode the hashcode that the comment is associated with
      */
-    public void deleteComment(String comment, PlayerCode pc) {
-        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
+    public void deleteComment(String comment, String hashcode) {
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
         docRef.update("Comments", FieldValue.arrayRemove(comment))
                 .addOnCompleteListener(unused -> Log.d("Working", "Comment successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
@@ -186,10 +188,10 @@ public class FireStoreClass implements Serializable {
     /**
      * this method will add a comment to a PlayerCode
      * @param comment the comment that should be added
-     * @param pc the PlayerCode that the comment is associated with
+     * @param hashcode the hashcode that the comment is associated with
      */
-    public void addComment(String comment, PlayerCode pc){
-        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(pc.getHashCode());
+    public void addComment(String comment, String hashcode){
+        DocumentReference docRef = db.collection("Users/" + this.userName + "/QRCodes").document(hashcode);
         docRef.update("Comments", FieldValue.arrayUnion(comment))
                 .addOnSuccessListener(unused -> Log.d("Working", "Comment successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
@@ -383,7 +385,11 @@ public class FireStoreClass implements Serializable {
         return this.usersArrayList;
     }
 
-
+    /**
+     * gets the lglobal leaderboards
+     * @param sortStyle determines how the leaderboard will sort the codes
+     * @param fireStoreResults Interface used to deal with Firestore's asynchronous behaviour
+     */
     public void getLeaderboards(String sortStyle, FireStoreResults fireStoreResults) {
         leaderboardData.clear();
         CollectionReference UsersRef = db.collection("Users");
@@ -404,11 +410,20 @@ public class FireStoreClass implements Serializable {
                     }
                 });
     }
+
+    /**
+     * returns the leaderboard array
+     * @return leaderboard array
+     */
     public ArrayList<Map<String, Object>> getLeaderboardData(){
         return this.leaderboardData;
     }
 
 
+    /**
+     * sets the users highest scanned code to the variable highestCode
+     * @param fireStoreResults Interface used to deal with Firestore's asynchronous behaviour
+     */
     public void getHighest(FireStoreResults fireStoreResults){
         CollectionReference UsersRef = db.collection("Users/"+this.userName+"/QRCodes");
         UsersRef.orderBy("Score", Query.Direction.DESCENDING)
@@ -423,6 +438,11 @@ public class FireStoreClass implements Serializable {
 
 
     }
+
+    /**
+     * returns user highest Code
+     * @return highest Code
+     */
     public PlayerCode getHighestCode(){
         return this.highestCode;
     }
@@ -431,11 +451,8 @@ public class FireStoreClass implements Serializable {
         CollectionReference col = db.collection("Codes");
 
         col.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                .addOnSuccessListener(queryDocumentSnapshots -> {
 
-                    }
                 });
         return null;
     }
@@ -444,7 +461,79 @@ public class FireStoreClass implements Serializable {
         return userName;
     }
 
+    /**
+     * Determines the comments that are associated with a specific code
+     * @param hashcode code that has the comments
+     * @param fireStoreResults Interface used to deal with Firestore's asynchronous behaviour
+     */
+    public void setComments(String hashcode, FireStoreResults fireStoreResults){
+        this.comments.clear();
+        CollectionReference docReference = db.collection("Users/"+this.userName+"/QRCodes");
+
+        docReference.document(hashcode).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        comments.addAll((ArrayList)documentSnapshot.get("Comments"));
+                        fireStoreResults.onResultGet();
+                    }
+
+                });
+
+    }
+
+    /**
+     * Returns the comments
+     * @return comments
+     */
+    public ArrayList<String> getComments(){
+        return this.comments;
+    }
+
+    /**
+     * Method determines the rank, and sets the rank variable to the appropriate value
+     * @param score score to be compared with other records
+     * @param fireStoreResults Interface used to deal with Firestore's asynchronous behaviour
+     */
+    public void determineRank(int score, FireStoreResults fireStoreResults){
+        relativeRank = 1;
+
+        CollectionReference docReference = db.collection("Users");
+
+        docReference.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+
+                    for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                        String tempName = document.get("Username",String.class);
+
+                        CollectionReference collectionReference =
+                                db.collection( "Users/"+ tempName +"/QRCodes");
+
+                        collectionReference.get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                        int temp = document.get("Score",int.class);
+                                        if (temp > score){
+                                            relativeRank++;
+//                                            break; depends on iff we assume that the same user can have multiple codes greater then user
+                                        }
+                                    }
+                                    fireStoreResults.onResultGet();
+                                }
+                            });
+                    }
+                });
+    }
+
+    /**
+     * This method returns the rank of the user
+     * @return rank
+     */
+    public int getRank(){
+        return this.relativeRank;
+    }
+
 
 }
-
-// Query query = collectionRef.orderBy("amount", descending: true).limit(1);
