@@ -164,6 +164,17 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             startActivity(newIntent);
         }
 
+        Log.d("username", Globals.username);
+
+        FireStoreClass fireStoreClass = new FireStoreClass(Globals.username);
+
+        fireStoreClass.refreshCodes(new FireStoreResults() {
+            @Override
+            public void onResultGet() {
+                Log.d("Refresh Codes","Success");
+            }
+        });
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         logOutBtn = findViewById(R.id.logoutBtn);

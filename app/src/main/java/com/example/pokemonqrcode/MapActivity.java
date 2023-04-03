@@ -10,6 +10,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -48,6 +50,9 @@ public class MapActivity extends AppCompatActivity {
     private final int REQUEST_PERMS = 1;
     Context context;
 
+    ArrayList<Users> user_list;
+    SearchAdapter mySearchAdapter;
+
     Location currentLocation;
     private LocationManager locationManager;
 
@@ -66,16 +71,17 @@ public class MapActivity extends AppCompatActivity {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
         setContentView(R.layout.activity_map);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            this.username = extras.getString("key");
+        }
+
         // create the header
         CustomHeader head = findViewById(R.id.header_map_activity);
-        head.initializeHead("Map", "Back");
+        head.initializeHead(""+username, "Back");
         // set listener for back button in the header
         // TODO: button needs to be clicked multiple times to work, need to fix that
-        head.back_button.setOnClickListener(view -> {
-            Log.d("Back button", "Back button clicked");
-            finish();
-        });
-
+        head.back_button.setOnClickListener(view -> { finish(); });
 
         // get the map view
         map = findViewById(R.id.map);
@@ -86,15 +92,11 @@ public class MapActivity extends AppCompatActivity {
         String[] permsArray = permsList.toArray(new String[0]);
 
 
+
         // get the location of the user
         double[] location = getIntent().getDoubleArrayExtra("location");
-        if (location == null) {
-            // this checks if the location is known
-            // if not, default to some lat and lon
-            location = new double[]{0, 0};
-        }
+        if (location == null) { location = new double[]{29, 32}; }
         GeoPoint start = new GeoPoint(location[0],location[1]);
-
 
         // creating an overlay for the map
         MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getBaseContext()), map);
@@ -107,34 +109,69 @@ public class MapActivity extends AppCompatActivity {
         mapController.setZoom(9.5);
         mapController.setCenter(start);
 
-        // get codes from db
-        FireStoreClass f = new FireStoreClass(username);
-        ArrayList<Users> user_list = f.getUsersArrayList();
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
+        FireStoreClass f = new FireStoreClass(username);
+
+        PlayerCode testCode = new PlayerCode("hash","test1",1,"image");
+        Location location1 = new Location(String.valueOf(locationManager));
+
+        location1.setLatitude(50);
+        location1.setLongitude(50);
+
+        testCode.setLocation(location1);
+
+        f.addAQRCode(testCode);
+
+        f.getCodesList(new FireStoreLIstResults() {
+            @Override
+            public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
+                Log.d("codes", String.valueOf(playerCodeList));
+            }
+        });
+
+        f.getSearchList(new FireStoreResults() {
+            @Override
+            public void onResultGet() {
+                user_list.clear();
+                user_list = f.getUsersArrayList();
+                Log.d("user list",String.valueOf(user_list));
+            }
+        });
 
 
         ArrayList<PlayerCode> allCodes = new ArrayList<>();
 
-        for (Users user : user_list) {
-            FireStoreClass fireStoreClass = new FireStoreClass(user.getUsername());
-            fireStoreClass.getCodesList(allCodes::addAll);
-        }
+        System.out.println("userlist = "+user_list);
 
+        //for (Users user : user_list) {
+            //FireStoreClass fireStoreClass = new FireStoreClass(user.getUsername());
+            //fireStoreClass.getCodesList(allCodes::addAll);
+
+            //System.out.println("Username = " + user.getUsername());
+        //}
+        //System.out.println(allCodes);
         // get distinct codes
         // https://stackoverflow.com/a/33735562
         List<PlayerCode> distinctCodes = allCodes.stream().distinct().collect(Collectors.toList());
+
+
+
         ArrayList<OverlayItem> points = new ArrayList<>();
         for (PlayerCode code : allCodes) {
+            Log.d("Codes",code.getName());
             OverlayItem marker = new OverlayItem(String.valueOf(code.getScore()), code.getName(), (IGeoPoint) code.getLocation());
             if (!points.contains(marker)) {
                 points.add(marker);
             }
-
+            points.add(marker);
         }
 
-        points.add(new OverlayItem("Test","Test",start));
+        //points.add(new OverlayItem("Test","Test",start));
 
         makeMapMarker(points);
+
+
     }
 
     @Override
@@ -196,7 +233,7 @@ public class MapActivity extends AppCompatActivity {
                 new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
                     @Override
                     public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                        byte[] mock = "Test string".getBytes();
+                        byte[] mock = item.getTitle().getBytes();
                         ScannedCode mockCode = new ScannedCode(mock);
                         switchActivityOnHold(mockCode,MainActivity.class);
                         return false;
