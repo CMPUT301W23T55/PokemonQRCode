@@ -257,8 +257,6 @@ public class FireStoreClass implements Serializable {
                                             fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
                                         }
                                     });
-                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
