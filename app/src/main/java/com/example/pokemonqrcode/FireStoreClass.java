@@ -228,38 +228,42 @@ public class FireStoreClass implements Serializable {
     public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
 
-                        String docHashCode= (String) document.get("HashCode");
-                        if (docHashCode.equals(hashcode)) {
-                            pCode = document.toObject(PlayerCode.class);
+                            String docHashCode= (String) document.get("HashCode");
+                            if (docHashCode.equals(hashcode)) {
+                                pCode = document.toObject(PlayerCode.class);
+                            }
+
+                        }
+                        // return pCode if image doesn't exist
+                        if (!pCode.getImgExists()) {
+                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                            return;
+                        }
+                        // get image and set pCode attribute
+                        try {
+                            // temp file to store image
+                            File tmpImg = File.createTempFile("tmp", ".jpeg");
+                            cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
+                                    .getFile(tmpImg)
+                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
+                                            pCode.setPhoto(pcPhoto);
+                                            // ret pCode with image
+                                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                                        }
+                                    });
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
 
                     }
-                    // return pCode if image doesn't exist
-                    if (!pCode.getImgExists()) {
-                        fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-                        return;
-                    }
-                    // get image and set pCode attribute
-                    try {
-                        // temp file to store image
-                        File tmpImg = File.createTempFile("tmp", ".jpeg");
-                        cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
-                                .getFile(tmpImg)
-                                .addOnSuccessListener(taskSnapshot -> {
-                                    Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
-                                    pCode.setPhoto(pcPhoto);
-                                    // ret pCode with image
-                                    fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-                                });
-                        fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
                 });
     }
 
@@ -461,4 +465,43 @@ public class FireStoreClass implements Serializable {
 
 }
 
-// Query query = collectionRef.orderBy("amount", descending: true).limit(1);
+/*
+    public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
+        CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
+        collectionRef.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+
+
+                        String docHashCode = (String) document.get("HashCode");
+                        if (docHashCode.equals(hashcode)) {
+                            pCode = document.toObject(PlayerCode.class);
+                        }
+                        // return pCode if image doesn't exist
+                        if (!pCode.getImgExists()) {
+                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                            return;
+                        }
+                        // get image and set pCode attribute
+                        try {
+                            // temp file to store image
+                            File tmpImg = File.createTempFile("tmp", ".jpeg");
+                            cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
+                                    .getFile(tmpImg)
+                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
+                                            pCode.setPhoto(pcPhoto);
+                                            // ret pCode with image
+                                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                                        }
+                                    });
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+                });
+    }
+ */

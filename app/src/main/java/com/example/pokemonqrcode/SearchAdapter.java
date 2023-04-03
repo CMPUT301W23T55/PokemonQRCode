@@ -12,6 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is an adapter class responsible for rendering informations onto the recycler view
+ * @author jawad
+ * @version final
+ */
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.myViewHolder>
 {
     private final RecyclerViewInterface recyclerViewInterface;
@@ -35,20 +40,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.myViewHold
     }
 
     @Override
+    /*
+    Set values of views
+     */
     public void onBindViewHolder(@NonNull myViewHolder holder, int position) {
         Log.d("SearchAdapter", " " + userList.get(position).getUsername());
         holder.name.setText(userList.get(position).getUsername());
-//        if (userList.get(position).getTotal_Codes()==0) {
-//            holder.total_code.setText("0");
-//        }
-//        if (userList.get(position).getTotal_Score()==0) {
-//            holder.total_score.setText("0");
-//        }
-
         holder.total_code.setText(String.valueOf(userList.get(position).getTotal_Codes()));
-//        holder.total_score.setText(userList.get(position).getTotal_Score());
         holder.total_score.setText(Integer.toString(userList.get(position).getTotal_Score()) );
-//        holder.picture.setText(userList.get(position).getPicture());
     }
 
     @Override
@@ -60,10 +59,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.myViewHold
         TextView name,total_score,total_code;
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
+            /*
+            Initialize the views
+             */
             name=itemView.findViewById(R.id.user_name);
             total_code=itemView.findViewById(R.id.picture3);
             total_score=itemView.findViewById(R.id.picture2);
-//            picture=itemView.findViewById(R.id.picture);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

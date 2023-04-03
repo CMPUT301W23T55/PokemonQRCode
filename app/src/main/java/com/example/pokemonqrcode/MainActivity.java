@@ -1,11 +1,5 @@
 package com.example.pokemonqrcode;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -14,16 +8,24 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-
-
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +38,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+
 import java.security.NoSuchAlgorithmException;
+
+import java.security.NoSuchAlgorithmException;
+
 
 
 /**
@@ -58,7 +65,9 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     String currentLocationSetting; //yes or no
     Location currentLocation;
     ScanIntentResult currentScan;
-    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn, mapButton;
+
+    Button profileButton, leaderboardBtn, logOutBtn,findUserBtn,mapButton;
+
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -217,12 +226,22 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             }
         });
 
+
+        // listener for the location / map button
+        mapButton.setOnClickListener(view -> {
+            Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
+            newIntent.putExtra("key",Globals.username);
+            startActivity(newIntent);
+        });
+
 //        // listener for the location / map button
 //        mapButton.setOnClickListener(view -> {
 //            Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
 //            newIntent.putExtra("key",Globals.username);
 //            startActivity(newIntent);
 //        });
+
+
 
 
 

@@ -41,7 +41,7 @@ import java.util.ArrayList;
  * @see ProfileActivity, FireStoreClass, PlayerCode
  * @version 1.3
  */
-public class SelectCodeActivity extends AppCompatActivity{
+public class SelectCodeActivity extends AppCompatActivity {
 
 
     private PlayerCode plCode;
@@ -107,10 +107,10 @@ public class SelectCodeActivity extends AppCompatActivity{
                 codeScore = findViewById(R.id.select_code_score);
                 codeScore.setText(pCode.getScore() + " Pts");
                 commentField = findViewById(R.id.comments);
-//                commentField.setText(pCode.getComments());
-                //so it is regenerating the playerCode from the firestore which
-                //doesnt have the image on it, need to work w/ someone to fix that
-                retrieveImage(db, pCode.getHashCode());
+
+                // set image
+                codePhoto = findViewById(R.id.select_code_photo);
+                codePhoto.setImageBitmap(pCode.getPhoto());
 
             }
         });
@@ -146,7 +146,10 @@ public class SelectCodeActivity extends AppCompatActivity{
             });
         } else {
             del_btn.setVisibility(View.INVISIBLE);
+
+
             //del_btn.setVisibility(View.VISIBLE);
+
         }
 
         save_com_btn = findViewById(R.id.save_comment_btn);
@@ -234,9 +237,4 @@ public class SelectCodeActivity extends AppCompatActivity{
         other_caught.show(fragmentManager, "other_caught_fragment");
     }
 
-    private void retrieveImage(FirebaseFirestore db, String hash) {
-        CollectionReference collectionRef = db.collection("Users/"+fireStoreClass.getUserName()+"/QRCodes");
-
-
-    }
 }
