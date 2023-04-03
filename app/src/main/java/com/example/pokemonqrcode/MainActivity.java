@@ -227,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         mapButton.setOnClickListener(view -> {
             Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
             newIntent.putExtra("key",Globals.username);
+            updateLocation();
             if (currentLocation != null) {
                 newIntent.putExtra("lat",this.currentLocation.getLatitude());
                 newIntent.putExtra("lon",this.currentLocation.getLongitude());
