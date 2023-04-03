@@ -5,6 +5,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -71,8 +72,13 @@ public class MapActivity extends AppCompatActivity {
         this.username = getIntent().getStringExtra("key");
         Log.d("Username",this.username);
 
-        this.lat = extras.getInt("lat",0);
-        this.lon = extras.getInt("lon",0);
+        try {
+            this.lat = (double) extras.get("lat");
+            this.lon = (double) extras.get("lon");
+        } catch (ClassCastException e) {
+            this.lat = extras.getInt("lat",0);
+            this.lon = extras.getInt("lon",0);
+        }
 
 
         // create the header
@@ -122,15 +128,22 @@ public class MapActivity extends AppCompatActivity {
                             GeoPoint point;
 
                             if (code.getLocation() != null) {
-                                Log.d("Code location",code.getLocation().toString());
-                                point = new GeoPoint(code.getLocation().getLatitude(),
-                                        code.getLocation().getLongitude());
-                                Marker newMarker = new Marker(map);
-                                newMarker.setPosition(point);
-                                newMarker.setTitle(code.getName() + "\nScore: " + code.getScore()
-                                        + "\nHash: " + code.getHashCode());
-                                newMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                                map.getOverlays().add(newMarker);
+                                Location location1 = new Location("");
+                                location1.setLongitude(0.0d);
+                                location1.setLongitude(0.0d);
+
+                                if (code.getLocation() != location1) {
+
+                                    Log.d("Code location", code.getLocation().toString());
+                                    point = new GeoPoint(code.getLocation().getLatitude(),
+                                            code.getLocation().getLongitude());
+                                    Marker newMarker = new Marker(map);
+                                    newMarker.setPosition(point);
+                                    newMarker.setTitle(code.getName() + "\nScore: " + code.getScore()
+                                            + "\nHash: " + code.getHashCode());
+                                    newMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                                    map.getOverlays().add(newMarker);
+                                }
 
                             } else {
                                 Log.d("Code location", "None");
