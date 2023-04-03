@@ -58,6 +58,7 @@ public class SelectCodeActivity extends AppCompatActivity {
     TextView codeName;
     TextView codeImage;
     TextView codeScore;
+    TextView codeLocation;
     ImageView codePhoto;
     ArrayList<String> comments = new ArrayList<>();
 
@@ -107,6 +108,13 @@ public class SelectCodeActivity extends AppCompatActivity {
                 codeScore = findViewById(R.id.select_code_score);
                 codeScore.setText(pCode.getScore() + " Pts");
                 commentField = findViewById(R.id.comments);
+
+                codeLocation = findViewById(R.id.show_location);
+                if (pCode.getLocation() != null) {
+                    codeLocation.setText(String.valueOf(pCode.getLocation().getLatitude()) +
+                            String.valueOf(pCode.getLocation().getLongitude()));
+                }
+
 
                 // set image
                 codePhoto = findViewById(R.id.select_code_photo);

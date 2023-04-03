@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         if (lastLocation != null) {
             double latitude = lastLocation.getLatitude();
             double longitude = lastLocation.getLongitude();
-            currentLocation = lastLocation;
+            this.currentLocation = lastLocation;
         }
     }
 
@@ -226,6 +227,13 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         mapButton.setOnClickListener(view -> {
             Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
             newIntent.putExtra("key",Globals.username);
+            if (currentLocation != null) {
+                newIntent.putExtra("lat",this.currentLocation.getLatitude());
+                newIntent.putExtra("lon",this.currentLocation.getLongitude());
+            } else {
+                newIntent.putExtra("lat",0);
+                newIntent.putExtra("lon",0);
+            }
             startActivity(newIntent);
         });
 
@@ -332,13 +340,13 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                 pCode.setLocation(currentLocation);
             }
 
-
             TextView codeImage = (TextView) v.findViewById(R.id.code_image);
             TextView codeName = (TextView) v.findViewById(R.id.code_name);
             TextView codeScore = (TextView) v.findViewById(R.id.code_score);
             codeImage.setText(pCode.getPicture());
             codeName.setText(pCode.getName());
             codeScore.setText(Integer.toString(pCode.getScore()));
+            Log.d("Location", String.valueOf(pCode.getLocation().getLatitude()));
             builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

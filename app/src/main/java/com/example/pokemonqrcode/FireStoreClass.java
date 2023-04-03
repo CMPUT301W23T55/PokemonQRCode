@@ -101,6 +101,7 @@ public class FireStoreClass implements Serializable {
         data.put("Picture",picture);
         data.put("Comments",comments);
         data.put("Location", location);
+        Log.d("Location", String.valueOf(location.getLatitude()));
 
         this.codes.add(pC);
 
@@ -280,6 +281,7 @@ public class FireStoreClass implements Serializable {
 
                     for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
                         pCode = document.toObject(PlayerCode.class);
+                        Log.d("Player code location fsc",pCode.getLocation().toString());
                         codes.add(pCode);
 //                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
                     }
