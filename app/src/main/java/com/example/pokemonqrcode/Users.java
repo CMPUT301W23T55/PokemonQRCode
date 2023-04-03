@@ -103,39 +103,3 @@ public class Users {
     }
 
 };
-
-//    private String Picture;
-//    private Date Date;
-
-//
-//    public String getUserName() {
-//        return userName;
-//    }
-//
-//    public void setUserName(String userName) {
-//        this.userName = userName;
-//    }
-//
-//    public Users(String name, String picture) {
-//        this.Name = name;
-//        this.Picture = picture;
-//    }
-//
-//    public Users() {
-//    }
-//
-//    public String getName() {
-//        return Name;
-//    }
-//
-//    public void setName(String name) {
-//        Name = name;
-//    }
-//
-//    public String getPicture() {
-//        return Picture;
-//    }
-//
-//    public void setPicture(String picture) {
-//        Picture = picture;
-//    }

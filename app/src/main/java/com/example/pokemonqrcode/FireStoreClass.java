@@ -57,6 +57,8 @@ public class FireStoreClass implements Serializable {
     private int totalScore, count, relativeRank;
     private PlayerCode pCode, highestCode;
 
+    private String email;
+
     private final ArrayList<String> usersScannedIdenticalCode = new ArrayList<>();
     private final ArrayList<Users> usersArrayList = new ArrayList<>();
 
@@ -536,6 +538,24 @@ public class FireStoreClass implements Serializable {
      */
     public int getRank(){
         return this.relativeRank;
+    }
+
+    public void setEmail(String username, FireStoreResults fireStoreResults) {
+        DocumentReference documentReference = db.document("Users/" + username);
+
+        documentReference.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        email = documentSnapshot.get("Email", String.class);
+                        fireStoreResults.onResultGet();
+                        Log.d("-----------------------------------------",email);
+                    }
+                });
+    }
+
+    public String getEmail(){
+        return this.email;
     }
 
 
