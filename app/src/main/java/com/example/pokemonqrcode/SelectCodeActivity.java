@@ -74,9 +74,9 @@ public class SelectCodeActivity extends AppCompatActivity{
         setContentView(R.layout.activity_select_code);
         Intent getIntent = getIntent();
 
-        this.HashCode = getIntent().getStringExtra("HashCode");
-        this.fireStoreUserName = getIntent().getStringExtra("UserName");
-        this.access = getIntent().getExtras().getBoolean("access");
+        this.HashCode = getIntent.getStringExtra("HashCode");
+        this.fireStoreUserName = getIntent.getStringExtra("UserName");
+        this.access = getIntent.getExtras().getBoolean("access");
         Log.d("SelectCodeActivity",HashCode);
         commentField = findViewById(R.id.comments);
 
@@ -142,7 +142,8 @@ public class SelectCodeActivity extends AppCompatActivity{
                 }
             });
         } else {
-            del_btn.setVisibility(View.VISIBLE);
+            del_btn.setVisibility(View.INVISIBLE);
+            //del_btn.setVisibility(View.VISIBLE);
         }
 
         save_com_btn = findViewById(R.id.save_comment_btn);
@@ -175,6 +176,7 @@ public class SelectCodeActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Log.d("SelectCodeActivity", String.valueOf(commentField.getText().toString()));
+                fireStoreClass.addComment(commentField.getText().toString(), plCode);
                 plCode.setComments(commentField.getText().toString());
 
             }
@@ -197,13 +199,12 @@ public class SelectCodeActivity extends AppCompatActivity{
         see_comments_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> comments = new ArrayList<String>();
+                ArrayList<String> comments = plCode.getComments();
                 Intent intent = new Intent(SelectCodeActivity.this, SeeCommentsActivity.class );
                 Bundle args = new Bundle();
                 args.putSerializable("ARRAYLIST",(Serializable)comments);
                 intent.putExtra("BUNDLE",args);
                 startActivity(intent);
-
             }
         });
     }

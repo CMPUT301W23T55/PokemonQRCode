@@ -25,41 +25,19 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-import android.os.SystemClock;
-import android.provider.MediaStore;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import android.util.Pair;
 import android.widget.TextView;
-import android.widget.Button;
 import android.widget.Toast;
 
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+
 
 /**
  * the MainActivity of the app, contains buttons to open the camera to scan a code,
@@ -104,8 +82,24 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     public void onDataPass(ScanIntentResult result) {
         showScannedCode(result);
     }
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        TextView imageview = findViewById(R.id.item_image);
+        TextView imageText = findViewById(R.id.item_image_text);
+        TextView imageScore = findViewById(R.id.item_image_score);
+        this.f.getHighest(new FireStoreResults() {
+            @Override
+            public void onResultGet() {
+                PlayerCode p = f.getHighestCode();
+                if (!(p == null)){
+                    imageview.setText(p.getPicture());
+                    imageText.setText(p.getName());
+                    imageScore.setText(Integer.toString(p.getScore()));
+                }
+            }
+        });
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -164,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(newIntent);
         }
-
 
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -342,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                     // Add the player code to the database in here
                     f.addAQRCode(pCode);
                     dialog.dismiss();
+                    onResume();
                 }
             });
             builder.show();
