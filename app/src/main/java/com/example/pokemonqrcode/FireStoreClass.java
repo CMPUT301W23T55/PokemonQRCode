@@ -540,6 +540,11 @@ public class FireStoreClass implements Serializable {
         return this.relativeRank;
     }
 
+    /**
+     * sets the eamil attribute to the corresponding user
+     * @param username username of the user
+     * @param fireStoreResults interfaced to help deal with firestore's asynchronous behaviour
+     */
     public void setEmail(String username, FireStoreResults fireStoreResults) {
         DocumentReference documentReference = db.document("Users/" + username);
 
@@ -554,6 +559,10 @@ public class FireStoreClass implements Serializable {
                 });
     }
 
+    /**
+     * returns the user's email
+     * @return email
+     */
     public String getEmail(){
         return this.email;
     }
