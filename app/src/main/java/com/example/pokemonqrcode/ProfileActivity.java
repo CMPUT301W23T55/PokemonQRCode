@@ -2,6 +2,7 @@ package com.example.pokemonqrcode;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.DateFormat;
@@ -44,7 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView totalScoreView, totalCodeView;
     private ArrayAdapter<PlayerCode> adapterPlayerCode;
 
-    private String firebaseUsername;
+    private String firebaseUsername, email;
 
     private Boolean access;
 
@@ -187,6 +189,31 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 });
                 //finish();
+            }
+        });
+        Button infoBtn = findViewById(R.id.info_btn);
+        infoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder((ProfileActivity.this));
+                builder
+                        .setTitle("View info")
+                        .setMessage("User email: "+email)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_info).show();
+            }
+        });
+
+        f.setEmail(firebaseUsername, new FireStoreResults() {
+            @Override
+            public void onResultGet() {
+                email = f.getEmail();
             }
         });
 

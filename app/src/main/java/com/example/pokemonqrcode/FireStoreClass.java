@@ -57,6 +57,8 @@ public class FireStoreClass implements Serializable {
     private int totalScore, count, relativeRank;
     private PlayerCode pCode, highestCode;
 
+    private String email;
+
     private final ArrayList<String> usersScannedIdenticalCode = new ArrayList<>();
     private final ArrayList<Users> usersArrayList = new ArrayList<>();
 
@@ -519,6 +521,7 @@ public class FireStoreClass implements Serializable {
                                         int temp = document.get("Score",int.class);
                                         if (temp > score){
                                             relativeRank++;
+                                            break;
 //                                            break; depends on iff we assume that the same user can have multiple codes greater then user
                                         }
                                     }
@@ -535,6 +538,33 @@ public class FireStoreClass implements Serializable {
      */
     public int getRank(){
         return this.relativeRank;
+    }
+
+    /**
+     * sets the eamil attribute to the corresponding user
+     * @param username username of the user
+     * @param fireStoreResults interfaced to help deal with firestore's asynchronous behaviour
+     */
+    public void setEmail(String username, FireStoreResults fireStoreResults) {
+        DocumentReference documentReference = db.document("Users/" + username);
+
+        documentReference.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        email = documentSnapshot.get("Email", String.class);
+                        fireStoreResults.onResultGet();
+                        Log.d("-----------------------------------------",email);
+                    }
+                });
+    }
+
+    /**
+     * returns the user's email
+     * @return email
+     */
+    public String getEmail(){
+        return this.email;
     }
 
 
