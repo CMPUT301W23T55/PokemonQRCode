@@ -41,7 +41,7 @@ import java.util.ArrayList;
  * @see ProfileActivity, FireStoreClass, PlayerCode
  * @version 1.3
  */
-public class SelectCodeActivity extends AppCompatActivity{
+public class SelectCodeActivity extends AppCompatActivity {
 
 
     private PlayerCode plCode;
@@ -143,7 +143,10 @@ public class SelectCodeActivity extends AppCompatActivity{
             });
         } else {
             del_btn.setVisibility(View.INVISIBLE);
+
+
             //del_btn.setVisibility(View.VISIBLE);
+
         }
 
         save_com_btn = findViewById(R.id.save_comment_btn);

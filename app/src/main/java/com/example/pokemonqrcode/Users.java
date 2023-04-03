@@ -1,7 +1,15 @@
 package com.example.pokemonqrcode;
 
-import java.util.Comparator;
-import java.util.Date;
+/**
+ * This is a model class containing user information
+ * @author jawad
+ * @version final
+ */
+
+    /*
+     Initialize variables
+     */
+
 
 public class Users {
     //    private String Name;
@@ -11,6 +19,21 @@ public class Users {
     private String Email;
     private String Password;
 
+    public Users() {
+
+    }
+//
+    public Users(String username, int total_Codes, int total_Score, String email, String password) {
+        Username = username;
+        Total_Codes = total_Codes;
+        Total_Score = total_Score;
+        Email = email;
+        Password = password;
+    }
+
+    /*
+        Following are the getters of the attributes of an object
+         */
     private int Highest = 0;
 
     public int getHighest() {
@@ -36,38 +59,50 @@ public class Users {
     public int getTotal_Score() {
         return this.Total_Score;
     }
+    public String getPassword() {
+        return Password;
+    }
+
 
 
     public void setTotal_Score(int total_Score) {
         this.Total_Score = total_Score;
     }
-
     public String getEmail() {
         return this.Email;
     }
 
+    /*
+    Following are the setters of the attributes of an object
+     */
+//    public void setUsername(String username) {
+//        Username = username;
+//    }
+//    public void setTotal_Codes(int total_Codes) {
+//        Total_Codes = total_Codes;
+//    }
+//    public void setTotal_Score(int total_Score) {
+//        Total_Score = total_Score;
+//    }
     public void setEmail(String email) {
         Email = email;
     }
 
-    public String getPassword() {
-        return this.Password;
-    }
+
+//    public String getPassword() {
+//        return this.Password;
+//    }
 
     public void setPassword(String password) {
         this.Password = password;
     }
 
+
     public void setHighest(int Highest) {
         this.Highest = Highest;
     }
 
-}
-
-
-
-
-
+};
 
 //    private String Picture;
 //    private Date Date;
