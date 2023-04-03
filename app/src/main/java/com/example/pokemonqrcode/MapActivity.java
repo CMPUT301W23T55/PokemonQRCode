@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -22,6 +23,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * MapActivity is an activity which displays a map, containing markers for code locations
@@ -44,6 +47,10 @@ public class MapActivity extends AppCompatActivity {
     Context context;
 
     private String username;
+    private double lat;
+    private double lon;
+
+    ArrayList<Users> user_list;
 
     /**
      * onCreate function
@@ -58,18 +65,22 @@ public class MapActivity extends AppCompatActivity {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
         setContentView(R.layout.activity_map);
 
+        Bundle extras = getIntent().getExtras();
+
         // get the arguments passed by the intent
-        String last_act = getIntent().getStringExtra("activityName");
+        this.username = getIntent().getStringExtra("key");
+        Log.d("Username",this.username);
+
+        this.lat = extras.getInt("lat",0);
+        this.lon = extras.getInt("lon",0);
+
 
         // create the header
         CustomHeader head = findViewById(R.id.header_map_activity);
         head.initializeHead("Map", "Back");
         // set listener for back button in the header
         // TODO: button needs to be clicked multiple times to work, need to fix that
-        head.back_button.setOnClickListener(view -> {
-            Log.d("Back button","Back button clicked");
-            finish();
-        });
+        head.back_button.setOnClickListener(view -> {finish();});
 
         // get the map view
         map = findViewById(R.id.map);
@@ -79,13 +90,11 @@ public class MapActivity extends AppCompatActivity {
         List<String> permsList = Collections.singletonList(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         String[] permsArray = permsList.toArray(new String[0]);
 
-        // random-ish lat and lon, for the map
-        double lat = 53;
-        double lon = -100;
+
 
         // this is just a test point, preferably we would get the geolocation of the user
         // or ask the user to enter their location
-        GeoPoint start = new GeoPoint(lat,lon);
+        GeoPoint start = new GeoPoint(this.lat,this.lon);
 
         // creating an overlay for the map
         MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getBaseContext()), map);
@@ -100,19 +109,51 @@ public class MapActivity extends AppCompatActivity {
 
         // get codes from db
         FireStoreClass f = new FireStoreClass(username);
-        ArrayList<Users> user_list = f.getUsersArrayList();
 
-        ArrayList<PlayerCode> allCodes = new ArrayList<>();
+        f.getSearchList(() -> {
+            ArrayList<Users> user_list = f.getUsersArrayList();
 
-        for (Users user : user_list) {
-            FireStoreClass fireStoreClass = new FireStoreClass(user.getUsername());
-            fireStoreClass.getCodesList(new FireStoreLIstResults() {
-                @Override
-                public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
-                    allCodes.addAll(playerCodeList);
-                }
-            });
-        }
+            for (Users user : user_list) {
+                FireStoreClass fireStoreClass = new FireStoreClass(user.getUsername());
+                fireStoreClass.getCodesList(new FireStoreLIstResults() {
+                    @Override
+                    public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
+                        for (PlayerCode code : playerCodeList) {
+                            GeoPoint point;
+
+                            if (code.getLocation() != null) {
+                                Log.d("Code location",code.getLocation().toString());
+                                point = new GeoPoint(code.getLocation().getLatitude(),
+                                        code.getLocation().getLongitude());
+                                Marker newMarker = new Marker(map);
+                                newMarker.setPosition(point);
+                                newMarker.setTitle(code.getName() + "\nScore: " + code.getScore()
+                                        + "\nHash: " + code.getHashCode());
+                                newMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                                map.getOverlays().add(newMarker);
+
+                            } else {
+                                Log.d("Code location", "None");
+                            }
+                        }
+                    }
+                });
+            }
+
+        });
+
+
+
+
+        //for (Users user : user_list) {
+        //    FireStoreClass fireStoreClass = new FireStoreClass(user.getUsername());
+        //    fireStoreClass.getCodesList(new FireStoreLIstResults() {
+        //        @Override
+       //         public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
+        //            allCodes.addAll(playerCodeList);
+        //        }
+        //    });
+        //}
 
         // get distinct codes
         // https://stackoverflow.com/a/33735562
@@ -321,6 +362,7 @@ public class MapActivity extends AppCompatActivity {
                     }
                 }, getBaseContext());
 
+        Log.d("Overlay item", overlay.toString());
         overlay.setFocusItemsOnTap(true);
         map.getOverlays().add(overlay);
 
