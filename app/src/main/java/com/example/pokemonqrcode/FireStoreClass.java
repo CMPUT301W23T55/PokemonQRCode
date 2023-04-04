@@ -108,7 +108,7 @@ public class FireStoreClass implements Serializable {
 
         CollectionReference innerCollectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         innerCollectionRef
-                .document(String.valueOf(hashcode))
+                .document(hashcode+userName)
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d("Working", "Data added successfully under "+userName))
                 .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
@@ -128,7 +128,7 @@ public class FireStoreClass implements Serializable {
             }
         });
         CollectionReference qrcoderef = db.collection("QRCodes");
-        qrcoderef.document(String.valueOf(hashcode))
+        qrcoderef.document(hashcode+userName)
                 .set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -157,7 +157,7 @@ public class FireStoreClass implements Serializable {
     public void deleteCode(String hashCode){
         CollectionReference innerCollectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         innerCollectionRef
-                .document(hashCode)
+                .document(hashCode+userName)
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
@@ -183,7 +183,7 @@ public class FireStoreClass implements Serializable {
         });
         CollectionReference collectionRef = db.collection("QRCodes");
         collectionRef
-                .document(hashCode)
+                .document(hashCode+userName)
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
