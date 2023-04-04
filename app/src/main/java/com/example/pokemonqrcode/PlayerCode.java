@@ -24,7 +24,7 @@ public class PlayerCode implements Serializable {
     private Date Date;
     private String Picture;
     private Bitmap photo;
-    private Location location;
+    private Locations location;
 
     private ArrayList<String> Comments = new ArrayList<String>();
     //private String Comments;
@@ -33,11 +33,10 @@ public class PlayerCode implements Serializable {
     LocationManager locationManager;
 
 
-    public PlayerCode(ScannedCode code, Bitmap photo) {
-        this.Name = code.getName();
-        this.Score = code.getScore();
-        this.Picture = code.getPicture();
-        this.photo = photo;
+    public PlayerCode(Locations location, String name, int score) {
+        this.Name = name;
+        this.location = location;
+        this.Score = score;
 
     }
 
@@ -110,14 +109,8 @@ public class PlayerCode implements Serializable {
         return photo;
     }
 
-    public Location getLocation() {
-        if (this.location == null) {
-            Location location1 = new Location("");
-            location1.setLongitude(0.0d);
-            location1.setLongitude(0.0d);
-            return location1;
-        }
-        return location;
+    public Locations getLocation() {
+        return this.location;
 
     }
     public boolean getImgExists() { return imgExists;}
@@ -139,7 +132,7 @@ public class PlayerCode implements Serializable {
     public void setImgExists(boolean imgExists) {this.imgExists = imgExists;}
 
 
-    public void setLocation(Location Location) {
+    public void setLocation(Locations Location) {
         this.location = Location;
     }
     public void addComment(String comment){

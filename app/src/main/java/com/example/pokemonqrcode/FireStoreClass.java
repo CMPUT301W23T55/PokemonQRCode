@@ -91,7 +91,7 @@ public class FireStoreClass implements Serializable {
         String hashcode = pC.getHashCode();
         String picture = pC.getPicture();
         ArrayList<String> comments = pC.getComments();
-        Location location = pC.getLocation();
+        Locations location = pC.getLocation();
         Bitmap photo = pC.getPhoto();
         boolean imgExists = pC.getImgExists();
 
@@ -103,7 +103,6 @@ public class FireStoreClass implements Serializable {
         data.put("Picture",picture);
         data.put("Comments",comments);
         data.put("Location", location);
-        Log.d("Location", String.valueOf(location.getLatitude()));
 
         this.codes.add(pC);
 
@@ -128,6 +127,14 @@ public class FireStoreClass implements Serializable {
                         .addOnFailureListener(e -> Log.d("Working", "error exception occurred" + e));
             }
         });
+        CollectionReference qrcoderef = db.collection("QRCodes");
+        qrcoderef.document(String.valueOf(hashcode))
+                .set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("working", "success");
+                    }
+                });
 
         // no image to add
         if (photo == null) { return; }
@@ -140,6 +147,7 @@ public class FireStoreClass implements Serializable {
         // upload to Cloud
         StorageReference pathRef = cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode));
         pathRef.putBytes(imageData);
+
     }
 
     /**
@@ -173,6 +181,12 @@ public class FireStoreClass implements Serializable {
                 Log.d("Err", "Error getting documents: ", task.getException());
             }
         });
+        CollectionReference collectionRef = db.collection("QRCodes");
+        collectionRef
+                .document(hashCode)
+                .delete()
+                .addOnSuccessListener(unused -> Log.d("Working", "Document successfully deleted"))
+                .addOnFailureListener(e -> Log.w("Working", "Error exception occurred", e));
     }
 
     /**
@@ -231,42 +245,39 @@ public class FireStoreClass implements Serializable {
     public void getSpecificCode(String hashcode, FireStorePlayerCodeResults fireStorePlayerCodeResults){
         CollectionReference collectionRef = db.collection("Users/"+this.userName+"/QRCodes");
         collectionRef.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
 
-                            String docHashCode= (String) document.get("HashCode");
-                            if (docHashCode.equals(hashcode)) {
-                                pCode = document.toObject(PlayerCode.class);
-                            }
-
-                        }
-                        // return pCode if image doesn't exist
-                        if (!pCode.getImgExists()) {
-                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-                            return;
-                        }
-                        // get image and set pCode attribute
-                        try {
-                            // temp file to store image
-                            File tmpImg = File.createTempFile("tmp", ".jpeg");
-                            cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
-                                    .getFile(tmpImg)
-                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                            Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
-                                            pCode.setPhoto(pcPhoto);
-                                            // ret pCode with image
-                                            fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
-                                        }
-                                    });
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        String docHashCode= (String) document.get("HashCode");
+                        if (docHashCode.equals(hashcode)) {
+                            pCode = document.toObject(PlayerCode.class);
                         }
 
                     }
+                    // return pCode if image doesn't exist
+                    if (!pCode.getImgExists()) {
+                        fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                        return;
+                    }
+                    // get image and set pCode attribute
+                    try {
+                        // temp file to store image
+                        File tmpImg = File.createTempFile("tmp", ".jpeg");
+                        cloudStorage.getReference(String.format("QRCodes/%s/%s.jpeg", userName, hashcode))
+                                .getFile(tmpImg)
+                                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                        Bitmap pcPhoto = BitmapFactory.decodeFile(tmpImg.getAbsolutePath());
+                                        pCode.setPhoto(pcPhoto);
+                                        // ret pCode with image
+                                        fireStorePlayerCodeResults.onResultGetPlayerCode(pCode);
+                                    }
+                                });
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
                 });
     }
 
@@ -276,6 +287,7 @@ public class FireStoreClass implements Serializable {
      * @param fireStoreLIstResults An interface used to deal with firestore's asynchronous behaviour
      */
     public void getCodesList(FireStoreLIstResults fireStoreLIstResults){
+            codes.clear();
         CollectionReference docReference = db.collection("Users/"+this.userName+"/QRCodes");
 
         docReference.get()
@@ -283,7 +295,6 @@ public class FireStoreClass implements Serializable {
 
                     for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
                         pCode = document.toObject(PlayerCode.class);
-                        Log.d("Player code location fsc",pCode.getLocation().toString());
                         codes.add(pCode);
 //                                    Log.d("ProfileActivity",plCode.getName() + " => " + plCode.getPicture());
                     }
@@ -568,4 +579,21 @@ public class FireStoreClass implements Serializable {
     }
 
 
+    public void getQRCodes(FireStoreLIstResults fireStoreLIstResults){
+        codes.clear();
+        CollectionReference docReference = db.collection("QRCodes");
+
+        docReference.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+
+                    for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                        Locations l = document.get("Location",Locations.class);
+                        String s = document.get("Name",String.class);
+                        int p = document.get("Score",int.class);
+                        PlayerCode pc = new PlayerCode(l,s,p);
+                        codes.add(pc);
+                    }
+                    fireStoreLIstResults.onResultGetList(codes);
+                });
+    }
 }

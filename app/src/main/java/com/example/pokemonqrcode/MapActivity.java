@@ -10,6 +10,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -42,12 +45,12 @@ public class MapActivity extends AppCompatActivity {
     Location startLocation;
     Context context;
 
+    private final ArrayList<PlayerCode> pCodes = new ArrayList<>();
+
 
     private String username;
     private double lat;
     private double lon;
-
-    ArrayList<Users> user_list;
 
     @Override
     protected void onResume() {
@@ -82,9 +85,15 @@ public class MapActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = getApplicationContext();
+        generateCodes();
+
+        FireStoreClass f = new FireStoreClass(Globals.username);
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
         setContentView(R.layout.activity_map);
 
+        CustomHeader head = findViewById(R.id.header_map_activity);
+        head.initializeHead("Map", "Back");
+        head.back_button.setOnClickListener(view -> {finish();});
 
         mapView = findViewById(R.id.map);
         mapView.setTileSource(TileSourceFactory.MAPNIK); // Set the tile source to Mapnik
@@ -114,11 +123,6 @@ public class MapActivity extends AppCompatActivity {
         mapView.invalidate();
 
 
-
-        Marker marker = new Marker(mapView);
-        marker.setPosition(new GeoPoint(51.5074, -113.1278)); // Set the position of the marker
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        mapView.getOverlays().add(marker); // Add the marker to the map
 
 
 
@@ -170,6 +174,32 @@ if (perms.size() > 0) {
 ActivityCompat.requestPermissions(this,perms.toArray(new String[0]),REQUEST_PERMS);
 }
 }
+
+    private void generateCodes(){
+    FireStoreClass f = new FireStoreClass(Globals.username);
+    f.getQRCodes(new FireStoreLIstResults() {
+        @Override
+        public void onResultGetList(ArrayList<PlayerCode> playerCodeList) {
+            pCodes.addAll(playerCodeList);
+            displayCOdes();
+        }
+    });
+    }
+
+    private void displayCOdes(){
+        for (PlayerCode pc : pCodes){
+            try {
+                Marker marker = new Marker(mapView);
+                pc.getLocation().getLatitude();
+                marker.setPosition(new GeoPoint(pc.getLocation().getLatitude(), pc.getLocation().getLongitude()));
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                marker.setTitle(pc.getName() + "\n" + pc.getScore());
+                mapView.getOverlays().add(marker); // Add the marker to the map
+            } catch (NullPointerException e){
+                Log.d("Working", e.toString());
+            }
+        }
+    }
 }
 
 
