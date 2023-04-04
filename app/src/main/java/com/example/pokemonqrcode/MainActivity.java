@@ -25,16 +25,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
@@ -42,9 +32,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 
 
 import java.security.NoSuchAlgorithmException;
-
-import java.security.NoSuchAlgorithmException;
-
+import java.util.ArrayList;
 
 
 /**
@@ -61,10 +49,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
     private int rank;
 
-    private boolean isResumed;
-
-
-
     Bitmap currentImage;
 
     String currentLocationSetting; //yes or no
@@ -72,11 +56,10 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
     ScanIntentResult currentScan;
 
     Button profileButton, leaderboardBtn, logOutBtn,findUserBtn,mapButton;
-
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    FireStoreClass f;
+    private FireStoreClass f;
 
     @Override
     public void onDataPass(Bitmap bitmap, String setting) {
@@ -226,15 +209,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
         // listener for the location / map button
         mapButton.setOnClickListener(view -> {
             Intent newIntent = new Intent(MainActivity.this, MapActivity.class);
-            newIntent.putExtra("key",Globals.username);
-            updateLocation();
-            if (currentLocation != null) {
-                newIntent.putExtra("lat",this.currentLocation.getLatitude());
-                newIntent.putExtra("lon",this.currentLocation.getLongitude());
-            } else {
-                newIntent.putExtra("lat",0);
-                newIntent.putExtra("lon",0);
-            }
             startActivity(newIntent);
         });
 
@@ -244,11 +218,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 //            newIntent.putExtra("key",Globals.username);
 //            startActivity(newIntent);
 //        });
-
-
-
-
-
     }
 
     private void find_user() {
@@ -338,7 +307,10 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
 
             if(currentLocationSetting.equals(SAVE_LOCATION)) {
                 updateLocation();
-                pCode.setLocation(currentLocation);
+                Locations l = new Locations();
+                l.setLongitude(currentLocation.getLongitude());
+                l.setLatitude(currentLocation.getLatitude());
+                pCode.setLocation(l);
             }
 
             TextView codeImage = (TextView) v.findViewById(R.id.code_image);
@@ -347,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
             codeImage.setText(pCode.getPicture());
             codeName.setText(pCode.getName());
             codeScore.setText(Integer.toString(pCode.getScore()));
-            Log.d("Location", String.valueOf(pCode.getLocation().getLatitude()));
             builder.setNegativeButton("Don't Collect", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -397,13 +368,13 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                             imageRank.setText("Rank: "+ rank);
 
 
-                            }
-                        });
-                    } else {
-                        imageview.setText("");
-                        imageText.setText("");
-                        imageScore.setText("");
-                        imageRank.setText("");
+                        }
+                    });
+                } else {
+                    imageview.setText("");
+                    imageText.setText("");
+                    imageScore.setText("");
+                    imageRank.setText("");
                 }
             }
         });
