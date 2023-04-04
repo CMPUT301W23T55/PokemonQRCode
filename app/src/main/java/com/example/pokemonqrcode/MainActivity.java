@@ -397,13 +397,13 @@ public class MainActivity extends AppCompatActivity implements CodeFoundFragment
                             imageRank.setText("Rank: "+ rank);
 
 
-                            }
-                        });
-                    } else {
-                        imageview.setText("");
-                        imageText.setText("");
-                        imageScore.setText("");
-                        imageRank.setText("");
+                        }
+                    });
+                } else {
+                    imageview.setText("");
+                    imageText.setText("");
+                    imageScore.setText("");
+                    imageRank.setText("");
                 }
             }
         });
